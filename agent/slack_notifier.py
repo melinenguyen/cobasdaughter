@@ -1,4 +1,4 @@
-"""Sends the daily trend digest to Slack using Block Kit for rich formatting."""
+"""Sends the CoBa's Daughter trend digest to Slack using Block Kit."""
 
 import logging
 from datetime import datetime
@@ -8,183 +8,294 @@ logger = logging.getLogger(__name__)
 
 HEAT_EMOJI = {
     "Peaking Fast": "🔥🔥",
-    "Peaking": "🔥",
-    "Emerging": "🌱",
-    "Mainstream": "📈",
+    "Peaking":      "🔥",
+    "Emerging":     "🌱",
+    "Mainstream":   "📈",
 }
 
 CAT_EMOJI = {
-    "Beauty": "💄",
-    "Fashion": "👗",
-    "Pop Culture": "✨",
-    "Hollywood": "🎬",
-    "Social/Hashtags": "#️⃣",
-    "Music": "🎵",
-    "Lifestyle": "🌟",
+    "Beauty":                     "💄",
+    "Body Care":                  "🧴",
+    "Fashion":                    "👗",
+    "Equestrian":                 "🐎",
+    "Pop Culture":                "✨",
+    "Hollywood":                  "🎬",
+    "Film & Music":               "🎵",
+    "Cultural Relevancy":         "🌍",
+    "Viral Marketing":            "🚀",
+    "Social/Hashtags":            "#️⃣",
 }
 
+SIGNAL_EMOJI = {"Viral": "🚀", "High": "📈", "Rising": "🌱"}
 
-def _score_bar(score: float) -> str:
-    filled = round(score / 10 * 10)
-    return "█" * filled + "░" * (10 - filled)
+
+def _bar(score: float, total: int = 10, filled: str = "█", empty: str = "░") -> str:
+    n = round(score / total * 10)
+    return filled * n + empty * (10 - n)
+
+
+def _section(text: str) -> dict:
+    return {"type": "section", "text": {"type": "mrkdwn", "text": text}}
+
+
+def _header(text: str) -> dict:
+    return {"type": "header", "text": {"type": "plain_text", "text": text, "emoji": True}}
+
+
+def _divider() -> dict:
+    return {"type": "divider"}
+
+
+def _button_link(label: str, url: str, style: str = "primary") -> dict:
+    return {
+        "type": "actions",
+        "elements": [{
+            "type": "button",
+            "text": {"type": "plain_text", "text": label, "emoji": True},
+            "url": url,
+            "style": style,
+        }]
+    }
 
 
 def _build_blocks(report: dict[str, Any], dashboard_url: str = "") -> list[dict]:
-    """Build Slack Block Kit blocks for the daily digest."""
     date = report.get("report_date", datetime.utcnow().strftime("%Y-%m-%d"))
-    summary = report.get("executive_summary", "")
-    top_trends = report.get("top_trends", [])
-    hot_hashtags = report.get("hot_hashtags", [])
-    hw = report.get("hollywood_pulse", {})
-    tw = report.get("trend_watch", {})
-    brief = report.get("creator_brief_of_the_week", {})
+    hour = datetime.utcnow().hour
+    slot = "9AM" if hour < 15 else "3PM"
+
+    top_trends      = report.get("top_trends", [])
+    hot_hashtags    = report.get("hot_hashtags", [])
+    spotlight       = report.get("cobas_daughter_spotlight", {})
+    hw              = report.get("hollywood_pulse", {})
+    eq              = report.get("equestrian_pulse", {})
+    tw              = report.get("trend_watch", {})
+    brief           = report.get("creator_brief_of_the_week", {})
+    viral           = report.get("viral_pulse", {})
+    cultural        = report.get("cultural_events_now", [])
 
     blocks: list[dict] = []
 
-    # ── HEADER ──
-    blocks.append({
-        "type": "header",
-        "text": {"type": "plain_text", "text": f"⚡ US Trend Intelligence — {date}"}
-    })
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # HEADER
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    blocks.append(_header(f"🐴 CoBa's Daughter — Trend Intelligence · {slot} · {date}"))
 
-    blocks.append({"type": "divider"})
+    summary = report.get("executive_summary", "")
+    if summary:
+        blocks.append(_section(f"_{summary}_"))
 
-    # ── EXEC SUMMARY ──
-    blocks.append({
-        "type": "section",
-        "text": {"type": "mrkdwn", "text": f"*Today's Pulse*\n{summary}"}
-    })
+    # Dashboard link at the very top (most important)
+    if dashboard_url:
+        blocks.append(_button_link("📊 Open Full Dashboard Report", dashboard_url))
 
-    blocks.append({"type": "divider"})
+    blocks.append(_divider())
 
-    # ── TOP TRENDS (top 8) ──
-    blocks.append({
-        "type": "section",
-        "text": {"type": "mrkdwn", "text": "*🏆 Top Trends Right Now*"}
-    })
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # BRAND SPOTLIGHT — big picture
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if spotlight:
+        blocks.append(_section("*✦ Brand Spotlight — Your Action Plan*"))
+        sp_text = ""
+        if spotlight.get("top_opportunity"):
+            sp_text += f"*🎯 Top Opportunity:*\n{spotlight['top_opportunity']}\n\n"
+        if spotlight.get("equestrian_angle"):
+            sp_text += f"*🐎 Equestrian Angle:*\n{spotlight['equestrian_angle']}\n\n"
+        if spotlight.get("beauty_body_care_angle"):
+            sp_text += f"*✨ Beauty & Body Care:*\n{spotlight['beauty_body_care_angle']}\n\n"
+        if spotlight.get("cultural_moment"):
+            sp_text += f"*🌍 Cultural Moment:*\n{spotlight['cultural_moment']}"
+        blocks.append(_section(sp_text.strip()))
+        blocks.append(_divider())
 
-    for trend in top_trends[:8]:
-        rank = trend.get("rank", "")
-        name = trend.get("trend_name", "")
-        cat = trend.get("category", "")
-        score = trend.get("virality_score", 0)
-        heat = trend.get("heat_level", "")
-        what = trend.get("what_is_it", "")
-        window = trend.get("window", "")
-        hashtags = " ".join(trend.get("key_hashtags", [])[:3])
-        tactics = trend.get("tactics", {})
-        post_now = tactics.get("post_now", [])
-        ugc = tactics.get("ugc_brief", "")
-        hooks = tactics.get("caption_hooks", [])
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # CULTURAL EVENTS NOW
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if cultural:
+        blocks.append(_section("*📅 Cultural Events — Act Now*"))
+        ev_lines = []
+        for ev in cultural[:4]:
+            urgency_emoji = "🔴" if ev.get("urgency") == "Now" else ("🟡" if ev.get("urgency") == "This Week" else "🟢")
+            tags = " ".join(ev.get("hashtags", [])[:3])
+            ev_lines.append(
+                f"{urgency_emoji} *{ev['event']}* — {ev.get('relevance', '')} {tags}"
+            )
+        blocks.append(_section("\n".join(ev_lines)))
+        blocks.append(_divider())
 
-        cat_emoji = CAT_EMOJI.get(cat, "📌")
-        heat_emoji = HEAT_EMOJI.get(heat, "📊")
-        score_bar = _score_bar(score)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # TOP TRENDS
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    blocks.append(_section(f"*🏆 Top Trends Right Now — {len(top_trends)} Identified*"))
 
-        trend_text = (
-            f"*#{rank} — {cat_emoji} {name}*\n"
-            f"{heat_emoji} `{heat}` · Virality: `{score}/10` `{score_bar}`\n"
-            f"⏱ Window: _{window}_\n\n"
-            f"_{what}_\n\n"
+    for trend in top_trends[:6]:
+        rank        = trend.get("rank", "")
+        name        = trend.get("trend_name", "")
+        cat         = trend.get("category", "")
+        v_score     = trend.get("virality_score", 0)
+        b_score     = trend.get("brand_relevance_score", 0)
+        heat        = trend.get("heat_level", "")
+        what        = trend.get("what_is_it", "")
+        window      = trend.get("window", "")
+        hashtags    = "  ".join(trend.get("key_hashtags", [])[:4])
+        br_reason   = trend.get("brand_relevance_reason", "")
+        tactics     = trend.get("tactics", {})
+        post_now    = tactics.get("post_now", [])
+        hooks       = tactics.get("caption_hooks", [])
+        ugc         = tactics.get("ugc_brief", "")
+
+        cat_emoji   = CAT_EMOJI.get(cat, "📌")
+        heat_emoji  = HEAT_EMOJI.get(heat, "📊")
+
+        text = (
+            f"*#{rank} — {cat_emoji} {name}*  ·  `{cat}`\n"
+            f"{heat_emoji} `{heat}`  ·  ⏱ _{window}_\n"
+            f"Virality `{v_score}/10` {_bar(v_score)}   Brand Fit `{b_score}/10` {_bar(b_score)}\n\n"
+            f"_{what}_\n"
         )
 
+        if br_reason:
+            text += f"\n💡 *CoBa's Daughter:* {br_reason}\n"
+
         if post_now:
-            trend_text += f"*📱 Post Now:*\n"
+            text += f"\n*📱 Post Now:*\n"
             for p in post_now[:2]:
-                trend_text += f"• {p}\n"
-            trend_text += "\n"
+                text += f"• {p}\n"
 
         if ugc:
-            trend_text += f"*🎬 UGC Brief:* {ugc}\n\n"
+            text += f"\n*🎬 UGC Brief:* {ugc}\n"
 
         if hooks:
-            trend_text += f"*✍️ Caption Hook:* _{hooks[0]}_\n\n"
+            text += f"\n*✍️ Hook:* _{hooks[0]}_\n"
 
         if hashtags:
-            trend_text += f"{hashtags}"
+            text += f"\n{hashtags}"
 
-        blocks.append({
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": trend_text}
-        })
-        blocks.append({"type": "divider"})
+        blocks.append(_section(text.strip()))
+        blocks.append(_divider())
 
-    # ── HOT HASHTAGS ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # VIRAL PULSE
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if viral:
+        vp_text = "*🚀 Viral Pulse*\n"
+
+        viral_products = viral.get("viral_products", [])
+        if viral_products:
+            vp_text += "\n*Viral Products Right Now:*\n"
+            for p in viral_products[:3]:
+                vp_text += f"🛒 {p}\n"
+
+        viral_moments = viral.get("viral_moments", [])
+        if viral_moments:
+            vp_text += "\n*Viral Moments:*\n"
+            for m in viral_moments[:3]:
+                vp_text += f"⚡ {m}\n"
+
+        social_trends = viral.get("viral_social_trends", [])
+        if social_trends:
+            vp_text += "\n*Viral Social Trends:*\n"
+            for t in social_trends[:3]:
+                vp_text += f"📱 {t}\n"
+
+        community = viral.get("community_conversations", [])
+        if community:
+            vp_text += "\n*Community Conversations:*\n"
+            for c in community[:2]:
+                vp_text += f"💬 {c}\n"
+
+        blocks.append(_section(vp_text.strip()))
+        blocks.append(_divider())
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # HOT HASHTAGS
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if hot_hashtags:
-        hashtag_lines = []
+        lines = ["*#️⃣ Hot Hashtags to Use Today*"]
         for h in hot_hashtags[:12]:
-            signal = h.get("posts_signal", "")
-            sig_emoji = "🚀" if signal == "Viral" else ("📈" if signal == "High" else "🌱")
-            hashtag_lines.append(f"{sig_emoji} `{h['hashtag']}` _{h.get('category', '')}_")
+            sig = h.get("posts_signal", "Rising")
+            sig_emoji = SIGNAL_EMOJI.get(sig, "🌱")
+            lines.append(f"{sig_emoji} `{h['hashtag']}` _{h.get('category', '')}_ — {h.get('how_to_use', '')}")
+        blocks.append(_section("\n".join(lines)))
+        blocks.append(_divider())
 
-        blocks.append({
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*#️⃣ Hot Hashtags*\n" + "\n".join(hashtag_lines)
-            }
-        })
-        blocks.append({"type": "divider"})
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # EQUESTRIAN PULSE
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if eq:
+        eq_text = "*🐎 Equestrian Pulse*\n"
+        topics = eq.get("trending_topics", [])
+        if topics:
+            eq_text += "*Trending in Equestrian:*\n"
+            for t in topics[:3]:
+                eq_text += f"• {t}\n"
+        if eq.get("crossover_opportunity"):
+            eq_text += f"\n*Beauty × Equestrian:* {eq['crossover_opportunity']}\n"
+        if eq.get("creator_profile"):
+            eq_text += f"*Ideal Creator:* {eq['creator_profile']}"
+        blocks.append(_section(eq_text.strip()))
+        blocks.append(_divider())
 
-    # ── HOLLYWOOD PULSE ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # HOLLYWOOD PULSE
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if hw:
         moments = hw.get("top_celebrity_moments", [])
-        tie_in = hw.get("brand_tie_in_opportunity", "")
+        tie_in  = hw.get("brand_tie_in_opportunity", "")
         hw_text = "*🎬 Hollywood Pulse*\n"
         for m in moments[:3]:
             hw_text += f"• {m}\n"
         if tie_in:
             hw_text += f"\n*Brand Tie-In:* {tie_in}"
-        blocks.append({
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": hw_text}
-        })
-        blocks.append({"type": "divider"})
+        blocks.append(_section(hw_text.strip()))
+        blocks.append(_divider())
 
-    # ── CREATOR BRIEF ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # CREATOR BRIEF
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if brief:
         brief_text = (
             f"*🎥 Creator Brief of the Week*\n"
             f"*Concept:* {brief.get('concept', '')}\n"
-            f"*Target:* {brief.get('target_creator_profile', '')}\n"
-            f"*Opening Hook:* _{brief.get('hook', '')}_\n"
-            f"*Deliverable:* {brief.get('deliverable', '')}"
+            f"*Target Creator:* {brief.get('target_creator_profile', '')}\n"
+            f"*Deliverable:* {brief.get('deliverable', '')}\n"
+            f"*Opening Hook:* _{brief.get('hook', '')}_"
         )
-        blocks.append({
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": brief_text}
-        })
-        blocks.append({"type": "divider"})
+        dos = brief.get("dos", [])
+        donts = brief.get("donts", [])
+        if dos:
+            brief_text += "\n✅ " + "  ·  ".join(dos[:2])
+        if donts:
+            brief_text += "\n❌ " + "  ·  ".join(donts[:2])
+        blocks.append(_section(brief_text))
+        blocks.append(_divider())
 
-    # ── TREND WATCH ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # TREND WATCH
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if tw:
-        emerging = tw.get("emerging_to_watch", [])
+        emerging  = tw.get("emerging_to_watch", [])
+        fading    = tw.get("fading_trends", [])
         predicted = tw.get("predicted_next_week", "")
         tw_text = "*👀 Trend Watch*\n"
         if emerging:
-            tw_text += "*Emerging — Watch These:*\n"
-            for t in emerging[:3]:
-                tw_text += f"🌱 {t}\n"
+            tw_text += "*Emerging — Watch These:* " + "  ·  ".join(f"🌱 {t}" for t in emerging[:3]) + "\n"
+        if fading:
+            tw_text += "*Fading:* " + "  ·  ".join(f"📉 {t}" for t in fading[:2]) + "\n"
         if predicted:
-            tw_text += f"\n*Next Week Prediction:* {predicted}"
-        blocks.append({
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": tw_text}
-        })
+            tw_text += f"*Next Week Prediction:* {predicted}"
+        blocks.append(_section(tw_text.strip()))
+        blocks.append(_divider())
 
-    # ── DASHBOARD LINK ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # FOOTER + DASHBOARD LINK AGAIN
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if dashboard_url:
-        blocks.append({"type": "divider"})
-        blocks.append({
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": f"*📊 Full Report:* <{dashboard_url}|View Dashboard>"}
-        })
+        blocks.append(_button_link("📊 View Full Dashboard & Report →", dashboard_url))
 
-    blocks.append({"type": "divider"})
     blocks.append({
         "type": "context",
         "elements": [
-            {"type": "mrkdwn", "text": f"Generated by TrendPulse AI · {date} · Powered by Claude"}
+            {"type": "mrkdwn", "text": f"CoBa's Daughter Trend Intelligence · {date} {slot} · Powered by Claude AI"}
         ]
     })
 
@@ -204,18 +315,21 @@ def send(report: dict[str, Any], bot_token: str, channel_id: str, dashboard_url:
         client = WebClient(token=bot_token)
         blocks = _build_blocks(report, dashboard_url)
 
-        # Slack has a 50-block limit per message; split if needed
+        date = report.get("report_date", "")
+        fallback = f"CoBa's Daughter Trend Intelligence — {date}"
+
+        # Slack 50-block limit — split into chunks
         chunk_size = 48
         for i in range(0, len(blocks), chunk_size):
             chunk = blocks[i: i + chunk_size]
-            fallback = f"US Trend Intelligence Report — {report.get('report_date', '')}"
             client.chat_postMessage(
                 channel=channel_id,
                 text=fallback,
                 blocks=chunk,
+                unfurl_links=False,
             )
 
-        logger.info(f"Slack digest sent to channel {channel_id}")
+        logger.info(f"Slack digest sent ({len(blocks)} blocks) to {channel_id}")
         return True
 
     except Exception as e:

@@ -100,6 +100,20 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
     "dos": ["Do 1", "Do 2"],
     "donts": ["Dont 1", "Dont 2"]
   }},
+  "viral_pulse": {{
+    "viral_products": ["Product name — one sentence why it's viral.", "Second product."],
+    "viral_moments": ["Moment 1 — one sentence.", "Moment 2."],
+    "viral_social_trends": ["TikTok/IG trend 1", "Trend 2"],
+    "community_conversations": ["Community topic 1", "Topic 2"]
+  }},
+  "cultural_events_now": [
+    {{
+      "event": "Event name",
+      "relevance": "One sentence on how CoBa's Daughter can leverage this.",
+      "hashtags": ["#tag1", "#tag2"],
+      "urgency": "Now|This Week|This Month"
+    }}
+  ],
   "trend_watch": {{
     "emerging_to_watch": ["Trend 1", "Trend 2"],
     "fading_trends": ["Fading trend"],
@@ -108,7 +122,8 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
 }}
 
 STRICT RULES: Return ONLY valid JSON. No markdown. Max 6 trends. Keep every string under 20 words.
-Always include at least one Equestrian category trend and one Body Care trend."""
+Always include at least one Equestrian category trend and one Body Care trend.
+Always populate viral_pulse and cultural_events_now based on the data provided."""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
@@ -185,10 +200,37 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
         for article in trend_articles:
             lines.append(f"  [{article['outlet']}] {article['title']}")
 
+    if news.get("viral_articles"):
+        lines.append("\nViral Media Signals:")
+        for a in news["viral_articles"][:10]:
+            lines.append(f"  [VIRAL][{a['outlet']}] {a['title']}")
+
     if news.get("top_topics"):
         lines.append("\nTop Media Topics:")
         topics = [f"{t['topic']} ({t['mentions']}x)" for t in news["top_topics"][:15]]
         lines.append(", ".join(topics))
+
+    # Cultural Calendar
+    cal = collected_data.get("cultural_calendar", {})
+    if cal.get("happening_now"):
+        lines.append("\n=== CULTURAL EVENTS HAPPENING NOW ===")
+        for ev in cal["happening_now"]:
+            tags = " ".join(ev["hashtags"][:4])
+            lines.append(f"  [{ev['category']}] {ev['name']} ({ev['date']}) {tags}")
+    if cal.get("coming_this_week"):
+        lines.append("\nComing This Week:")
+        for ev in cal["coming_this_week"]:
+            lines.append(f"  {ev['name']} in {ev['days_away']} days")
+    if cal.get("awareness_month"):
+        lines.append("\nThis Month's Awareness Themes:")
+        for aw in cal["awareness_month"]:
+            tags = " ".join(aw["hashtags"][:3])
+            lines.append(f"  {aw['name']} {tags}")
+    if cal.get("equestrian_events"):
+        lines.append("\nEquestrian Calendar:")
+        for ev in cal["equestrian_events"][:5]:
+            tags = " ".join(ev["hashtags"][:3])
+            lines.append(f"  {ev['name']} ({ev['days_away']} days) {tags}")
 
     return "\n".join(lines)
 
