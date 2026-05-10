@@ -141,3 +141,5 @@ if __name__ == "__main__":
 
     result = run_agent(dashboard_url=args.dashboard_url, dry_run=args.dry_run)
     print(json.dumps(result, indent=2))
+    if result.get("status") != "success":
+        sys.exit(1)
