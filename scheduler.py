@@ -1,9 +1,8 @@
 """
-APScheduler-based daily 10AM scheduler.
+APScheduler-based scheduler: runs the trend agent at 9AM and 3PM ET daily.
 
 Run this process on any server (local machine, VPS, Docker) and it will
-automatically fire the trend agent every day at 10:00 AM in the configured
-timezone, then serve the Flask dashboard on the configured port.
+fire automatically twice a day, then serve the Flask dashboard.
 """
 
 import logging
@@ -45,19 +44,27 @@ def start():
 
     scheduler.add_job(
         scheduled_run,
-        trigger=CronTrigger(hour=10, minute=0, timezone=tz),
-        id="daily_trend_report",
-        name="Daily US Trend Report at 10AM",
+        trigger=CronTrigger(hour=9, minute=0, timezone=tz),
+        id="morning_trend_report",
+        name="Morning US Trend Report at 9AM",
         replace_existing=True,
-        misfire_grace_time=1800,  # 30 min grace period
+        misfire_grace_time=1800,
+    )
+
+    scheduler.add_job(
+        scheduled_run,
+        trigger=CronTrigger(hour=15, minute=0, timezone=tz),
+        id="afternoon_trend_report",
+        name="Afternoon US Trend Report at 3PM",
+        replace_existing=True,
+        misfire_grace_time=1800,
     )
 
     scheduler.start()
     logger.info(
-        f"Scheduler started — daily trend report at 10:00 AM {Config.SCHEDULER_TIMEZONE}"
+        f"Scheduler started — trend reports at 9:00 AM and 3:00 PM {Config.SCHEDULER_TIMEZONE}"
     )
 
-    # Start Flask dashboard
     from dashboard.app import app
     port = Config.DASHBOARD_PORT
     logger.info(f"Dashboard available at http://0.0.0.0:{port}")

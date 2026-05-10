@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from agent.config import Config
-from agent.collectors import google_trends, reddit, twitter, youtube, news
+from agent.collectors import google_trends, reddit, twitter, youtube, news, instagram
 from agent import analyzer, report_generator, slack_notifier
 
 logging.basicConfig(
@@ -52,9 +52,10 @@ def _collect_all() -> dict:
         ("twitter", twitter.collect, Config.TWITTER_BEARER_TOKEN),
         ("youtube", youtube.collect, Config.YOUTUBE_API_KEY),
         ("news", news.collect),
+        ("instagram", instagram.collect, Config.INSTAGRAM_ACCESS_TOKEN, Config.INSTAGRAM_BUSINESS_ACCOUNT_ID),
     ]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
         futures = []
         for task in tasks:
             name = task[0]
