@@ -97,7 +97,7 @@ Based on this data, produce a structured trend intelligence report in JSON forma
   }}
 }}
 
-Return ONLY valid JSON. Be specific, be bold, be brand-relevant. Focus on the top 8-12 trends."""
+Return ONLY valid JSON. Be specific, be bold, be brand-relevant. Focus on the top 6-8 trends maximum to keep the response concise."""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
@@ -185,7 +185,7 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
 
         message = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=8000,
+            max_tokens=16000,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
