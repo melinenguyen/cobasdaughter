@@ -180,23 +180,22 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
         raw = message.content[0].text
         result["raw_response"] = raw
 
-        # Extract JSON robustly — find the outermost { ... } block
+        # Extract and repair JSON robustly
+        from json_repair import repair_json
+
         cleaned = raw.strip()
         # Strip markdown code fences
-        if "```" in cleaned:
-            for line in cleaned.split("\n"):
-                if line.strip().startswith("{"):
-                    cleaned = cleaned[cleaned.index(line.strip()):]
-                    break
-            cleaned = cleaned.replace("```json", "").replace("```", "").strip()
-        # Find first { and matching last } to handle any trailing text
+        cleaned = cleaned.replace("```json", "").replace("```", "").strip()
+        # Find the outermost { ... } block
         start = cleaned.find("{")
         end = cleaned.rfind("}") + 1
         if start == -1 or end == 0:
             raise ValueError("No JSON object found in response")
         cleaned = cleaned[start:end]
 
-        report = json.loads(cleaned)
+        # Repair any JSON formatting issues (apostrophes, trailing commas, etc.)
+        repaired = repair_json(cleaned)
+        report = json.loads(repaired)
         report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
         result["report"] = report
         result["status"] = "success"
