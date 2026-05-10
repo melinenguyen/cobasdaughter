@@ -16,22 +16,35 @@ class Config:
     TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN", "")
     YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")
 
+    INSTAGRAM_ACCESS_TOKEN = os.getenv("INSTAGRAM_ACCESS_TOKEN", "")
+    INSTAGRAM_BUSINESS_ACCOUNT_ID = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", "")
+
     FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
     DASHBOARD_PORT = int(os.getenv("DASHBOARD_PORT", "5050"))
 
     REPORTS_DIR = os.getenv("REPORTS_DIR", "reports")
     SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "America/New_York")
 
-    # US Pop-culture subreddits to monitor
+    # US Pop-culture + Beauty + Equestrian subreddits
     REDDIT_SUBREDDITS = [
-        "popculture", "entertainment", "beauty", "SkincareAddiction",
-        "MakeupAddiction", "femalefashionadvice", "malefashionadvice",
-        "streetwear", "Showerthoughts", "TikTokCringe", "TikTok",
-        "HollywoodGossip", "Music", "movies", "television",
-        "celebrity", "Trending", "viral", "BeautyGuruChatter",
+        # Pop Culture & Entertainment
+        "popculture", "entertainment", "celebrity", "HollywoodGossip",
+        "movies", "television", "Music", "TikTokCringe", "TikTok", "viral",
+        # Beauty & Skincare
+        "beauty", "SkincareAddiction", "MakeupAddiction", "BeautyGuruChatter",
+        "DIYBeauty", "AsianBeauty", "fragrance", "Wetshaving",
+        # Fashion & Lifestyle
+        "femalefashionadvice", "malefashionadvice", "streetwear",
+        "luxuryfashion", "WomensFashion", "Fashionadvice",
+        # Body Care & Wellness
+        "bodycare", "selfcare", "Wellness", "FeminineHygiene",
+        # Equestrian
+        "Equestrian", "Horses", "equestrian", "HorseBack", "Dressage",
+        # Social/Viral
+        "Trending", "InternetIsBeautiful",
     ]
 
-    # YouTube trending categories (US)
+    # YouTube categories (US)
     YOUTUBE_REGION = "US"
     YOUTUBE_CATEGORIES = {
         "0": "All",
@@ -40,16 +53,28 @@ class Config:
         "23": "Comedy",
         "24": "Entertainment",
         "25": "News & Politics",
+        "26": "How-to & Style",
     }
 
-    # Google Trends keywords seed list (agent will expand dynamically)
-    GTRENDS_SEED_KEYWORDS = [
-        "trending now", "viral", "hot right now",
-        "beauty trend 2025", "fashion trend 2025",
-        "tiktok trend", "instagram trend",
+    # YouTube niche search terms (supplement trending chart)
+    YOUTUBE_NICHE_SEARCHES = [
+        "equestrian lifestyle 2025",
+        "horse girl aesthetic",
+        "body care routine viral",
+        "beauty trend 2025",
+        "fashion week 2025",
+        "viral skincare hack",
+        "equestrian fashion",
     ]
 
-    # News RSS feeds
+    # Google Trends seed keywords
+    GTRENDS_SEED_KEYWORDS = [
+        "trending now", "viral", "beauty trend 2025", "fashion trend 2025",
+        "tiktok trend", "equestrian style", "body care routine",
+        "cultural moment", "viral marketing",
+    ]
+
+    # News RSS feeds — beauty, fashion, entertainment, equestrian
     NEWS_FEEDS = {
         "Entertainment Weekly": "https://feeds.feedburner.com/ew/news",
         "People Magazine": "https://people.com/feed/",
@@ -65,11 +90,14 @@ class Config:
         "Billboard": "https://www.billboard.com/feed/",
         "Complex": "https://www.complex.com/rss",
         "Highsnobiety": "https://www.highsnobiety.com/feed/",
+        "Horse & Hound": "https://www.horseandhound.co.uk/feed",
+        "The Chronicle of the Horse": "https://www.chronofhorse.com/feed",
     }
 
-    # Twitter/X trending search queries
+    # Twitter/X queries
     TWITTER_QUERIES = [
         "#trending", "#viral", "#beauty", "#fashion",
-        "#OOTD", "#hollywoodtrend", "#beautytrend",
-        "#tiktoktrend", "#aesthetics",
+        "#OOTD", "#beautytrend", "#tiktoktrend",
+        "#equestrian", "#horsegirl", "#equestrianstyle",
+        "#bodycare", "#selfcare", "#aesthetics",
     ]

@@ -2,8 +2,9 @@
 AI-powered trend analysis using Claude.
 
 Takes raw collected data from all sources and returns:
- - Categorised trend cards (Beauty, Fashion, Pop Culture, Hollywood, Social/Hashtags)
+ - Categorised trend cards with new categories incl. Equestrian
  - Virality score (1-10) for each trend
+ - CoBa's Daughter brand relevance score per trend
  - Actionable brand tactics (post ideas, UGC brief hooks, asset suggestions, seeding ops)
 """
 
@@ -16,88 +17,98 @@ import anthropic
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a senior US brand strategist and trend intelligence analyst specializing in beauty,
-fashion, and pop culture for social media virality. You work with data from Google Trends, Reddit, Twitter/X,
-YouTube, and media publications to surface the most actionable trends for a consumer brand's marketing team.
+SYSTEM_PROMPT = """You are the lead trend strategist for CoBa's Daughter — a luxury equestrian-meets-beauty
+lifestyle brand for the modern, discerning woman. CoBa's Daughter sits at the intersection of:
+  • Equestrian culture and riding lifestyle (horses, stables, outdoors, countryside aesthetic)
+  • Premium beauty and body care (skin, hair, fragrance, wellness rituals)
+  • Fashion with a strong heritage/luxury streak (quiet luxury, equestrian chic, athleisure)
+  • Pop culture relevance for a sophisticated, aspirational female audience (25-45)
 
-Your job is to:
-1. Identify the top trending topics in the US across beauty, fashion, pop culture, Hollywood, and social media.
+Your job:
+1. Surface the TOP trending topics in the US across all relevant categories.
 2. Score each trend's virality potential (1-10) based on cross-platform signal strength.
-3. Translate each trend into concrete, low-hanging-fruit tactics the brand team can execute IMMEDIATELY.
+3. Score each trend's relevance to CoBa's Daughter (1-10): how directly can this brand own or
+   ride this trend given its equestrian-beauty-lifestyle positioning?
+4. Translate each trend into IMMEDIATE, concrete tactics for CoBa's Daughter's social team.
 
-Tone: Direct, punchy, creative director energy. No fluff. Built for a fast-moving social team."""
+Categories to monitor: Beauty, Body Care, Fashion, Equestrian, Pop Culture, Hollywood,
+Film & Music, Cultural Relevancy, Viral Marketing & Social Media.
+
+Tone: Direct, creative-director energy. Speak like you are briefing the brand's CMO.
+No fluff. This team moves fast."""
 
 
-ANALYSIS_PROMPT = """Here is today's raw trend intelligence data collected across multiple US platforms:
+ANALYSIS_PROMPT = """Today's raw US trend intelligence data for CoBa's Daughter:
 
 {data_summary}
 
-Based on this data, produce a structured trend intelligence report in JSON format with this exact schema:
+Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values SHORT (max 20 words each). Schema:
 
 {{
   "report_date": "YYYY-MM-DD",
-  "executive_summary": "2-3 sentence punchy overview of what's dominating US culture today",
+  "executive_summary": "Max 2 sentences. Include one CoBa's Daughter angle.",
+  "cobas_daughter_spotlight": {{
+    "top_opportunity": "One sentence on the single biggest trend CoBa's Daughter should act on today.",
+    "equestrian_angle": "One sentence on equestrian or horse culture trend right now.",
+    "beauty_body_care_angle": "One sentence on beauty or body care moment to own.",
+    "cultural_moment": "One sentence on cultural moment relevant to the brand audience."
+  }},
   "top_trends": [
     {{
       "rank": 1,
-      "trend_name": "Short punchy name (max 6 words)",
-      "category": "Beauty | Fashion | Pop Culture | Hollywood | Social/Hashtags | Music | Lifestyle",
+      "trend_name": "Max 5 words",
+      "category": "Beauty|Body Care|Fashion|Equestrian|Pop Culture|Hollywood|Film & Music|Cultural Relevancy|Viral Marketing",
       "virality_score": 8.5,
-      "signal_sources": ["Google Trends", "Reddit", "Twitter"],
-      "what_is_it": "1-2 sentence explanation of the trend",
-      "why_it_matters": "Why this trend matters for brand relevance and consumer connection",
-      "heat_level": "Emerging | Peaking | Peaking Fast | Mainstream",
-      "window": "How long this trend window is open (e.g. '24-48 hours', '1-2 weeks', 'ongoing')",
-      "key_hashtags": ["#hashtag1", "#hashtag2"],
-      "content_angle": "The specific creative angle/narrative your brand should take",
+      "brand_relevance_score": 7.0,
+      "brand_relevance_reason": "One sentence why this matters for CoBa's Daughter.",
+      "signal_sources": ["Source1"],
+      "what_is_it": "One sentence max.",
+      "why_it_matters": "One sentence max.",
+      "heat_level": "Emerging|Peaking|Peaking Fast|Mainstream",
+      "window": "e.g. 48 hours",
+      "key_hashtags": ["#tag1", "#tag2"],
+      "content_angle": "One sentence max.",
       "tactics": {{
-        "post_now": [
-          "Specific post idea 1 with format (Reel/Carousel/Story/TikTok) and hook text",
-          "Specific post idea 2"
-        ],
-        "ugc_brief": "Brief hook for creator/UGC brief — what to ask them to film/create and why",
-        "asset_creation": "What graphic/video asset the design team should create and the visual direction",
-        "seeding": "Who to seed — micro-influencer profile description, aesthetic, follower size, and the send-out angle",
-        "caption_hooks": ["Hook line 1", "Hook line 2", "Hook line 3"]
+        "post_now": ["Format + hook in one sentence.", "Second idea one sentence."],
+        "ugc_brief": "One sentence creator direction.",
+        "asset_creation": "One sentence visual direction.",
+        "seeding": "One sentence seeding target.",
+        "caption_hooks": ["Hook 1", "Hook 2", "Hook 3"]
       }}
     }}
   ],
   "hot_hashtags": [
-    {{
-      "hashtag": "#example",
-      "category": "Beauty",
-      "posts_signal": "Rising/High/Viral",
-      "how_to_use": "One-line tip for using this hashtag authentically"
-    }}
+    {{"hashtag": "#tag", "category": "Beauty", "posts_signal": "Rising|High|Viral", "how_to_use": "One sentence."}}
   ],
   "hollywood_pulse": {{
-    "top_celebrity_moments": ["Celebrity/moment 1", "Celebrity/moment 2"],
-    "brand_tie_in_opportunity": "How to connect your brand narrative to current Hollywood conversation"
+    "top_celebrity_moments": ["Moment 1", "Moment 2"],
+    "brand_tie_in_opportunity": "One sentence specific to CoBa's Daughter."
+  }},
+  "equestrian_pulse": {{
+    "trending_topics": ["Topic 1", "Topic 2"],
+    "crossover_opportunity": "One sentence on beauty or fashion meets equestrian.",
+    "creator_profile": "One sentence on ideal equestrian creator to partner with."
   }},
   "weekly_content_calendar_suggestions": [
-    {{
-      "day": "Monday",
-      "theme": "Theme name",
-      "format": "Reel / Carousel / Story / TikTok",
-      "angle": "Specific angle tied to a top trend"
-    }}
+    {{"day": "Monday", "theme": "Theme", "format": "Reel", "angle": "One sentence."}}
   ],
   "creator_brief_of_the_week": {{
-    "concept": "The one big creator brief the team should send out this week",
-    "target_creator_profile": "Describe ideal creator aesthetic/niche/follower count",
-    "deliverable": "What they should create (format, length, key message)",
-    "hook": "Opening line they should use",
+    "concept": "One sentence.",
+    "target_creator_profile": "One sentence.",
+    "deliverable": "One sentence.",
+    "hook": "Opening line.",
     "dos": ["Do 1", "Do 2"],
-    "donts": ["Don't 1", "Don't 2"]
+    "donts": ["Dont 1", "Dont 2"]
   }},
   "trend_watch": {{
-    "emerging_to_watch": ["Early signal trend 1", "Early signal trend 2"],
-    "fading_trends": ["Trend that is losing momentum"],
-    "predicted_next_week": "What trend we predict will peak next week based on current signals"
+    "emerging_to_watch": ["Trend 1", "Trend 2"],
+    "fading_trends": ["Fading trend"],
+    "predicted_next_week": "One sentence."
   }}
 }}
 
-Return ONLY valid JSON. Be specific, be bold, be brand-relevant. Focus on the top 8-12 trends."""
+STRICT RULES: Return ONLY valid JSON. No markdown. Max 6 trends. Keep every string under 20 words.
+Always include at least one Equestrian category trend and one Body Care trend."""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
@@ -119,7 +130,7 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     # Reddit
     reddit = collected_data.get("reddit", {})
     if reddit.get("hot_posts"):
-        lines.append("\n=== REDDIT HOT POSTS (US Pop Culture) ===")
+        lines.append("\n=== REDDIT HOT POSTS ===")
         for post in reddit["hot_posts"][:15]:
             lines.append(f"  [{post['subreddit']}] {post['title']} (score: {post['score']:,})")
 
@@ -138,7 +149,22 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     if twitter.get("trending_tweets"):
         lines.append("\nTop Tweets:")
         for tweet in twitter["trending_tweets"][:10]:
-            lines.append(f"  [{tweet['likes']}❤ {tweet['retweets']}🔁] {tweet['text'][:150]}")
+            lines.append(f"  [{tweet['likes']}  {tweet['retweets']}] {tweet['text'][:150]}")
+
+    # Instagram
+    instagram = collected_data.get("instagram", {})
+    if instagram.get("trending_hashtags"):
+        lines.append("\n=== INSTAGRAM TRENDING HASHTAGS ===")
+        for h in instagram["trending_hashtags"][:15]:
+            lines.append(
+                f"  {h['hashtag']} — {h['total_likes']:,} likes on sampled posts [{h['signal']}]"
+            )
+    if instagram.get("top_media"):
+        lines.append("\nInstagram Top Posts:")
+        for m in instagram["top_media"][:8]:
+            lines.append(
+                f"  [{m['hashtag']}] {m['likes']:,} likes — {m['caption_snippet'][:100]}"
+            )
 
     # YouTube
     yt = collected_data.get("youtube", {})
@@ -146,11 +172,15 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
         lines.append("\n=== YOUTUBE TRENDING (US) ===")
         for v in yt["trending_videos"][:10]:
             lines.append(f"  [{v['category']}] {v['title']} by {v['channel']} ({v['views']:,} views)")
+    if yt.get("niche_videos"):
+        lines.append("\nYouTube Niche (Equestrian / Body Care / Beauty):")
+        for v in yt["niche_videos"][:8]:
+            lines.append(f"  [{v['query']}] {v['title']} by {v['channel']}")
 
     # News
     news = collected_data.get("news", {})
     if news.get("articles"):
-        lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Entertainment) ===")
+        lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Equestrian/Entertainment) ===")
         trend_articles = [a for a in news["articles"] if a.get("trend_relevant")][:20]
         for article in trend_articles:
             lines.append(f"  [{article['outlet']}] {article['title']}")
@@ -185,7 +215,7 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
 
         message = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=8000,
+            max_tokens=16000,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -193,14 +223,18 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
         raw = message.content[0].text
         result["raw_response"] = raw
 
-        # Strip markdown code fences if present
-        cleaned = raw.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned[3:]
-            if cleaned.endswith("```"):
-                cleaned = cleaned[:-3]
+        from json_repair import repair_json
 
-        report = json.loads(cleaned)
+        cleaned = raw.strip()
+        cleaned = cleaned.replace("```json", "").replace("```", "").strip()
+        start = cleaned.find("{")
+        end = cleaned.rfind("}") + 1
+        if start == -1 or end == 0:
+            raise ValueError("No JSON object found in response")
+        cleaned = cleaned[start:end]
+
+        repaired = repair_json(cleaned)
+        report = json.loads(repaired)
         report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
         result["report"] = report
         result["status"] = "success"

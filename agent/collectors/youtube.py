@@ -10,15 +10,24 @@ CATEGORY_IDS = {
     "23": "Comedy",
     "24": "Entertainment",
     "26": "How-to & Style",
-    "27": "Education",
 }
+
+NICHE_SEARCHES = [
+    "equestrian lifestyle 2025",
+    "horse girl aesthetic",
+    "body care routine viral",
+    "beauty trend 2025",
+    "equestrian fashion outfit",
+    "viral skincare hack",
+]
 
 
 def collect(api_key: str) -> dict[str, Any]:
-    """Collect YouTube trending videos in the US."""
+    """Collect YouTube trending videos and niche searches in the US."""
     results: dict[str, Any] = {
         "source": "YouTube",
         "trending_videos": [],
+        "niche_videos": [],
         "by_category": {},
         "top_channels": [],
         "errors": [],
@@ -34,10 +43,11 @@ def collect(api_key: str) -> dict[str, Any]:
 
         youtube = build("youtube", "v3", developerKey=api_key)
 
+        # Trending chart by category
         for cat_id, cat_name in CATEGORY_IDS.items():
             try:
                 request = youtube.videos().list(
-                    part="snippet,statistics,contentDetails",
+                    part="snippet,statistics",
                     chart="mostPopular",
                     regionCode="US",
                     videoCategoryId=cat_id if cat_id != "0" else None,
@@ -58,7 +68,6 @@ def collect(api_key: str) -> dict[str, Any]:
                         "likes": int(stats.get("likeCount", 0)),
                         "comments": int(stats.get("commentCount", 0)),
                         "tags": snippet.get("tags", [])[:10],
-                        "description_snippet": snippet.get("description", "")[:200],
                         "video_id": item["id"],
                         "url": f"https://youtube.com/watch?v={item['id']}",
                         "published_at": snippet.get("publishedAt", ""),
@@ -71,7 +80,34 @@ def collect(api_key: str) -> dict[str, Any]:
             except Exception as e:
                 results["errors"].append(f"YouTube cat {cat_name}: {e}")
 
-        # Top channels
+        # Niche searches
+        for query in NICHE_SEARCHES:
+            try:
+                search_resp = youtube.search().list(
+                    part="snippet",
+                    q=query,
+                    type="video",
+                    regionCode="US",
+                    order="viewCount",
+                    maxResults=5,
+                    publishedAfter="2025-01-01T00:00:00Z",
+                ).execute()
+
+                for item in search_resp.get("items", []):
+                    snippet = item.get("snippet", {})
+                    results["niche_videos"].append({
+                        "query": query,
+                        "title": snippet.get("title", ""),
+                        "channel": snippet.get("channelTitle", ""),
+                        "description": snippet.get("description", "")[:150],
+                        "video_id": item["id"].get("videoId", ""),
+                        "published_at": snippet.get("publishedAt", ""),
+                    })
+
+            except Exception as e:
+                results["errors"].append(f"YouTube search '{query}': {e}")
+
+        # Top channels from trending
         channel_counts: dict[str, int] = {}
         for v in results["trending_videos"]:
             ch = v["channel"]
@@ -90,5 +126,8 @@ def collect(api_key: str) -> dict[str, Any]:
         results["errors"].append(f"youtube general: {e}")
 
     results["collected_at"] = datetime.utcnow().isoformat()
-    logger.info(f"YouTube: {len(results['trending_videos'])} trending videos")
+    logger.info(
+        f"YouTube: {len(results['trending_videos'])} trending, "
+        f"{len(results['niche_videos'])} niche videos"
+    )
     return results
