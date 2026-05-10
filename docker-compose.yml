@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  trendpulse:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./reports:/app/reports
+    env_file:
+      - .env
+    environment:
+      - DASHBOARD_PORT=5050

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>US Trend Report — {{ report.report_date }}</title>
+  <link rel="stylesheet" href="/static/css/report.css" />
+</head>
+<body>
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">TrendPulse <span class="logo-sub">US</span></span>
+      </div>
+      <div class="header-meta">
+        <span class="report-date">{{ report.report_date }}</span>
+        <span class="badge badge-live">Live Intelligence</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── EXECUTIVE SUMMARY ── -->
+  <section class="exec-summary">
+    <div class="container">
+      <h2 class="section-label">Today's Pulse</h2>
+      <p class="summary-text">{{ report.executive_summary }}</p>
+    </div>
+  </section>
+
+  <!-- ── TREND HEAT MAP ── -->
+  <section class="section container">
+    <h2 class="section-title">Top Trends <span class="count-badge">{{ report.top_trends|length }}</span></h2>
+    <div class="trends-grid">
+      {% for trend in report.top_trends %}
+      <div class="trend-card heat-{{ trend.heat_level | lower | replace(' ', '-') }}" id="trend-{{ trend.rank }}">
+        <div class="trend-card-header">
+          <span class="trend-rank">#{{ trend.rank }}</span>
+          <span class="trend-category cat-{{ trend.category | lower | replace('/', '-') | replace(' ', '-') }}">
+            {{ trend.category }}
+          </span>
+          <span class="virality-score" title="Virality Score">
+            <span class="score-num">{{ trend.virality_score }}</span>
+            <span class="score-label">/10</span>
+          </span>
+        </div>
+
+        <h3 class="trend-name">{{ trend.trend_name }}</h3>
+
+        <div class="trend-meta">
+          <span class="heat-badge heat-{{ trend.heat_level | lower | replace(' ', '-') }}">
+            🔥 {{ trend.heat_level }}
+          </span>
+          <span class="window-badge">⏱ {{ trend.window }}</span>
+        </div>
+
+        <div class="trend-signals">
+          {% for source in trend.signal_sources %}
+          <span class="signal-chip">{{ source }}</span>
+          {% endfor %}
+        </div>
+
+        <p class="trend-what">{{ trend.what_is_it }}</p>
+        <p class="trend-why"><strong>Why it matters:</strong> {{ trend.why_it_matters }}</p>
+
+        <div class="trend-hashtags">
+          {% for tag in trend.key_hashtags %}
+          <span class="hashtag-chip">{{ tag }}</span>
+          {% endfor %}
+        </div>
+
+        <!-- Tactics Accordion -->
+        <div class="tactics-section">
+          <div class="tactics-header" onclick="toggleTactics(this)">
+            <span>🎯 Brand Tactics</span>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="tactics-body">
+            <div class="tactic-block">
+              <h4 class="tactic-label">📱 Post Now</h4>
+              <ul>
+                {% for post in trend.tactics.post_now %}
+                <li>{{ post }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="tactic-block">
+              <h4 class="tactic-label">🎬 UGC Creator Brief</h4>
+              <p>{{ trend.tactics.ugc_brief }}</p>
+            </div>
+
+            <div class="tactic-block">
+              <h4 class="tactic-label">🎨 Asset Creation</h4>
+              <p>{{ trend.tactics.asset_creation }}</p>
+            </div>
+
+            <div class="tactic-block">
+              <h4 class="tactic-label">📦 Seeding</h4>
+              <p>{{ trend.tactics.seeding }}</p>
+            </div>
+
+            <div class="tactic-block">
+              <h4 class="tactic-label">✍️ Caption Hooks</h4>
+              <ul class="hook-list">
+                {% for hook in trend.tactics.caption_hooks %}
+                <li class="hook-item">"{{ hook }}"</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-angle-box">
+          <span class="angle-label">Content Angle:</span>
+          <span class="angle-text">{{ trend.content_angle }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ── HOT HASHTAGS ── -->
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title">Hot Hashtags</h2>
+      <div class="hashtag-grid">
+        {% for tag in report.hot_hashtags %}
+        <div class="hashtag-card">
+          <div class="hc-top">
+            <span class="hc-tag">{{ tag.hashtag }}</span>
+            <span class="hc-signal signal-{{ tag.posts_signal | lower }}">{{ tag.posts_signal }}</span>
+          </div>
+          <span class="hc-cat">{{ tag.category }}</span>
+          <p class="hc-tip">{{ tag.how_to_use }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOLLYWOOD PULSE ── -->
+  <section class="section container">
+    <h2 class="section-title">🎬 Hollywood Pulse</h2>
+    <div class="hollywood-grid">
+      <div class="hollywood-moments">
+        <h3 class="sub-title">Top Celebrity Moments</h3>
+        <ul class="moment-list">
+          {% for moment in report.hollywood_pulse.top_celebrity_moments %}
+          <li class="moment-item">{{ moment }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="hollywood-brand">
+        <h3 class="sub-title">Brand Tie-In Opportunity</h3>
+        <div class="brand-opportunity-box">
+          {{ report.hollywood_pulse.brand_tie_in_opportunity }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTENT CALENDAR ── -->
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title">📅 Weekly Content Calendar Suggestions</h2>
+      <div class="calendar-grid">
+        {% for day_item in report.weekly_content_calendar_suggestions %}
+        <div class="calendar-card">
+          <div class="cal-day">{{ day_item.day }}</div>
+          <div class="cal-theme">{{ day_item.theme }}</div>
+          <div class="cal-format format-{{ day_item.format | lower | replace('/', '-') }}">
+            {{ day_item.format }}
+          </div>
+          <p class="cal-angle">{{ day_item.angle }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CREATOR BRIEF ── -->
+  <section class="section container">
+    <h2 class="section-title">🎥 Creator Brief of the Week</h2>
+    {% set brief = report.creator_brief_of_the_week %}
+    <div class="creator-brief-card">
+      <div class="brief-concept">
+        <h3 class="brief-section-title">The Concept</h3>
+        <p class="brief-text">{{ brief.concept }}</p>
+      </div>
+      <div class="brief-grid">
+        <div class="brief-block">
+          <h4>Target Creator Profile</h4>
+          <p>{{ brief.target_creator_profile }}</p>
+        </div>
+        <div class="brief-block">
+          <h4>Deliverable</h4>
+          <p>{{ brief.deliverable }}</p>
+        </div>
+        <div class="brief-block brief-hook">
+          <h4>Opening Hook</h4>
+          <blockquote>"{{ brief.hook }}"</blockquote>
+        </div>
+      </div>
+      <div class="dos-donts-grid">
+        <div class="dos-block">
+          <h4>✅ Do's</h4>
+          <ul>{% for d in brief.dos %}<li>{{ d }}</li>{% endfor %}</ul>
+        </div>
+        <div class="donts-block">
+          <h4>❌ Don'ts</h4>
+          <ul>{% for d in brief.donts %}<li>{{ d }}</li>{% endfor %}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TREND WATCH ── -->
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title">👀 Trend Watch</h2>
+      <div class="trendwatch-grid">
+        <div class="tw-card emerging">
+          <h3>Emerging — Watch These</h3>
+          <ul>
+            {% for t in report.trend_watch.emerging_to_watch %}
+            <li>{{ t }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="tw-card fading">
+          <h3>Fading Momentum</h3>
+          <ul>
+            {% for t in report.trend_watch.fading_trends %}
+            <li>{{ t }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="tw-card predicted">
+          <h3>Next Week Prediction</h3>
+          <p>{{ report.trend_watch.predicted_next_week }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>Generated by TrendPulse AI · {{ report.report_date }} · Powered by Claude</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/report.js"></script>
+</body>
+</html>
