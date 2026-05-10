@@ -17,7 +17,10 @@ def save(report_data: dict[str, Any], reports_dir: str = "reports") -> dict[str,
     Path(reports_dir).mkdir(parents=True, exist_ok=True)
 
     date_str = report_data.get("report_date", datetime.utcnow().strftime("%Y-%m-%d"))
-    base_name = f"trend_report_{date_str}"
+    # Include hour so AM and PM reports don't overwrite each other
+    hour_str = datetime.utcnow().strftime("%H")
+    slot = "am" if int(hour_str) < 12 else "pm"
+    base_name = f"trend_report_{date_str}_{slot}"
 
     json_path = os.path.join(reports_dir, f"{base_name}.json")
     html_path = os.path.join(reports_dir, f"{base_name}.html")

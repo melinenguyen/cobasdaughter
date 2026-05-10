@@ -182,6 +182,85 @@
     </div>
   </section>
 
+  <!-- ── CULTURAL EVENTS NOW ── -->
+  {% if report.cultural_events_now %}
+  <section class="section container">
+    <h2 class="section-title serif">
+      <span class="section-icon">📅</span> Cultural Events — Act Now
+    </h2>
+    <div class="cultural-grid">
+      {% for ev in report.cultural_events_now %}
+      <div class="cultural-card urgency-{{ ev.urgency | lower | replace(' ', '-') }}">
+        <div class="cultural-card-top">
+          <span class="urgency-badge urgency-{{ ev.urgency | lower | replace(' ', '-') }}">{{ ev.urgency }}</span>
+          <span class="cultural-name">{{ ev.event }}</span>
+        </div>
+        <p class="cultural-relevance">{{ ev.relevance }}</p>
+        <div class="cultural-tags">
+          {% for tag in ev.hashtags %}
+          <span class="hashtag-chip">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── VIRAL PULSE ── -->
+  {% if report.viral_pulse %}
+  {% set vp = report.viral_pulse %}
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title serif">
+        <span class="section-icon">🚀</span> Viral Pulse
+      </h2>
+      <div class="viral-grid">
+        {% if vp.viral_products %}
+        <div class="viral-card">
+          <h3 class="viral-subtitle">🛒 Viral Products</h3>
+          <ul class="viral-list">
+            {% for item in vp.viral_products %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if vp.viral_moments %}
+        <div class="viral-card">
+          <h3 class="viral-subtitle">⚡ Viral Moments</h3>
+          <ul class="viral-list">
+            {% for item in vp.viral_moments %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if vp.viral_social_trends %}
+        <div class="viral-card">
+          <h3 class="viral-subtitle">📱 Social Trends</h3>
+          <ul class="viral-list">
+            {% for item in vp.viral_social_trends %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if vp.community_conversations %}
+        <div class="viral-card">
+          <h3 class="viral-subtitle">💬 Community</h3>
+          <ul class="viral-list">
+            {% for item in vp.community_conversations %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
   <!-- ── EQUESTRIAN PULSE ── -->
   {% if report.equestrian_pulse %}
   {% set ep = report.equestrian_pulse %}

@@ -350,6 +350,49 @@ body {
 .angle-label { font-weight: 700; color: var(--gold); margin-right: 6px; }
 .angle-text  { color: var(--text2); }
 
+/* ── CULTURAL EVENTS ── */
+.cultural-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+}
+.cultural-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; position: relative;
+  overflow: hidden;
+}
+.cultural-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cultural-name { font-size: 15px; font-weight: 700; color: var(--cream); }
+.urgency-badge {
+  font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+  white-space: nowrap;
+}
+.urgency-now       { background: rgba(232,93,74,0.2);  color: var(--hot); }
+.urgency-this-week { background: rgba(212,148,74,0.2); color: var(--warm); }
+.urgency-this-month{ background: rgba(106,170,138,0.2);color: var(--cool); }
+.cultural-card.urgency-now       { border-color: rgba(232,93,74,0.3); }
+.cultural-card.urgency-this-week { border-color: rgba(212,148,74,0.3); }
+.cultural-relevance { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+.cultural-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── VIRAL PULSE ── */
+.viral-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+}
+.viral-card {
+  background: var(--surface); border: 1px solid rgba(212,148,74,0.2);
+  border-radius: var(--radius); padding: 20px;
+}
+.viral-subtitle {
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--warm); margin-bottom: 12px;
+}
+.viral-list { list-style: none; padding: 0; }
+.viral-list li {
+  font-size: 13px; color: var(--text2); padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.viral-list li:last-child { border-bottom: none; }
+
 /* ── EQUESTRIAN PULSE ── */
 .equestrian-grid {
   display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
