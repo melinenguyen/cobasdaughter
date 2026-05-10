@@ -28,76 +28,63 @@ Your job is to:
 Tone: Direct, punchy, creative director energy. No fluff. Built for a fast-moving social team."""
 
 
-ANALYSIS_PROMPT = """Here is today's raw trend intelligence data collected across multiple US platforms:
+ANALYSIS_PROMPT = """Here is today's raw US trend intelligence data:
 
 {data_summary}
 
-Based on this data, produce a structured trend intelligence report in JSON format with this exact schema:
+Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values SHORT (max 20 words each). Schema:
 
 {{
   "report_date": "YYYY-MM-DD",
-  "executive_summary": "2-3 sentence punchy overview of what's dominating US culture today",
+  "executive_summary": "Max 2 sentences.",
   "top_trends": [
     {{
       "rank": 1,
-      "trend_name": "Short punchy name (max 6 words)",
-      "category": "Beauty | Fashion | Pop Culture | Hollywood | Social/Hashtags | Music | Lifestyle",
+      "trend_name": "Max 5 words",
+      "category": "Beauty|Fashion|Pop Culture|Hollywood|Social/Hashtags|Music|Lifestyle",
       "virality_score": 8.5,
-      "signal_sources": ["Google Trends", "Reddit", "Twitter"],
-      "what_is_it": "1-2 sentence explanation of the trend",
-      "why_it_matters": "Why this trend matters for brand relevance and consumer connection",
-      "heat_level": "Emerging | Peaking | Peaking Fast | Mainstream",
-      "window": "How long this trend window is open (e.g. '24-48 hours', '1-2 weeks', 'ongoing')",
-      "key_hashtags": ["#hashtag1", "#hashtag2"],
-      "content_angle": "The specific creative angle/narrative your brand should take",
+      "signal_sources": ["Source1"],
+      "what_is_it": "One sentence max.",
+      "why_it_matters": "One sentence max.",
+      "heat_level": "Emerging|Peaking|Peaking Fast|Mainstream",
+      "window": "e.g. 48 hours",
+      "key_hashtags": ["#tag1", "#tag2"],
+      "content_angle": "One sentence max.",
       "tactics": {{
-        "post_now": [
-          "Specific post idea 1 with format (Reel/Carousel/Story/TikTok) and hook text",
-          "Specific post idea 2"
-        ],
-        "ugc_brief": "Brief hook for creator/UGC brief — what to ask them to film/create and why",
-        "asset_creation": "What graphic/video asset the design team should create and the visual direction",
-        "seeding": "Who to seed — micro-influencer profile description, aesthetic, follower size, and the send-out angle",
-        "caption_hooks": ["Hook line 1", "Hook line 2", "Hook line 3"]
+        "post_now": ["Format + hook in one sentence.", "Second idea one sentence."],
+        "ugc_brief": "One sentence creator direction.",
+        "asset_creation": "One sentence visual direction.",
+        "seeding": "One sentence seeding target.",
+        "caption_hooks": ["Hook 1", "Hook 2", "Hook 3"]
       }}
     }}
   ],
   "hot_hashtags": [
-    {{
-      "hashtag": "#example",
-      "category": "Beauty",
-      "posts_signal": "Rising/High/Viral",
-      "how_to_use": "One-line tip for using this hashtag authentically"
-    }}
+    {{"hashtag": "#tag", "category": "Beauty", "posts_signal": "Rising|High|Viral", "how_to_use": "One sentence."}}
   ],
   "hollywood_pulse": {{
-    "top_celebrity_moments": ["Celebrity/moment 1", "Celebrity/moment 2"],
-    "brand_tie_in_opportunity": "How to connect your brand narrative to current Hollywood conversation"
+    "top_celebrity_moments": ["Moment 1", "Moment 2"],
+    "brand_tie_in_opportunity": "One sentence."
   }},
   "weekly_content_calendar_suggestions": [
-    {{
-      "day": "Monday",
-      "theme": "Theme name",
-      "format": "Reel / Carousel / Story / TikTok",
-      "angle": "Specific angle tied to a top trend"
-    }}
+    {{"day": "Monday", "theme": "Theme", "format": "Reel", "angle": "One sentence."}}
   ],
   "creator_brief_of_the_week": {{
-    "concept": "The one big creator brief the team should send out this week",
-    "target_creator_profile": "Describe ideal creator aesthetic/niche/follower count",
-    "deliverable": "What they should create (format, length, key message)",
-    "hook": "Opening line they should use",
+    "concept": "One sentence.",
+    "target_creator_profile": "One sentence.",
+    "deliverable": "One sentence.",
+    "hook": "Opening line.",
     "dos": ["Do 1", "Do 2"],
-    "donts": ["Don't 1", "Don't 2"]
+    "donts": ["Dont 1", "Dont 2"]
   }},
   "trend_watch": {{
-    "emerging_to_watch": ["Early signal trend 1", "Early signal trend 2"],
-    "fading_trends": ["Trend that is losing momentum"],
-    "predicted_next_week": "What trend we predict will peak next week based on current signals"
+    "emerging_to_watch": ["Trend 1", "Trend 2"],
+    "fading_trends": ["Fading trend"],
+    "predicted_next_week": "One sentence."
   }}
 }}
 
-Return ONLY valid JSON. Be specific, be bold, be brand-relevant. Focus on the top 6-8 trends maximum to keep the response concise."""
+STRICT RULES: Return ONLY valid JSON. No markdown. Max 5 trends. Keep every string under 20 words."""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
