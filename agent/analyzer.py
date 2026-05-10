@@ -180,12 +180,21 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
         raw = message.content[0].text
         result["raw_response"] = raw
 
-        # Strip markdown code fences if present
+        # Extract JSON robustly — find the outermost { ... } block
         cleaned = raw.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned[3:]
-            if cleaned.endswith("```"):
-                cleaned = cleaned[:-3]
+        # Strip markdown code fences
+        if "```" in cleaned:
+            for line in cleaned.split("\n"):
+                if line.strip().startswith("{"):
+                    cleaned = cleaned[cleaned.index(line.strip()):]
+                    break
+            cleaned = cleaned.replace("```json", "").replace("```", "").strip()
+        # Find first { and matching last } to handle any trailing text
+        start = cleaned.find("{")
+        end = cleaned.rfind("}") + 1
+        if start == -1 or end == 0:
+            raise ValueError("No JSON object found in response")
+        cleaned = cleaned[start:end]
 
         report = json.loads(cleaned)
         report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
