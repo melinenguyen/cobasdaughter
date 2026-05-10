@@ -104,6 +104,10 @@ def run_agent(
     file_paths = report_generator.save(report, Config.REPORTS_DIR)
     logger.info(f"Saved: {file_paths}")
 
+    # Fallback report link: use GitHub repo reports folder if no dashboard URL
+    github_repo = os.getenv("GITHUB_REPOSITORY", "")  # set automatically in Actions
+    repo_url = f"https://github.com/{github_repo}/tree/main/reports" if github_repo else ""
+
     # 4. Send Slack digest
     if not dry_run:
         logger.info("Sending Slack digest...")
@@ -112,6 +116,7 @@ def run_agent(
             Config.SLACK_BOT_TOKEN,
             Config.SLACK_CHANNEL_ID,
             dashboard_url=dashboard_url,
+            repo_url=repo_url,
         )
         if slack_sent:
             logger.info("Slack digest sent successfully")
