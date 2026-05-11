@@ -41,10 +41,20 @@ def collect() -> dict[str, Any]:
 
         # 3. Interest over time for category seeds
         category_seeds = [
-            ["beauty trend", "skincare trend", "makeup trend"],
-            ["fashion trend", "OOTD", "streetwear"],
-            ["tiktok trend", "viral video", "trending audio"],
-            ["celebrity news", "pop culture", "entertainment"],
+            # Beauty & body care
+            ["beauty trend", "skincare trend", "body care routine"],
+            ["viral beauty product", "sold out skincare", "beauty launch"],
+            # Fashion & luxury
+            ["fashion trend", "quiet luxury", "old money aesthetic"],
+            ["luxury brand", "designer collab", "new collection"],
+            # Hollywood & celebrity
+            ["celebrity news", "celebrity beauty", "red carpet style"],
+            ["celebrity brand", "celebrity collab", "celebrity wore"],
+            # Viral & pop culture
+            ["tiktok trend", "viral product", "tiktok made me buy"],
+            ["pop culture moment", "viral moment", "trending now"],
+            # Equestrian crossover
+            ["equestrian fashion", "horse girl aesthetic", "equestrian style"],
         ]
 
         for seeds in category_seeds:

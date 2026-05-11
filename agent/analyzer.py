@@ -24,21 +24,34 @@ lifestyle brand for the modern, discerning woman. CoBa's Daughter sits at the in
   • Fashion with a strong heritage/luxury streak (quiet luxury, equestrian chic, athleisure)
   • Pop culture relevance for a sophisticated, aspirational female audience (25-45)
 
-Your job:
-1. Surface the TOP trending topics in the US across all relevant categories.
-2. Score each trend's virality potential (1-10) based on cross-platform signal strength.
-3. Score each trend's relevance to CoBa's Daughter (1-10): how directly can this brand own or
-   ride this trend given its equestrian-beauty-lifestyle positioning?
-4. Translate each trend into IMMEDIATE, concrete tactics for CoBa's Daughter's social team.
+Your job — be AGGRESSIVE and REAL-TIME:
+1. Surface the TOP trending topics in the US RIGHT NOW across all relevant categories.
+2. Catch BRAND LAUNCHES: which luxury or beauty brand just dropped something new? Who is
+   collaborating with whom? What just sold out? What's on a waitlist?
+3. Catch HOLLYWOOD moments: which celebrity is dominating headlines? What did they wear?
+   What beauty look went viral? What red carpet moment is everyone talking about?
+4. Score each trend's virality potential (1-10) based on cross-platform signal strength.
+5. Score each trend's relevance to CoBa's Daughter (1-10).
+6. Translate EVERY trend into IMMEDIATE, same-day tactics. If a window is closing, say so.
+
+URGENCY HIERARCHY — prioritize in this order:
+  🔴 HAPPENING NOW (post within hours): Celebrity moments, brand drops happening today,
+     cultural events this week, viral products everyone is buying
+  🟡 THIS WEEK: Emerging trends with strong upward momentum
+  🟢 WATCH: Slow-burn trends to seed content around
+
+Competitor intelligence: When luxury brands (Chanel, Dior, Charlotte Tilbury, Tatcha, Sol de
+Janeiro, Rhode, Rare Beauty, etc.) launch something, tell us IMMEDIATELY so we know the market
+context and can position or counter-program.
 
 Categories to monitor: Beauty, Body Care, Fashion, Equestrian, Pop Culture, Hollywood,
 Film & Music, Cultural Relevancy, Viral Marketing & Social Media.
 
-Tone: Direct, creative-director energy. Speak like you are briefing the brand's CMO.
-No fluff. This team moves fast."""
+Tone: Urgent, direct, creative-director energy. You are briefing a CMO who needs to act TODAY.
+No fluff. No hedging. State what is happening and exactly what CoBa's Daughter should do."""
 
 
-ANALYSIS_PROMPT = """Today's raw US trend intelligence data for CoBa's Daughter:
+ANALYSIS_PROMPT = """TODAY's real-time US trend intelligence data for CoBa's Daughter:
 
 {data_summary}
 
@@ -46,12 +59,13 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
 
 {{
   "report_date": "YYYY-MM-DD",
-  "executive_summary": "Max 2 sentences. Include one CoBa's Daughter angle.",
+  "executive_summary": "Max 2 sentences. Lead with the most urgent thing happening RIGHT NOW.",
   "cobas_daughter_spotlight": {{
-    "top_opportunity": "One sentence on the single biggest trend CoBa's Daughter should act on today.",
-    "equestrian_angle": "One sentence on equestrian or horse culture trend right now.",
-    "beauty_body_care_angle": "One sentence on beauty or body care moment to own.",
-    "cultural_moment": "One sentence on cultural moment relevant to the brand audience."
+    "top_opportunity": "The single biggest thing to act on TODAY — be specific.",
+    "equestrian_angle": "Equestrian or horse culture moment happening right now.",
+    "beauty_body_care_angle": "Beauty or body care moment to own this week.",
+    "cultural_moment": "Cultural moment the audience is talking about right now.",
+    "brand_to_watch": "One luxury/beauty brand making a big move right now and why it matters."
   }},
   "top_trends": [
     {{
@@ -65,6 +79,7 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
       "what_is_it": "One sentence max.",
       "why_it_matters": "One sentence max.",
       "heat_level": "Emerging|Peaking|Peaking Fast|Mainstream",
+      "urgency": "Post Today|Post This Week|Watch",
       "window": "e.g. 48 hours",
       "key_hashtags": ["#tag1", "#tag2"],
       "content_angle": "One sentence max.",
@@ -77,12 +92,22 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
       }}
     }}
   ],
+  "brand_launches_now": [
+    {{
+      "brand": "Brand name",
+      "what": "What they launched or announced — one sentence.",
+      "why_it_matters": "Market impact and what it means for CoBa's Daughter — one sentence.",
+      "our_response": "How CoBa's Daughter should counter-program or leverage — one sentence.",
+      "urgency": "Now|This Week"
+    }}
+  ],
   "hot_hashtags": [
     {{"hashtag": "#tag", "category": "Beauty", "posts_signal": "Rising|High|Viral", "how_to_use": "One sentence."}}
   ],
   "hollywood_pulse": {{
-    "top_celebrity_moments": ["Moment 1", "Moment 2"],
-    "brand_tie_in_opportunity": "One sentence specific to CoBa's Daughter."
+    "top_celebrity_moments": ["Celebrity + what happened — one sentence.", "Second moment."],
+    "top_celebrity_looks": ["Who wore what — one sentence.", "Second look."],
+    "brand_tie_in_opportunity": "One specific CoBa's Daughter tie-in to a celebrity moment right now."
   }},
   "equestrian_pulse": {{
     "trending_topics": ["Topic 1", "Topic 2"],
@@ -103,8 +128,8 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
   "viral_pulse": {{
     "viral_products": ["Product name — one sentence why it's viral.", "Second product."],
     "viral_moments": ["Moment 1 — one sentence.", "Moment 2."],
-    "viral_social_trends": ["TikTok/IG trend 1", "Trend 2"],
-    "community_conversations": ["Community topic 1", "Topic 2"]
+    "viral_social_trends": ["TikTok/IG trend 1 — what it is.", "Trend 2."],
+    "community_conversations": ["What the audience is discussing right now.", "Second topic."]
   }},
   "cultural_events_now": [
     {{
@@ -115,15 +140,20 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
     }}
   ],
   "trend_watch": {{
-    "emerging_to_watch": ["Trend 1", "Trend 2"],
-    "fading_trends": ["Fading trend"],
-    "predicted_next_week": "One sentence."
+    "emerging_to_watch": ["Trend just starting — watch it.", "Second early signal."],
+    "fading_trends": ["Trend losing steam — stop investing here."],
+    "predicted_next_week": "One sentence on what will explode next week."
   }}
 }}
 
-STRICT RULES: Return ONLY valid JSON. No markdown. Max 6 trends. Keep every string under 20 words.
-Always include at least one Equestrian category trend and one Body Care trend.
-Always populate viral_pulse and cultural_events_now based on the data provided."""
+STRICT RULES:
+- Return ONLY valid JSON. No markdown.
+- Max 6 trends in top_trends. Keep every string under 20 words.
+- Always include at least one Equestrian trend and one Body Care trend.
+- Always populate brand_launches_now with real brand activity from the data — if no launches,
+  write about which brands are dominating conversation and what CoBa's Daughter should know.
+- Always populate hollywood_pulse with specific celebrity names and moments from the data.
+- Urgency is everything: if something is happening TODAY, say "Post Today". Do not be vague."""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
@@ -192,11 +222,39 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
         for v in yt["niche_videos"][:8]:
             lines.append(f"  [{v['query']}] {v['title']} by {v['channel']}")
 
-    # News
+    # Brand Intelligence — NEW: product launches, luxury brand moves
+    brand = collected_data.get("brand_intel", {})
+    if brand.get("brand_launches"):
+        lines.append("\n=== 🚨 BRAND LAUNCHES & DROPS (RIGHT NOW) ===")
+        for art in brand["brand_launches"][:15]:
+            brands = ", ".join(art.get("brands_mentioned", [])[:3])
+            lines.append(f"  [LAUNCH][{art['outlet']}] {art['title']}"
+                         + (f" | Brands: {brands}" if brands else ""))
+    if brand.get("brand_moves"):
+        lines.append("\nBrand Campaigns & Collabs:")
+        for art in brand["brand_moves"][:10]:
+            lines.append(f"  [{art['outlet']}] {art['title']}")
+    if brand.get("top_brand_topics"):
+        lines.append("\nMost-Mentioned Brands Right Now:")
+        topics = [f"{b['brand']} ({b['mentions']}x)" for b in brand["top_brand_topics"][:10]]
+        lines.append("  " + ", ".join(topics))
+
+    # News — Hollywood bucket first
     news = collected_data.get("news", {})
+    if news.get("hollywood_articles"):
+        lines.append("\n=== 🎬 HOLLYWOOD & CELEBRITY (LIVE FEED) ===")
+        for a in news["hollywood_articles"][:20]:
+            lines.append(f"  [{a['outlet']}] {a['title']}")
+
+    if news.get("launch_articles"):
+        lines.append("\n=== 🛍️ PRODUCT LAUNCHES IN THE NEWS ===")
+        for a in news["launch_articles"][:15]:
+            lines.append(f"  [{a['outlet']}] {a['title']}")
+
     if news.get("articles"):
-        lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Equestrian/Entertainment) ===")
-        trend_articles = [a for a in news["articles"] if a.get("trend_relevant")][:20]
+        lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Equestrian) ===")
+        trend_articles = [a for a in news["articles"]
+                          if a.get("trend_relevant") and not a.get("is_hollywood")][:15]
         for article in trend_articles:
             lines.append(f"  [{article['outlet']}] {article['title']}")
 
