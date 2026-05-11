@@ -2,10 +2,10 @@ name: CoBa's Daughter Trend Report
 
 on:
   schedule:
-    # 9:00 AM Eastern Time = 13:00 UTC (EDT) / 14:00 UTC (EST)
-    - cron: '0 13 * * *'
-    # 3:00 PM Eastern Time = 19:00 UTC (EDT) / 20:00 UTC (EST)
-    - cron: '0 19 * * *'
+    # 9:00 AM GMT = 09:00 UTC
+    - cron: '0 9 * * *'
+    # 3:00 PM GMT = 15:00 UTC
+    - cron: '0 15 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
