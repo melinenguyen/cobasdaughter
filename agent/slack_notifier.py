@@ -250,6 +250,23 @@ def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str
         blocks.append(_section(text))
         blocks.append(_divider())
 
+    # ── REDDIT SEEDING ───────────────────────────────────────
+    reddit_seeds = report.get("reddit_seeding", [])
+    if reddit_seeds:
+        seed_lines = ["*🌱 Reddit Seeding — Low-Hanging Fruit*\n_Participate authentically, never promote_\n"]
+        for seed in reddit_seeds[:5]:
+            urgency  = seed.get("urgency", "")
+            badge    = "🔴" if urgency == "Post Today" else "🟡"
+            seed_type = seed.get("seed_type", "")
+            seed_lines.append(
+                f"{badge} *{seed.get('subreddit','')}* `{seed_type}`\n"
+                f"   *Thread:* {seed.get('thread_topic','')}\n"
+                f"   *Why we belong:* {seed.get('why_we_belong','')}\n"
+                f"   *Angle:* _{seed.get('angle','')}_"
+            )
+        blocks.append(_section("\n".join(seed_lines)))
+        blocks.append(_divider())
+
     # ── TREND WATCH ─────────────────────────────────────────
     if tw:
         tw_text = "*👀 Trend Watch*\n"
