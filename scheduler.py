@@ -39,14 +39,14 @@ def scheduled_run():
 
 
 def start():
-    tz = pytz.utc
+    tz = pytz.timezone("Asia/Bangkok")  # GMT+7
     scheduler = BackgroundScheduler(timezone=tz)
 
     scheduler.add_job(
         scheduled_run,
         trigger=CronTrigger(hour=9, minute=0, timezone=tz),
         id="morning_trend_report",
-        name="Morning Trend Report at 9AM GMT",
+        name="Morning Trend Report at 9AM GMT+7",
         replace_existing=True,
         misfire_grace_time=1800,
     )
@@ -55,13 +55,13 @@ def start():
         scheduled_run,
         trigger=CronTrigger(hour=15, minute=0, timezone=tz),
         id="afternoon_trend_report",
-        name="Afternoon Trend Report at 3PM GMT",
+        name="Afternoon Trend Report at 3PM GMT+7",
         replace_existing=True,
         misfire_grace_time=1800,
     )
 
     scheduler.start()
-    logger.info("Scheduler started — trend reports at 9:00 AM and 3:00 PM GMT")
+    logger.info("Scheduler started — trend reports at 9:00 AM and 3:00 PM GMT+7")
 
     from dashboard.app import app
     port = Config.DASHBOARD_PORT

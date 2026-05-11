@@ -2,10 +2,10 @@ name: CoBa's Daughter Trend Report
 
 on:
   schedule:
-    # 9:00 AM GMT = 09:00 UTC
-    - cron: '0 9 * * *'
-    # 3:00 PM GMT = 15:00 UTC
-    - cron: '0 15 * * *'
+    # 9:00 AM GMT+7 = 02:00 UTC
+    - cron: '0 2 * * *'
+    # 3:00 PM GMT+7 = 08:00 UTC
+    - cron: '0 8 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
