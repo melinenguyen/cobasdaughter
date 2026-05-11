@@ -143,7 +143,18 @@ Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values 
     "emerging_to_watch": ["Trend just starting — watch it.", "Second early signal."],
     "fading_trends": ["Trend losing steam — stop investing here."],
     "predicted_next_week": "One sentence on what will explode next week."
-  }}
+  }},
+  "reddit_seeding": [
+    {{
+      "subreddit": "r/Equestrian",
+      "thread_topic": "The specific conversation or post theme happening right now.",
+      "why_we_belong": "One sentence — what genuine value or expertise CoBa's Daughter brings to this thread.",
+      "angle": "The authentic, non-promotional angle to participate with — share knowledge, answer a question, validate an experience. Must feel like a real community member talking.",
+      "example_comment_direction": "One sentence on the tone and topic of the comment — no brand mention unless it arises naturally from the conversation.",
+      "seed_type": "Answer|Share Experience|Ask Question|Validate|Resource Share",
+      "urgency": "Post Today|This Week"
+    }}
+  ]
 }}
 
 STRICT RULES:
@@ -153,7 +164,18 @@ STRICT RULES:
 - Always populate brand_launches_now with real brand activity from the data — if no launches,
   write about which brands are dominating conversation and what CoBa's Daughter should know.
 - Always populate hollywood_pulse with specific celebrity names and moments from the data.
-- Urgency is everything: if something is happening TODAY, say "Post Today". Do not be vague."""
+- Urgency is everything: if something is happening TODAY, say "Post Today". Do not be vague.
+- reddit_seeding: Provide 4-6 specific opportunities. These MUST be based on actual Reddit posts
+  or subreddits from the data. The goal is cultural injection — CoBa's Daughter participates as
+  a knowledgeable community member, never as a brand. Rules for reddit_seeding:
+  • Never suggest anything that reads like marketing or promotion
+  • Focus on subreddits where equestrian, outdoor beauty, body care, quiet luxury, or
+    horse girl aesthetic communities live: r/Equestrian, r/SkincareAddiction, r/HorseBack,
+    r/Dressage, r/femalefashionadvice, r/beauty, r/Horses, r/selfcare, r/wellness, etc.
+  • angle must be authentic expertise: "After long rides, the wind and sun really strip the skin
+    — this is what actually works for recovery" NOT "Our product is great for equestrians"
+  • The brand name should NEVER appear in example_comment_direction unless the thread is
+    explicitly asking for brand recommendations, in which case it can be mentioned once naturally"""
 
 
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
@@ -172,16 +194,26 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
             q_list = [q.get("query", "") for q in queries[:3]]
             lines.append(f"  {kw}: {', '.join(q_list)}")
 
-    # Reddit
+    # Reddit — include full post data so Claude can identify real seeding opportunities
     reddit = collected_data.get("reddit", {})
     if reddit.get("hot_posts"):
-        lines.append("\n=== REDDIT HOT POSTS ===")
-        for post in reddit["hot_posts"][:15]:
-            lines.append(f"  [{post['subreddit']}] {post['title']} (score: {post['score']:,})")
+        lines.append("\n=== REDDIT HOT POSTS (for seeding analysis) ===")
+        for post in reddit["hot_posts"][:25]:
+            snippet = post.get("selftext", "")[:120].strip()
+            detail = f" | \"{snippet}\"" if snippet else ""
+            lines.append(
+                f"  [{post['subreddit']}] {post['title']} "
+                f"(score: {post['score']:,}, comments: {post.get('num_comments', 0)}){detail}"
+            )
 
     if reddit.get("rising_posts"):
-        lines.append("\nReddit Rising:")
-        for post in reddit["rising_posts"][:8]:
+        lines.append("\nReddit Rising (momentum building — ideal seeding window):")
+        for post in reddit["rising_posts"][:12]:
+            lines.append(f"  [{post['subreddit']}] {post['title']} (score: {post['score']:,})")
+
+    if reddit.get("top_posts"):
+        lines.append("\nReddit Top Posts This Week:")
+        for post in reddit.get("top_posts", [])[:10]:
             lines.append(f"  [{post['subreddit']}] {post['title']}")
 
     # Twitter
