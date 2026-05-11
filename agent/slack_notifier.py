@@ -54,8 +54,9 @@ def _link_section(label: str, url: str) -> dict:
 
 def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str = "") -> list[dict]:
     date        = report.get("report_date", datetime.utcnow().strftime("%Y-%m-%d"))
-    hour        = datetime.utcnow().hour
-    slot        = "9AM" if hour < 15 else "3PM"
+    # Determine slot using GMT+7 local hour
+    gmt7_hour   = (datetime.utcnow().hour + 7) % 24
+    slot        = "9AM" if gmt7_hour < 12 else "3PM"
     top_trends  = report.get("top_trends", [])
     hot_hashtags= report.get("hot_hashtags", [])
     spotlight   = report.get("cobas_daughter_spotlight", {})
