@@ -66,6 +66,57 @@
   </section>
   {% endif %}
 
+  <!-- ── TRENDS SUMMARY TABLE ── -->
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title serif">
+        <span class="section-icon">📋</span> All Trends At A Glance
+      </h2>
+      <div class="summary-table-wrap">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Trend</th>
+              <th>Category</th>
+              <th>Heat</th>
+              <th>Window</th>
+              <th>Virality</th>
+              <th>Brand Fit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for trend in report.top_trends %}
+            <tr class="summary-row" onclick="document.getElementById('trend-{{ trend.rank }}').scrollIntoView({behavior:'smooth'})">
+              <td class="sum-rank">#{{ trend.rank }}</td>
+              <td class="sum-name">{{ trend.trend_name }}</td>
+              <td>
+                <span class="trend-category cat-{{ trend.category | lower | replace('/', '-') | replace(' ', '-') | replace('&', '') }}">
+                  {{ trend.category }}
+                </span>
+              </td>
+              <td>
+                <span class="heat-badge heat-{{ trend.heat_level | lower | replace(' ', '-') }}">
+                  {{ trend.heat_level }}
+                </span>
+              </td>
+              <td class="sum-window">{{ trend.window }}</td>
+              <td class="sum-score">
+                <span class="score-pill virality-pill">{{ trend.virality_score }}</span>
+              </td>
+              <td class="sum-score">
+                {% set brs = trend.brand_relevance_score | default(5) | float %}
+                <span class="score-pill brand-pill {% if brs >= 7 %}high-fit{% elif brs >= 5 %}mid-fit{% else %}low-fit{% endif %}">{{ brs }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="table-hint">Click any row to jump to the full trend card below.</p>
+    </div>
+  </section>
+
   <!-- ── TOP TRENDS ── -->
   <section class="section container">
     <h2 class="section-title serif">
