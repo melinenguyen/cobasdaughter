@@ -8,31 +8,52 @@ logger = logging.getLogger(__name__)
 
 RSS_FEEDS = {
     # Beauty & Skincare
-    "Allure":           "https://www.allure.com/feed/rss",
-    "Byrdie Beauty":    "https://www.byrdie.com/news-rss",
-    "Cosmopolitan":     "https://www.cosmopolitan.com/rss/all.xml/",
+    "Allure":               "https://www.allure.com/feed/rss",
+    "Byrdie Beauty":        "https://www.byrdie.com/news-rss",
+    "Cosmopolitan":         "https://www.cosmopolitan.com/rss/all.xml/",
+    "Glamour":              "https://www.glamour.com/feed/rss",
+    "Marie Claire":         "https://www.marieclaire.com/rss/all.xml/",
     # Fashion
-    "WWD Fashion":      "https://wwd.com/feed/",
-    "Highsnobiety":     "https://www.highsnobiety.com/feed/",
-    "Hypebeast":        "https://hypebeast.com/feed",
-    "Refinery29":       "https://www.refinery29.com/rss.xml",
-    # Entertainment / Hollywood
+    "WWD Fashion":          "https://wwd.com/feed/",
+    "Highsnobiety":         "https://www.highsnobiety.com/feed/",
+    "Hypebeast":            "https://hypebeast.com/feed",
+    "Refinery29":           "https://www.refinery29.com/rss.xml",
+    "Who What Wear":        "https://www.whowhatwear.com/rss",
+    "The Zoe Report":       "https://www.thezoereport.com/rss",
+    # Entertainment / Hollywood — aggressive celebrity tracking
     "The Hollywood Reporter": "https://www.hollywoodreporter.com/feed/",
-    "Variety":          "https://variety.com/feed/",
+    "Variety":              "https://variety.com/feed/",
+    "Deadline":             "https://deadline.com/feed/",
     "Entertainment Weekly": "https://feeds.feedburner.com/ew/news",
-    "People Magazine":  "https://people.com/feed/",
-    "E! News":          "https://www.eonline.com/news/rss",
-    "TMZ":              "https://www.tmz.com/rss.xml",
+    "People Magazine":      "https://people.com/feed/",
+    "E! News":              "https://www.eonline.com/news/rss",
+    "TMZ":                  "https://www.tmz.com/rss.xml",
+    "Page Six":             "https://pagesix.com/feed/",
+    "Just Jared":           "https://www.justjared.com/feed/",
+    "Us Weekly":            "https://www.usmagazine.com/feed/",
+    "Daily Mail Showbiz":   "https://www.dailymail.co.uk/tvshowbiz/index.rss",
+    "InStyle":              "https://www.instyle.com/rss/all.xml",
+    "Harper's Bazaar":      "https://www.harpersbazaar.com/rss/all.xml/",
     # Music
-    "Billboard":        "https://www.billboard.com/feed/",
+    "Billboard":            "https://www.billboard.com/feed/",
+    "Rolling Stone":        "https://www.rollingstone.com/feed/",
+    "Pitchfork":            "https://pitchfork.com/rss/news/",
     # Pop Culture & Viral
-    "BuzzFeed":         "https://www.buzzfeed.com/index.xml",
-    "The Cut":          "https://www.thecut.com/rss/index.xml",
-    "Vox":              "https://www.vox.com/rss/index.xml",
-    "Complex":          "https://www.complex.com/rss",
-    "Yahoo Entertainment": "https://www.yahoo.com/entertainment/rss",
+    "BuzzFeed":             "https://www.buzzfeed.com/index.xml",
+    "The Cut":              "https://www.thecut.com/rss/index.xml",
+    "Vox":                  "https://www.vox.com/rss/index.xml",
+    "Complex":              "https://www.complex.com/rss",
+    "Yahoo Entertainment":  "https://www.yahoo.com/entertainment/rss",
+    "PopSugar":             "https://www.popsugar.com/feeds/latest",
+    "Seventeen":            "https://www.seventeen.com/rss/all.xml/",
+    # Luxury & Brand Intelligence
+    "Business of Fashion":  "https://www.businessoffashion.com/feed/",
+    "Vogue Business":       "https://www.voguebusiness.com/rss",
+    "Fashionista":          "https://fashionista.com/rss.xml",
+    "Glossy":               "https://www.glossy.co/feed/",
+    "Luxury Daily":         "https://www.luxurydaily.com/feed/",
     # Equestrian
-    "Horse & Hound":    "https://www.horseandhound.co.uk/feed",
+    "Horse & Hound":        "https://www.horseandhound.co.uk/feed",
     "Chronicle of the Horse": "https://www.chronofhorse.com/feed",
 }
 
@@ -40,28 +61,45 @@ TREND_KEYWORDS = [
     # Viral signals
     "viral", "trending", "everyone is", "people are", "tiktok made",
     "sold out", "obsessed", "can't stop", "blew up", "went viral",
-    "breaking the internet", "everywhere right now",
-    # Product virality
-    "must-have", "sold out", "waitlist", "dupes", "dupe",
-    "new drop", "limited edition", "collab", "collaboration",
-    "tiktok made me buy", "viral product",
+    "breaking the internet", "everywhere right now", "internet obsessed",
+    # Product / brand launches
+    "launches", "launched", "just dropped", "new drop", "new release",
+    "limited edition", "collab", "collaboration", "new collection",
+    "debuts", "unveils", "introducing", "just launched",
+    "waitlist", "sold out in", "restocked",
+    "must-have", "dupe", "tiktok made me buy", "viral product",
+    # Celebrity / Hollywood
+    "celebrity wore", "star wore", "red carpet", "spotted wearing",
+    "celebrity beauty", "celebrity brand", "celebrity collab",
+    "celebrity launches", "founded by", "actor wore", "singer wore",
     # Beauty / body care
     "beauty secret", "skin trend", "hair trend", "body care",
-    "skincare routine", "glow up", "beauty hack",
-    # Fashion
-    "aesthetic", "it girl", "style moment", "celebrity wore",
-    "star wore", "red carpet", "outfit", "quiet luxury",
+    "skincare routine", "glow up", "beauty hack", "it product",
+    # Fashion / luxury
+    "aesthetic", "it girl", "style moment", "quiet luxury",
+    "old money", "stealth wealth", "capsule wardrobe",
+    "designer", "luxury brand", "high-end", "prestige",
     # Pop culture
     "moment", "cultural reset", "iconic", "stan", "fandom",
-    "celebrity news", "drama", "feud", "collab",
+    "celebrity news", "drama", "feud", "era", "girlhood",
     # Equestrian
-    "equestrian", "horse", "derby", "polo", "riding",
+    "equestrian", "horse", "derby", "polo", "riding", "horse girl",
 ]
 
 VIRAL_SIGNALS = [
     "went viral", "blew up", "trending on tiktok", "trending on x",
     "breaking the internet", "everyone is talking", "sold out instantly",
     "tiktok made me", "viral moment", "internet is obsessed",
+    "sold out in minutes", "sold out in hours", "crashed the site",
+    "broke the internet", "everyone wants", "can't keep in stock",
+    "fastest selling", "record breaking", "overnight sensation",
+]
+
+LAUNCH_SIGNALS = [
+    "launch", "launches", "launched", "just dropped", "new drop",
+    "new collection", "new release", "debuts", "unveils", "introduces",
+    "limited edition", "collab", "collaboration", "partnership",
+    "new fragrance", "new skincare", "new makeup", "new campaign",
 ]
 
 
@@ -79,15 +117,28 @@ def _is_viral(title: str, summary: str) -> bool:
     return any(sig in combined for sig in VIRAL_SIGNALS)
 
 
+def _is_launch(title: str, summary: str) -> bool:
+    combined = (title + " " + summary).lower()
+    return any(sig in combined for sig in LAUNCH_SIGNALS)
+
+
 def collect() -> dict[str, Any]:
-    """Fetch articles from beauty, fashion, pop-culture, and equestrian RSS feeds."""
+    """Fetch articles from beauty, fashion, Hollywood, pop-culture, and equestrian RSS feeds."""
     results: dict[str, Any] = {
         "source": "News & Media",
         "articles": [],
         "viral_articles": [],
+        "launch_articles": [],
+        "hollywood_articles": [],
         "by_outlet": {},
         "top_topics": [],
         "errors": [],
+    }
+
+    HOLLYWOOD_OUTLETS = {
+        "The Hollywood Reporter", "Variety", "Deadline", "Entertainment Weekly",
+        "People Magazine", "E! News", "TMZ", "Page Six", "Just Jared",
+        "Us Weekly", "Daily Mail Showbiz",
     }
 
     try:
@@ -114,11 +165,17 @@ def collect() -> dict[str, Any]:
                         "tags": tags,
                         "trend_relevant": _is_trend_relevant(title, summary),
                         "is_viral": _is_viral(title, summary),
+                        "is_launch": _is_launch(title, summary),
+                        "is_hollywood": outlet in HOLLYWOOD_OUTLETS,
                     }
                     outlet_articles.append(article)
                     results["articles"].append(article)
                     if article["is_viral"]:
                         results["viral_articles"].append(article)
+                    if article["is_launch"]:
+                        results["launch_articles"].append(article)
+                    if article["is_hollywood"]:
+                        results["hollywood_articles"].append(article)
 
                 results["by_outlet"][outlet] = outlet_articles
 
@@ -158,7 +215,9 @@ def collect() -> dict[str, Any]:
     results["collected_at"] = datetime.utcnow().isoformat()
     logger.info(
         f"News: {len(results['articles'])} articles, "
-        f"{len(results['viral_articles'])} viral signals, "
+        f"{len(results['viral_articles'])} viral, "
+        f"{len(results['launch_articles'])} launches, "
+        f"{len(results['hollywood_articles'])} Hollywood, "
         f"from {len(results['by_outlet'])} outlets"
     )
     return results

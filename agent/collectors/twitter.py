@@ -6,14 +6,33 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 SEARCH_QUERIES = [
+    # Real-time beauty & skincare virality
     "#trending #beauty",
-    "#trending #fashion",
-    "#tiktoktrend",
-    "#GRWM OR #OOTD",
-    "#viral #makeup",
-    "#aesthetics",
-    "#hollywoodtrend OR #celebstyle",
-    "#skincare #trending",
+    "#viral #skincare OR #viral #bodycare",
+    "#GRWM OR #skincareroutine",
+    "#viral #makeup OR #makeuptrend",
+    "#beautytok OR #skintok",
+    # Brand launches & drops — catch the moment they happen
+    "beauty launch OR beauty drop OR beauty collab",
+    "new collection fashion OR new drop luxury",
+    "limited edition beauty OR sold out beauty",
+    "brand collab OR designer collab",
+    # Hollywood & celebrity culture — immediate
+    "#celebrity #beauty OR #celebstyle",
+    "#redcarpet OR #METgala OR #Oscars OR #Grammys",
+    "celebrity wore OR spotted wearing OR street style",
+    "celebrity brand OR celebrity beauty line",
+    # Pop culture & viral moments
+    "#tiktoktrend OR #tiktokmademebuyit",
+    "#viral #fashion OR #viral #luxury",
+    "#OOTD OR #aesthetics",
+    "#popculture OR #culturalmoment",
+    # Equestrian crossover
+    "#equestrian OR #horsegirl OR #equestrianstyle",
+    "#equestrian #beauty OR #equestrian #fashion",
+    # Luxury & high-end tracking
+    "#quietluxury OR #oldmoney OR #stealthwealth",
+    "#luxuryfashion OR #luxurybeauty OR #designerbrand",
 ]
 
 WOEID_US = 23424977  # Yahoo! Where On Earth ID for United States

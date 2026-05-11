@@ -13,12 +13,33 @@ CATEGORY_IDS = {
 }
 
 NICHE_SEARCHES = [
+    # Equestrian lifestyle
     "equestrian lifestyle 2025",
     "horse girl aesthetic",
-    "body care routine viral",
-    "beauty trend 2025",
     "equestrian fashion outfit",
+    "equestrian beauty routine",
+    # Body care & skincare virality
+    "body care routine viral",
     "viral skincare hack",
+    "viral body care product",
+    "body care routine luxury",
+    # Celebrity beauty & launches
+    "celebrity beauty routine 2025",
+    "celebrity beauty brand launch",
+    "celebrity skincare routine",
+    # Brand launches & reviews
+    "new beauty launch review 2025",
+    "luxury beauty brand new collection",
+    "viral product review 2025",
+    "luxury skincare unboxing 2025",
+    # Pop culture & Hollywood
+    "Hollywood celebrity style 2025",
+    "red carpet beauty look",
+    "celebrity fashion week 2025",
+    # Viral moments
+    "beauty trend 2025",
+    "viral makeup transformation",
+    "tiktok beauty trend 2025",
 ]
 
 

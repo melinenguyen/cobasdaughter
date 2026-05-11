@@ -57,15 +57,16 @@ def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str
     # Determine slot using GMT+7 local hour
     gmt7_hour   = (datetime.utcnow().hour + 7) % 24
     slot        = "9AM" if gmt7_hour < 12 else "3PM"
-    top_trends  = report.get("top_trends", [])
-    hot_hashtags= report.get("hot_hashtags", [])
-    spotlight   = report.get("cobas_daughter_spotlight", {})
-    hw          = report.get("hollywood_pulse", {})
-    eq          = report.get("equestrian_pulse", {})
-    tw          = report.get("trend_watch", {})
-    brief       = report.get("creator_brief_of_the_week", {})
-    viral       = report.get("viral_pulse", {})
-    cultural    = report.get("cultural_events_now", [])
+    top_trends   = report.get("top_trends", [])
+    hot_hashtags = report.get("hot_hashtags", [])
+    spotlight    = report.get("cobas_daughter_spotlight", {})
+    hw           = report.get("hollywood_pulse", {})
+    eq           = report.get("equestrian_pulse", {})
+    tw           = report.get("trend_watch", {})
+    brief        = report.get("creator_brief_of_the_week", {})
+    viral        = report.get("viral_pulse", {})
+    cultural     = report.get("cultural_events_now", [])
+    brand_launches = report.get("brand_launches_now", [])
 
     # Best available link: dashboard > repo reports folder
     report_link = dashboard_url or repo_url or ""
@@ -103,7 +104,7 @@ def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str
 
     # ── BRAND SPOTLIGHT ─────────────────────────────────────
     if spotlight:
-        sp_text = "*✦ Brand Spotlight — Your Action Plan*\n\n"
+        sp_text = "*✦ CoBa's Daughter — Your Action Plan Today*\n\n"
         if spotlight.get("top_opportunity"):
             sp_text += f"*🎯 Top Opportunity:* {spotlight['top_opportunity']}\n"
         if spotlight.get("equestrian_angle"):
@@ -111,8 +112,23 @@ def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str
         if spotlight.get("beauty_body_care_angle"):
             sp_text += f"*✨ Beauty & Body Care:* {spotlight['beauty_body_care_angle']}\n"
         if spotlight.get("cultural_moment"):
-            sp_text += f"*🌍 Cultural Moment:* {spotlight['cultural_moment']}"
+            sp_text += f"*🌍 Cultural Moment:* {spotlight['cultural_moment']}\n"
+        if spotlight.get("brand_to_watch"):
+            sp_text += f"*👀 Brand to Watch:* {spotlight['brand_to_watch']}"
         blocks.append(_section(sp_text.strip()))
+        blocks.append(_divider())
+
+    # ── BRAND LAUNCHES NOW ───────────────────────────────────
+    if brand_launches:
+        bl_lines = ["*🛍️ Brand Launches & Moves — Right Now*"]
+        for launch in brand_launches[:4]:
+            urgency = launch.get("urgency", "")
+            badge   = "🔴" if urgency == "Now" else "🟡"
+            bl_lines.append(
+                f"{badge} *{launch.get('brand','')}* — {launch.get('what','')}\n"
+                f"   ↳ *Our response:* {launch.get('our_response','')}"
+            )
+        blocks.append(_section("\n".join(bl_lines)))
         blocks.append(_divider())
 
     # ── CULTURAL EVENTS ─────────────────────────────────────
@@ -202,11 +218,17 @@ def _build_blocks(report: dict[str, Any], dashboard_url: str = "", repo_url: str
 
     # ── HOLLYWOOD PULSE ─────────────────────────────────────
     if hw:
-        hw_text = "*🎬 Hollywood Pulse*\n"
-        for m in hw.get("top_celebrity_moments", [])[:3]:
+        hw_text = "*🎬 Hollywood Pulse — Right Now*\n"
+        moments = hw.get("top_celebrity_moments", [])
+        looks   = hw.get("top_celebrity_looks", [])
+        for m in moments[:3]:
             hw_text += f"• {m}\n"
+        if looks:
+            hw_text += "\n*👗 Celebrity Looks:*\n"
+            for lk in looks[:2]:
+                hw_text += f"• {lk}\n"
         if hw.get("brand_tie_in_opportunity"):
-            hw_text += f"\n*Brand Tie-In:* {hw['brand_tie_in_opportunity']}"
+            hw_text += f"\n*CoBa's Tie-In:* {hw['brand_tie_in_opportunity']}"
         blocks.append(_section(hw_text.strip()))
         blocks.append(_divider())
 
