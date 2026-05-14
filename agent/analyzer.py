@@ -51,8 +51,11 @@ Tone: Urgent, direct, creative-director energy. You are briefing a CMO who needs
 No fluff. No hedging. State what is happening and exactly what CoBa's Daughter should do."""
 
 
-ANALYSIS_PROMPT = """TODAY's real-time US trend intelligence data for CoBa's Daughter:
+ANALYSIS_PROMPT = """TODAY's real-time US trend intelligence — articles from the LAST 8 HOURS ONLY:
+{dedup_block}
 
+
+RAW DATA:
 {data_summary}
 
 Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values SHORT (max 20 words each). Schema:
@@ -178,6 +181,26 @@ STRICT RULES:
     explicitly asking for brand recommendations, in which case it can be mentioned once naturally"""
 
 
+def _build_dedup_block(previous_report: dict[str, Any] | None) -> str:
+    """Build a block telling Claude which trends were already reported."""
+    if not previous_report:
+        return ""
+    prev_date = previous_report.get("report_date", "")
+    prev_trends = previous_report.get("top_trends", [])
+    prev_launches = previous_report.get("brand_launches_now", [])
+    if not prev_trends and not prev_launches:
+        return ""
+
+    lines = [f"\n=== ALREADY REPORTED IN PREVIOUS RUN ({prev_date}) — DO NOT REPEAT ==="]
+    lines.append("These were in the last report. Skip them unless the story has SIGNIFICANTLY escalated:")
+    for t in prev_trends:
+        lines.append(f"  • [{t.get('category','')}] {t.get('trend_name','')} — {t.get('heat_level','')}")
+    for bl in prev_launches[:5]:
+        lines.append(f"  • [Brand Launch] {bl.get('brand','')} — {bl.get('what','')}")
+    lines.append("Surface FRESH trends and stories not in the above list.")
+    return "\n".join(lines)
+
+
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
     """Compress collected data into a readable summary for the AI prompt."""
     lines = []
@@ -254,18 +277,22 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
         for v in yt["niche_videos"][:8]:
             lines.append(f"  [{v['query']}] {v['title']} by {v['channel']}")
 
-    # Brand Intelligence — NEW: product launches, luxury brand moves
+    def _age(art: dict) -> str:
+        h = art.get("hours_ago")
+        return f" [{h}h ago]" if h is not None else ""
+
+    # Brand Intelligence — product launches, luxury brand moves
     brand = collected_data.get("brand_intel", {})
     if brand.get("brand_launches"):
-        lines.append("\n=== 🚨 BRAND LAUNCHES & DROPS (RIGHT NOW) ===")
+        lines.append("\n=== 🚨 BRAND LAUNCHES & DROPS (LAST 8 HOURS) ===")
         for art in brand["brand_launches"][:15]:
             brands = ", ".join(art.get("brands_mentioned", [])[:3])
-            lines.append(f"  [LAUNCH][{art['outlet']}] {art['title']}"
+            lines.append(f"  [LAUNCH]{_age(art)}[{art['outlet']}] {art['title']}"
                          + (f" | Brands: {brands}" if brands else ""))
     if brand.get("brand_moves"):
         lines.append("\nBrand Campaigns & Collabs:")
         for art in brand["brand_moves"][:10]:
-            lines.append(f"  [{art['outlet']}] {art['title']}")
+            lines.append(f"  {_age(art)}[{art['outlet']}] {art['title']}")
     if brand.get("top_brand_topics"):
         lines.append("\nMost-Mentioned Brands Right Now:")
         topics = [f"{b['brand']} ({b['mentions']}x)" for b in brand["top_brand_topics"][:10]]
@@ -274,26 +301,26 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     # News — Hollywood bucket first
     news = collected_data.get("news", {})
     if news.get("hollywood_articles"):
-        lines.append("\n=== 🎬 HOLLYWOOD & CELEBRITY (LIVE FEED) ===")
+        lines.append("\n=== 🎬 HOLLYWOOD & CELEBRITY (LAST 8 HOURS) ===")
         for a in news["hollywood_articles"][:20]:
-            lines.append(f"  [{a['outlet']}] {a['title']}")
+            lines.append(f"  {_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("launch_articles"):
         lines.append("\n=== 🛍️ PRODUCT LAUNCHES IN THE NEWS ===")
         for a in news["launch_articles"][:15]:
-            lines.append(f"  [{a['outlet']}] {a['title']}")
+            lines.append(f"  {_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("articles"):
         lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Equestrian) ===")
         trend_articles = [a for a in news["articles"]
                           if a.get("trend_relevant") and not a.get("is_hollywood")][:15]
         for article in trend_articles:
-            lines.append(f"  [{article['outlet']}] {article['title']}")
+            lines.append(f"  {_age(article)}[{article['outlet']}] {article['title']}")
 
     if news.get("viral_articles"):
         lines.append("\nViral Media Signals:")
         for a in news["viral_articles"][:10]:
-            lines.append(f"  [VIRAL][{a['outlet']}] {a['title']}")
+            lines.append(f"  [VIRAL]{_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("top_topics"):
         lines.append("\nTop Media Topics:")
@@ -325,7 +352,11 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
+def analyze(
+    collected_data: dict[str, Any],
+    api_key: str,
+    previous_report: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Send collected trend data to Claude and return structured analysis."""
     result: dict[str, Any] = {
         "status": "error",
@@ -340,7 +371,8 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
         return result
 
     data_summary = _build_data_summary(collected_data)
-    prompt = ANALYSIS_PROMPT.format(data_summary=data_summary)
+    dedup_block = _build_dedup_block(previous_report)
+    prompt = ANALYSIS_PROMPT.format(data_summary=data_summary, dedup_block=dedup_block)
 
     try:
         client = anthropic.Anthropic(api_key=api_key)

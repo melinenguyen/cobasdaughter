@@ -90,9 +90,20 @@ def run_agent(
     # 1. Collect
     collected = _collect_all()
 
-    # 2. Analyze
+    # 2. Load previous report for deduplication
+    previous_report = None
+    latest_path = Path(Config.REPORTS_DIR) / "latest.json"
+    if latest_path.exists():
+        try:
+            with open(latest_path) as f:
+                previous_report = json.load(f)
+            logger.info(f"Loaded previous report ({previous_report.get('report_date','?')}) for deduplication")
+        except Exception as e:
+            logger.warning(f"Could not load previous report: {e}")
+
+    # 3. Analyze
     logger.info("Sending data to Claude for analysis...")
-    analysis = analyzer.analyze(collected, Config.ANTHROPIC_API_KEY)
+    analysis = analyzer.analyze(collected, Config.ANTHROPIC_API_KEY, previous_report=previous_report)
 
     if analysis["status"] != "success":
         logger.error(f"Analysis failed: {analysis.get('error')}")
@@ -100,7 +111,7 @@ def run_agent(
 
     report = analysis["report"]
 
-    # 3. Save report
+    # 4. Save report
     logger.info("Saving report files...")
     file_paths = report_generator.save(report, Config.REPORTS_DIR)
     logger.info(f"Saved: {file_paths}")
@@ -109,7 +120,7 @@ def run_agent(
     github_repo = os.getenv("GITHUB_REPOSITORY", "")  # set automatically in Actions
     repo_url = f"https://github.com/{github_repo}/tree/main/reports" if github_repo else ""
 
-    # 4. Send Slack digest
+    # 5. Send Slack digest
     if not dry_run:
         logger.info("Sending Slack digest...")
         slack_sent = slack_notifier.send(
