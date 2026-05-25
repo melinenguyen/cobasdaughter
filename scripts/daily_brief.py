@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 CoBa's Daughter — Daily Email Marketing Brief Generator
-Runs daily at 9AM GMT+7 (2AM UTC). Scans brand inboxes → generates plan → posts to Slack.
+Runs daily at 9AM GMT+7 (2AM UTC). Scans brand inboxes → generates plan → posts to Slack + sends email.
 
 Requirements:
   pip install anthropic slack-sdk google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
@@ -17,6 +17,9 @@ import os
 import json
 import base64
 import datetime
+import email as emaillib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from anthropic import Anthropic
 
 # ─── CONFIG ───────────────────────────────────────────────────────────
@@ -29,6 +32,7 @@ REFERENCE_BRANDS = [
 ]
 
 SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")  # meline.nguyen@lixibox.com
+BRIEF_EMAIL_RECIPIENT = "phuonglt.job@gmail.com"
 
 CASH_COW_PRODUCTS = [
     "Scrub Duo",
@@ -170,6 +174,56 @@ def post_to_slack(brief_text: str, today: str):
     return response["ts"]
 
 
+# ─── EMAIL SENDER ─────────────────────────────────────────────────────
+
+def send_email_brief(service, brief_text: str, today: str):
+    """Send the daily brief as an HTML email via Gmail API."""
+    # Convert Slack markdown to basic HTML
+    html_lines = []
+    for line in brief_text.split("\n"):
+        line = line.replace("**", "<strong>", 1).replace("**", "</strong>", 1)
+        line = line.replace("_", "<em>", 1).replace("_", "</em>", 1)
+        if line.startswith("## "):
+            html_lines.append(f"<h2 style='color:#6b4423;margin:24px 0 8px'>{line[3:]}</h2>")
+        elif line.startswith("# "):
+            html_lines.append(f"<h1 style='color:#2a1f17;margin:0 0 8px'>{line[2:]}</h1>")
+        elif line.strip() == "":
+            html_lines.append("<br>")
+        else:
+            html_lines.append(f"<p style='margin:4px 0'>{line}</p>")
+
+    html_body = "\n".join(html_lines)
+
+    html = f"""<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:'Segoe UI',Arial,sans-serif;background:#f5f1ea;margin:0;padding:0;">
+  <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:8px;overflow:hidden;margin-top:24px;">
+    <div style="background:#2a1f17;padding:24px 32px;">
+      <div style="color:#c9b99a;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">CoBa's Daughter</div>
+      <div style="color:#ffffff;font-size:20px;font-weight:700;">Daily Marketing Brief</div>
+      <div style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:4px;">{today} · 9:00 AM GMT+7 · Auto-generated</div>
+    </div>
+    <div style="padding:32px;color:#2a1f17;font-size:14px;line-height:1.7;">
+      {html_body}
+    </div>
+    <div style="background:#f0ece4;padding:20px 32px;font-size:11px;color:#9b8b7a;text-align:center;">
+      CoBa's Daughter · Daily Brief · Auto-sent via Gmail API
+    </div>
+  </div>
+</body></html>"""
+
+    msg = MIMEMultipart("alternative")
+    msg["To"] = BRIEF_EMAIL_RECIPIENT
+    msg["From"] = "me"
+    msg["Subject"] = f"CoBa's Daughter Daily Brief — {today}"
+    msg.attach(MIMEText(brief_text, "plain"))
+    msg.attach(MIMEText(html, "html"))
+
+    raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+    result = service.users().messages().send(userId="me", body={"raw": raw}).execute()
+    return result.get("id")
+
+
 # ─── MAIN ─────────────────────────────────────────────────────────────
 
 def main():
@@ -198,6 +252,14 @@ def main():
     print("[daily_brief] Posting to Slack...")
     ts = post_to_slack(brief, today)
     print(f"[daily_brief] Posted to Slack. Message ts: {ts}")
+
+    # 4. Send email brief
+    print(f"[daily_brief] Sending email to {BRIEF_EMAIL_RECIPIENT}...")
+    try:
+        msg_id = send_email_brief(service, brief, today)
+        print(f"[daily_brief] Email sent. Gmail message id: {msg_id}")
+    except Exception as e:
+        print(f"[daily_brief] Email send failed (non-fatal): {e}")
 
     print("[daily_brief] Done.")
 
