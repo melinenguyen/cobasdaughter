@@ -1,0 +1,56 @@
+name: Daily Email Marketing Brief
+
+on:
+  schedule:
+    # 2:00 AM UTC = 9:00 AM Vietnam time (GMT+7)
+    - cron: '0 2 * * *'
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  daily-brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet \
+            anthropic \
+            slack-sdk \
+            google-auth \
+            google-auth-oauthlib \
+            google-auth-httplib2 \
+            google-api-python-client
+
+      - name: Run daily brief
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_USER_ID: ${{ secrets.SLACK_USER_ID }}
+          GMAIL_TOKEN_JSON: ${{ secrets.GMAIL_TOKEN_JSON }}
+        run: python scripts/daily_brief.py
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_USER_ID: ${{ secrets.SLACK_USER_ID }}
+        run: |
+          python - <<'EOF'
+          import os
+          from slack_sdk import WebClient
+          client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
+          client.chat_postMessage(
+            channel=os.environ["SLACK_USER_ID"],
+            text="⚠️ *CoBa's Daily Brief failed today.* Check GitHub Actions for details."
+          )
+          EOF
