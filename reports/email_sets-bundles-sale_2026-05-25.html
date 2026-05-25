@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoBa's Daughter — Sets & Bundles Sale Email</title>
+<style>
+  :root {
+    --beige: #f5f1ea; --white: #ffffff; --dark: #2a1f17;
+    --rust: #6b4423; --olive: #716a56; --light-border: #e8e3da;
+    --tag-bg: #f0ece4; --red: #c0392b; --green: #2e7d4f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--beige); font-family: 'Segoe UI', system-ui, sans-serif; color: var(--dark); font-size: 14px; line-height: 1.6; }
+
+  .page-header { background: var(--dark); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .page-header h1 { font-size: 15px; font-weight: 700; }
+  .badge { background: var(--rust); color: white; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--olive); margin-bottom: 4px; }
+  .section-title { font-size: 20px; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+  .section-sub { font-size: 13px; color: var(--olive); margin-bottom: 24px; }
+  .divider { border: none; border-top: 2px solid var(--light-border); margin: 40px 0; }
+  .card { background: var(--white); border-radius: 8px; padding: 24px; border: 1px solid var(--light-border); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .tag { display: inline-block; background: var(--tag-bg); color: var(--olive); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 10px; }
+  .tag.red { background: #fff0f0; color: var(--red); }
+  .tag.green { background: #f0faf4; color: var(--green); }
+  code { background: var(--tag-bg); padding: 2px 6px; border-radius: 3px; font-size: 12px; font-family: monospace; color: var(--rust); }
+
+  /* Subject options */
+  .subject-opt { background: var(--tag-bg); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
+  .subject-opt .rec { display: inline-block; background: var(--rust); color: white; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
+  .subject-opt p { font-size: 13px; font-weight: 600; }
+
+  /* Klaviyo setup table */
+  table.setup { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  table.setup th { background: var(--tag-bg); text-align: left; padding: 7px 12px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--olive); }
+  table.setup td { padding: 8px 12px; border-bottom: 1px solid var(--light-border); vertical-align: top; }
+  table.setup tr:last-child td { border-bottom: none; }
+
+  /* Price breakdown */
+  .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .price-card { background: var(--white); border: 1px solid var(--light-border); border-radius: 8px; padding: 16px; text-align: center; }
+  .price-card.hero { border-color: var(--rust); border-width: 2px; }
+  .price-card .pname { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--olive); margin-bottom: 6px; }
+  .price-card .was { font-size: 12px; color: var(--olive); text-decoration: line-through; }
+  .price-card .now { font-size: 22px; font-weight: 800; color: var(--rust); margin: 2px 0; }
+  .price-card .save { font-size: 11px; color: var(--green); font-weight: 700; }
+  .price-card .pct { font-size: 11px; color: var(--olive); }
+
+  /* ─── EMAIL PREVIEW ─── */
+  .email-outer { background: #e8e3da; padding: 32px; border-radius: 8px; }
+  .email-shell { background: #ffffff; max-width: 600px; margin: 0 auto; font-family: Georgia, 'Times New Roman', serif; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
+  .em-topbar { background: #2a1f17; padding: 12px 32px; text-align: center; }
+  .em-topbar span { color: rgba(255,255,255,0.5); font-size: 11px; font-family: Arial, sans-serif; letter-spacing: 0.1em; }
+  .em-hero { background: #2a1f17; padding: 48px 32px 40px; text-align: center; }
+  .em-hero .eyebrow { color: #c9a87a; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+  .em-hero h1 { color: #ffffff; font-size: 36px; font-weight: 400; line-height: 1.15; margin-bottom: 12px; font-style: italic; }
+  .em-hero .discount-pill { display: inline-block; background: #6b4423; color: #fff; font-family: Arial, sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 8px 24px; border-radius: 40px; margin-bottom: 16px; }
+  .em-hero .subline { color: rgba(255,255,255,0.65); font-family: Arial, sans-serif; font-size: 13px; }
+  .em-body { padding: 40px 32px; }
+  .em-intro { font-size: 15px; line-height: 1.8; color: #2a1f17; margin-bottom: 32px; text-align: center; }
+  .em-intro em { font-style: italic; color: #6b4423; }
+  .em-section-label { font-family: Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #716a56; text-align: center; margin-bottom: 20px; }
+
+  /* Product cards inside email */
+  .em-product-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .em-product { background: #f5f1ea; border-radius: 6px; padding: 20px 16px; text-align: center; }
+  .em-product.hero-prod { background: #2a1f17; }
+  .em-product .prod-img { width: 80px; height: 80px; background: #e8e3da; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #716a56; font-family: Arial, sans-serif; }
+  .em-product.hero-prod .prod-img { background: #3d2e22; color: #c9b99a; }
+  .em-product .prod-name { font-family: Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #2a1f17; margin-bottom: 6px; }
+  .em-product.hero-prod .prod-name { color: #c9b99a; }
+  .em-product .prod-desc { font-size: 12px; color: #716a56; margin-bottom: 10px; line-height: 1.5; font-family: Arial, sans-serif; }
+  .em-product.hero-prod .prod-desc { color: rgba(201,184,154,0.7); }
+  .em-product .prod-was { font-family: Arial, sans-serif; font-size: 11px; color: #9b8b7a; text-decoration: line-through; }
+  .em-product .prod-now { font-family: Arial, sans-serif; font-size: 20px; font-weight: 800; color: #6b4423; line-height: 1.1; }
+  .em-product.hero-prod .prod-now { color: #e8c498; }
+  .em-product .prod-save { font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; color: #2e7d4f; margin-top: 2px; }
+  .em-product.hero-prod .prod-save { color: #7bc9a0; }
+  .em-product .prod-cta { display: inline-block; margin-top: 12px; background: #6b4423; color: #ffffff; font-family: Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 20px; border-radius: 3px; text-decoration: none; }
+  .em-product.hero-prod .prod-cta { background: #c9a87a; color: #2a1f17; }
+
+  .em-cta-block { text-align: center; padding: 8px 0 32px; }
+  .em-main-cta { display: inline-block; background: #2a1f17; color: #ffffff; font-family: Arial, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 16px 40px; border-radius: 3px; text-decoration: none; }
+  .em-divider { border: none; border-top: 1px solid #e8e3da; margin: 0 32px; }
+  .em-ritual { padding: 32px; text-align: center; }
+  .em-ritual p { font-size: 14px; line-height: 1.9; color: #4a3728; margin-bottom: 12px; }
+  .em-ps { padding: 0 32px 32px; font-size: 12px; color: #716a56; font-family: Arial, sans-serif; font-style: italic; line-height: 1.6; }
+  .em-footer { background: #f0ece4; padding: 24px 32px; text-align: center; font-family: Arial, sans-serif; font-size: 11px; color: #9b8b7a; line-height: 1.8; }
+  .em-footer a { color: #6b4423; text-decoration: none; }
+  .em-footer .footer-brand { font-size: 13px; font-weight: 700; color: #2a1f17; display: block; margin-bottom: 6px; font-family: Georgia, serif; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <h1>CoBa's Daughter — Sets & Bundles Sale Email</h1>
+    <div style="font-size:11px;opacity:0.5;margin-top:2px;">Up to 27% Off · Klaviyo-ready template · May 25, 2026</div>
+  </div>
+  <span class="badge">Ready to send</span>
+</div>
+
+<div class="container">
+
+  <!-- PRICE BREAKDOWN -->
+  <div class="section-label">Price Breakdown · What "Up to 27% Off" Means</div>
+  <div class="section-title" style="margin-bottom:4px;">4 Products · Real Prices · Real Savings</div>
+  <div class="section-sub">Note: Aloe Duo assumed $59 regular → $54 sale. Confirm before sending if different.</div>
+
+  <div class="price-grid">
+    <div class="price-card hero">
+      <div class="pname">Gift Set 1</div>
+      <div class="was">$108</div>
+      <div class="now">$80</div>
+      <div class="save">Save $28</div>
+      <div class="pct">26% off</div>
+    </div>
+    <div class="price-card hero">
+      <div class="pname">Gift Set 2</div>
+      <div class="was">$110</div>
+      <div class="now">$80</div>
+      <div class="save">Save $30 ← the "UP TO"</div>
+      <div class="pct">27% off</div>
+    </div>
+    <div class="price-card">
+      <div class="pname">Scrub Duo</div>
+      <div class="was">$84</div>
+      <div class="now">$69</div>
+      <div class="save">Save $15</div>
+      <div class="pct">18% off</div>
+    </div>
+    <div class="price-card">
+      <div class="pname">Aloe Duo</div>
+      <div class="was">$59</div>
+      <div class="now">$54</div>
+      <div class="save">Save $5</div>
+      <div class="pct">9% off — confirm price</div>
+    </div>
+  </div>
+
+  <!-- SUBJECT LINES + SETUP -->
+  <div class="two-col" style="margin-bottom:32px;">
+    <div class="card">
+      <div class="section-label" style="margin-bottom:10px;">Subject Line Options</div>
+      <div class="subject-opt">
+        <span class="rec">Recommended</span>
+        <p>Up to 27% off our sets. This weekend only.</p>
+      </div>
+      <div class="subject-opt">
+        <p>The Gift Sets are $80. The Scrub Duo is $69. Right now.</p>
+      </div>
+      <div class="subject-opt">
+        <p>Save up to $30 on sets & bundles — ends Monday.</p>
+      </div>
+      <div class="subject-opt">
+        <p>Our Gift Sets have never been this price.</p>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="section-label" style="margin-bottom:6px;">Preheader</div>
+        <div style="background:var(--tag-bg);border-radius:6px;padding:10px 14px;font-size:13px;font-style:italic;color:var(--olive);">
+          Gift Set 1 was $108. Gift Set 2 was $110. Both now $80. Scrub Duo $84 → $69. This weekend only.
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label" style="margin-bottom:10px;">Klaviyo Setup</div>
+      <table class="setup">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Campaign name</td><td>sets-bundles-sale-may2026</td></tr>
+        <tr><td>Send time</td><td>Today · 6PM GMT+7 (= 11AM New York)</td></tr>
+        <tr><td>Audience</td><td>All subscribers</td></tr>
+        <tr><td>Exclusions</td><td>Purchased sets/bundles in last 30 days</td></tr>
+        <tr><td>Smart Sending</td><td>OFF — time-sensitive</td></tr>
+        <tr><td>UTM source</td><td>klaviyo</td></tr>
+        <tr><td>UTM medium</td><td>email</td></tr>
+        <tr><td>UTM campaign</td><td>sets-bundles-sale-may2026</td></tr>
+        <tr><td>Follow-up (Mon)</td><td>Duplicate → "Last day" · send to non-purchasers</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- EMAIL PREVIEW -->
+  <div class="section-label">Full Email Template · Klaviyo-Ready HTML</div>
+  <div class="section-title">Live Preview</div>
+  <div class="section-sub">This is the exact email. Copy the HTML block below into Klaviyo → Create Template → HTML Editor.</div>
+
+  <div class="email-outer">
+    <div class="email-shell">
+
+      <!-- TOP BAR -->
+      <div class="em-topbar">
+        <span>View in browser &nbsp;·&nbsp; Unsubscribe</span>
+      </div>
+
+      <!-- HERO -->
+      <div class="em-hero">
+        <div class="eyebrow">CoBa's Daughter · Sets & Bundles</div>
+        <h1>The ritual,<br>at its best price.</h1>
+        <div class="discount-pill">Up to 27% Off</div>
+        <div class="subline">Sets & Bundles · This weekend only · No code needed</div>
+      </div>
+
+      <!-- BODY -->
+      <div class="em-body">
+
+        <p class="em-intro">
+          Some things are better together.<br>
+          This weekend, our sets and bundles are <em>also cheaper</em> — by up to 27%.
+        </p>
+
+        <!-- GIFT SETS HERO ROW -->
+        <div class="em-section-label">Gift Sets — Up to 27% Off</div>
+        <div class="em-product-row">
+          <div class="em-product hero-prod">
+            <div class="prod-img">Gift Set 1</div>
+            <div class="prod-name">[Gift Set Name]</div>
+            <div class="prod-desc">The complete ritual, beautifully packaged. Everything for summer skin in one set.</div>
+            <div class="prod-was">$108</div>
+            <div class="prod-now">$80</div>
+            <div class="prod-save">Save $28 · 26% off</div>
+            <a href="{{ gift_set_1_url }}" class="prod-cta">Shop Now</a>
+          </div>
+          <div class="em-product hero-prod">
+            <div class="prod-img">Gift Set 2</div>
+            <div class="prod-name">[Gift Set Name]</div>
+            <div class="prod-desc">Our most complete ritual set. Vietnamese-sourced, naturally formulated.</div>
+            <div class="prod-was">$110</div>
+            <div class="prod-now">$80</div>
+            <div class="prod-save">Save $30 · 27% off</div>
+            <a href="{{ gift_set_2_url }}" class="prod-cta">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- DUOS ROW -->
+        <div class="em-section-label" style="margin-top:24px;">Duos — On Sale Now</div>
+        <div class="em-product-row">
+          <div class="em-product">
+            <div class="prod-img" style="background:#e8e3da;color:#716a56;">Scrub Duo</div>
+            <div class="prod-name">Scrub Duo</div>
+            <div class="prod-desc">Dry + wet. Two textures, one ritual. The starting point for every summer body.</div>
+            <div class="prod-was">$84</div>
+            <div class="prod-now" style="color:#6b4423;">$69</div>
+            <div class="prod-save">Save $15 · 18% off</div>
+            <a href="{{ scrub_duo_url }}" class="prod-cta">Shop Now</a>
+          </div>
+          <div class="em-product">
+            <div class="prod-img" style="background:#e8e3da;color:#716a56;">Aloe Duo</div>
+            <div class="prod-name">Aloe Duo</div>
+            <div class="prod-desc">Vietnamese aloe, deep-penetrating. The post-scrub ritual your skin actually needs.</div>
+            <div class="prod-was">$59</div>
+            <div class="prod-now" style="color:#6b4423;">$54</div>
+            <div class="prod-save">Save $5 · 9% off</div>
+            <a href="{{ aloe_duo_url }}" class="prod-cta">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- MAIN CTA -->
+        <div class="em-cta-block">
+          <a href="{{ shop_all_url }}" class="em-main-cta">Shop All Sets & Bundles →</a>
+          <div style="margin-top:12px;font-family:Arial,sans-serif;font-size:11px;color:#9b8b7a;">Sale ends Monday night. No code needed. All prices as shown.</div>
+        </div>
+
+      </div><!-- end em-body -->
+
+      <hr class="em-divider">
+
+      <!-- RITUAL COPY -->
+      <div class="em-ritual">
+        <p>These aren't just products grouped together.<br>
+        Each set is built around a ritual — the order, the pairing, the intention behind every step — that's been practised in Vietnam for generations.</p>
+        <p>When you use them together, the results compound. That's the reason for the duo. That's the reason for the set.</p>
+      </div>
+
+      <div class="em-ps">
+        P.S. The gift sets come with a story card explaining the Vietnamese ritual behind every product in the set. They're the easiest gift to give someone who deserves a proper ritual — and right now, the most affordable they've ever been.
+      </div>
+
+      <!-- FOOTER -->
+      <div class="em-footer">
+        <span class="footer-brand">CoBa's Daughter</span>
+        Vietnamese nature rituals for modern skin.<br>
+        <a href="{{ unsubscribe_url }}">Unsubscribe</a> &nbsp;·&nbsp;
+        <a href="{{ preferences_url }}">Email preferences</a> &nbsp;·&nbsp;
+        <a href="{{ website_url }}">cobasdaughter.com</a>
+      </div>
+
+    </div><!-- end email-shell -->
+  </div><!-- end email-outer -->
+
+  <hr class="divider">
+
+  <!-- HOW TO PASTE INTO KLAVIYO -->
+  <div class="section-label">Before You Send — Checklist</div>
+  <div class="section-title">4 Things to Update in Klaviyo</div>
+  <div class="section-sub">Replace the placeholders in the HTML before scheduling.</div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <table class="setup">
+      <tr><th>Placeholder</th><th>Replace with</th></tr>
+      <tr><td><code>[Gift Set Name]</code> (×2)</td><td>Your actual gift set product names</td></tr>
+      <tr><td><code>{{ gift_set_1_url }}</code></td><td>Product page URL for Gift Set 1</td></tr>
+      <tr><td><code>{{ gift_set_2_url }}</code></td><td>Product page URL for Gift Set 2</td></tr>
+      <tr><td><code>{{ scrub_duo_url }}</code></td><td>Product page URL for Scrub Duo</td></tr>
+      <tr><td><code>{{ aloe_duo_url }}</code></td><td>Product page URL for Aloe Duo</td></tr>
+      <tr><td><code>{{ shop_all_url }}</code></td><td>Your sets & bundles collection page URL</td></tr>
+      <tr><td><code>{{ unsubscribe_url }}</code></td><td>Klaviyo auto: <code>{% unsubscribe_link %}</code></td></tr>
+      <tr><td>Aloe Duo price $59 → $54</td><td>Confirm this is correct before sending</td></tr>
+    </table>
+  </div>
+
+  <!-- LAST-DAY FOLLOW-UP -->
+  <div class="section-label" style="margin-top:32px;">Follow-up · Monday May 26</div>
+  <div class="section-title">Last-Day Email — Short Version</div>
+  <div class="section-sub">Send to non-purchasers from today's email. Monday 9AM GMT+7.</div>
+
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <div class="section-label" style="margin-bottom:8px;">Subject Line Options</div>
+        <div class="subject-opt">
+          <span class="rec">Recommended</span>
+          <p>Last day. The Gift Sets go back to $108 and $110 tonight.</p>
+        </div>
+        <div class="subject-opt">
+          <p>Up to 27% off sets & bundles — ends tonight.</p>
+        </div>
+        <div class="subject-opt">
+          <p>Tonight: sale ends. The Gift Set goes back to full price.</p>
+        </div>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom:8px;">Email Copy (short)</div>
+        <div style="background:#faf8f5;border:1px solid var(--light-border);border-radius:6px;padding:20px;font-size:13px;line-height:1.8;">
+          <div style="font-size:11px;color:var(--olive);font-style:italic;margin-bottom:10px;">Preheader: The Gift Sets go back to $108 and $110 tonight. Last chance at $80.</div>
+          <strong style="font-size:16px;">Last day. The sets go back to full price tonight.</strong>
+          <p style="margin-top:10px;">The sale ends tonight at midnight. After that, the Gift Sets go back to $108 and $110, and the Scrub Duo back to $84.</p>
+          <p>If you've been deciding — this is the answer.</p>
+          <p><a href="#" style="display:inline-block;background:#6b4423;color:white;padding:12px 28px;border-radius:3px;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Shop Before Midnight →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;color:var(--olive);font-size:12px;padding:40px 0 0;">
+    CoBa's Daughter · Sets & Bundles Sale · May 25, 2026
+  </div>
+
+</div>
+</body>
+</html>
