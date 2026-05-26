@@ -2,15 +2,15 @@
 """
 CoBa's Daughter — Daily Email War Room Brief
 Runs daily at 9AM GMT+7.
-Scans brand inbox → pulls Klaviyo state → generates War Room brief → posts to Slack DM + sends email.
+Scans brand inbox (5 days) → Klaviyo context → War Room brief + 5 email templates → Slack + email.
 
 Environment vars:
   ANTHROPIC_API_KEY        — Claude API key (required)
-  DAILY_BRIEF_SLACK_TOKEN  — Slack bot token for CoBa Brief bot (preferred)
-  SLACK_BOT_TOKEN          — Slack bot token fallback (TrendPulse)
+  DAILY_BRIEF_SLACK_TOKEN  — Slack bot token for Email Hub bot (preferred)
+  SLACK_BOT_TOKEN          — Slack fallback token (TrendPulse)
   SLACK_USER_ID            — Méline's Slack user ID (default: U08V8865GD7)
   GMAIL_APP_PASSWORD       — Gmail App Password for meline.nguyen@lixibox.com
-  GMAIL_TOKEN_JSON         — Gmail OAuth token, base64-encoded (optional, brand inbox scan)
+  GMAIL_TOKEN_JSON         — Gmail OAuth token base64-encoded (optional, brand inbox scan)
   KLAVIYO_PRIVATE_API_KEY  — Klaviyo private API key (optional, live campaign context)
 """
 
@@ -27,16 +27,16 @@ from email.mime.text import MIMEText
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 REFERENCE_BRANDS = [
-    {"name": "Flamingo Estate", "query": "from:flamingoestate.com newer_than:2d"},
-    {"name": "Rhode",           "query": "from:rhodeskin.com newer_than:2d"},
-    {"name": "OUAI",            "query": "from:theouai.com newer_than:2d"},
-    {"name": "Salt & Stone",    "query": "from:saltandstone.com newer_than:2d"},
-    {"name": "Nécessaire",      "query": "from:necessaire.com newer_than:2d"},
+    {"name": "Flamingo Estate", "query": "from:flamingoestate.com newer_than:5d"},
+    {"name": "Rhode",           "query": "from:rhodeskin.com newer_than:5d"},
+    {"name": "OUAI",            "query": "from:theouai.com newer_than:5d"},
+    {"name": "Salt & Stone",    "query": "from:saltandstone.com newer_than:5d"},
+    {"name": "Nécessaire",      "query": "from:necessaire.com newer_than:5d"},
 ]
 
-SLACK_USER_ID   = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
-EMAIL_TO        = "meline.nguyen@lixibox.com"
-EMAIL_CC        = "phuonglt.job@gmail.com"
+SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
+EMAIL_TO      = "meline.nguyen@lixibox.com"
+EMAIL_CC      = "phuonglt.job@gmail.com"
 
 BRAND_PALETTE = {
     "dark_brown": "#2a1f17",
@@ -46,6 +46,23 @@ BRAND_PALETTE = {
     "cream":      "#faf8f5",
     "light_text": "#9b8b7a",
     "white":      "#ffffff",
+    "border":     "#e8e3da",
+}
+
+# Canva design page thumbnails — mapped to product themes
+# Design: https://www.canva.com/design/DAGqEHj884k/
+CANVA_DESIGN_ID = "DAGqEHj884k"
+CANVA_PAGES = {
+    "scrub_duo":    1,   # Coffee Body Exfoliator / Scrub Duo
+    "aloe_duo":     2,   # Aloe Soothing Gel / Aloe Duo
+    "soap":         3,   # 3-in-1 Artisan Soap
+    "gift_bundle":  4,   # Gift Bundle / Gift Sets
+    "lifestyle":    5,   # Lifestyle / ritual
+    "brand_story":  6,   # Brand story / founder
+    "ingredients":  7,   # Ingredient story
+    "ritual":       8,   # Ritual / how-to
+    "hero":         9,   # Hero product shot
+    "summer":       10,  # Summer / seasonal
 }
 
 # Five-email baseline — Claude updates this daily with live intel
@@ -56,9 +73,7 @@ FIVE_EMAIL_BASELINE = [
         "subject": "You got it. Here's how to use it.",
         "preview": "The ritual for everything you just ordered.",
         "from_email": "ritual@cobasdaughter.com",
-        "angle": "Post-purchase ritual guide for 27% off buyers. Zero selling. Build loyalty.",
-        "cta": "Start Your Ritual →",
-        "segment": "Purchased May 25 sale · Smart Send OFF",
+        "canva_page": "lifestyle",
     },
     {
         "num": 2, "send_date": "Thu May 28 · 10 AM GMT+7",
@@ -66,9 +81,7 @@ FIVE_EMAIL_BASELINE = [
         "subject": "the sale is gone. the skin glow isn't.",
         "preview": "You don't need a discount to start your ritual.",
         "from_email": "ritual@cobasdaughter.com",
-        "angle": "Post-sale recovery. Clickers who didn't buy. No discount.",
-        "cta": "Shop The Ritual",
-        "segment": "Clicked May 25 email · no purchase · Smart Send ON",
+        "canva_page": "scrub_duo",
     },
     {
         "num": 3, "send_date": "Sun Jun 1 · 10 AM GMT+7",
@@ -76,9 +89,7 @@ FIVE_EMAIL_BASELINE = [
         "subject": "what aloe vera does at 2am",
         "preview": "(while you sleep, it's working.)",
         "from_email": "ritual@cobasdaughter.com",
-        "angle": "Summer hydration science. Aloe Duo ingredient story. Night-repair angle.",
-        "cta": "Shop The Aloe Duo",
-        "segment": "Full engaged list · exclude Aloe buyers 60d · Smart Send ON",
+        "canva_page": "aloe_duo",
     },
     {
         "num": 4, "send_date": "Thu Jun 5 · 10 AM GMT+7",
@@ -86,9 +97,7 @@ FIVE_EMAIL_BASELINE = [
         "subject": "the gift for the man who says he doesn't want anything",
         "preview": "He does. You know he does.",
         "from_email": "hi@cobasdaughter.com",
-        "angle": "Father's Day June 15. Gift Bundle as the obvious answer. 10 days out.",
-        "cta": "Shop The Gift Bundle",
-        "segment": "Full engaged list · Smart Send ON",
+        "canva_page": "gift_bundle",
     },
     {
         "num": 5, "send_date": "Tue Jun 10 · 10 AM GMT+7",
@@ -96,16 +105,13 @@ FIVE_EMAIL_BASELINE = [
         "subject": "summer bodies are made in June",
         "preview": "The 5-minute ritual. No gym required.",
         "from_email": "ritual@cobasdaughter.com",
-        "angle": "Summer peak season. Scrub Duo hero. Rhode one-product format.",
-        "cta": "Shop The Scrub Duo",
-        "segment": "Full engaged list · Smart Send ON",
+        "canva_page": "scrub_duo",
     },
 ]
 
 # ─── KLAVIYO CONTEXT ─────────────────────────────────────────────────────────
 
 def get_klaviyo_context() -> str:
-    """Pull recent campaign history from Klaviyo REST API."""
     api_key = os.environ.get("KLAVIYO_PRIVATE_API_KEY")
     if not api_key:
         return "Klaviyo not connected (KLAVIYO_PRIVATE_API_KEY not set)."
@@ -126,17 +132,13 @@ def get_klaviyo_context() -> str:
             timeout=15,
         )
         r.raise_for_status()
-        result   = r.json()
+        result    = r.json()
         campaigns = result.get("data", [])
         included  = {i["id"]: i for i in result.get("included", [])}
-
         lines = []
         for c in campaigns:
-            a = c.get("attributes", {})
-            msg_ids = [
-                m["id"] for m in
-                c.get("relationships", {}).get("campaign-messages", {}).get("data", [])
-            ]
+            a       = c.get("attributes", {})
+            msg_ids = [m["id"] for m in c.get("relationships", {}).get("campaign-messages", {}).get("data", [])]
             subjects = [
                 included[mid].get("attributes", {}).get("definition", {}).get("content", {}).get("subject", "")
                 for mid in msg_ids if mid in included
@@ -144,8 +146,7 @@ def get_klaviyo_context() -> str:
             subj = subjects[0] if subjects else "(no subject)"
             dt   = (a.get("send_time") or a.get("scheduled_at") or "")[:10]
             lines.append(f"  [{a.get('status','?')}] {dt} — \"{subj}\" ({a.get('name','?')})")
-
-        return "Recent Klaviyo campaigns:\n" + "\n".join(lines) if lines else "No Klaviyo campaigns found."
+        return "Recent Klaviyo campaigns:\n" + "\n".join(lines) if lines else "No campaigns found."
     except Exception as e:
         return f"Klaviyo fetch failed: {e}"
 
@@ -156,20 +157,21 @@ def build_gmail_service():
     from googleapiclient.discovery import build
     token_json = os.environ.get("GMAIL_TOKEN_JSON")
     if not token_json:
-        raise ValueError("GMAIL_TOKEN_JSON secret not set")
+        raise ValueError("GMAIL_TOKEN_JSON not set")
     token_data = json.loads(base64.b64decode(token_json))
     creds = Credentials.from_authorized_user_info(token_data)
     return build("gmail", "v1", credentials=creds)
 
 
-def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
-    results = {}
+def get_recent_brand_emails(service, hours_back: int = 120) -> dict:
+    """Scan brand inbox for last 5 days (120h) for richer competitive analysis."""
+    results     = {}
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
     for brand in REFERENCE_BRANDS:
         query = f"({brand['query']}) after:{after_epoch}"
         try:
-            resp = service.users().messages().list(userId="me", q=query, maxResults=5).execute()
+            resp = service.users().messages().list(userId="me", q=query, maxResults=10).execute()
             msgs = resp.get("messages", [])
             brand_emails = []
             for ref in msgs:
@@ -198,112 +200,134 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
     for brand_name, emails in brand_emails.items():
         brand_data_text += f"\n### {brand_name}\n"
         if not emails:
-            brand_data_text += "  No emails in the last 48h.\n"
+            brand_data_text += "  No emails in the last 5 days.\n"
             continue
         for e in emails:
             if "error" in e:
                 brand_data_text += f"  Error: {e['error']}\n"
             else:
-                brand_data_text += f"  Subject: {e['subject']}\n  Snippet: {e['snippet']}\n  ---\n"
+                brand_data_text += f"  [{e['date'][:16]}] Subject: {e['subject']}\n  Snippet: {e['snippet']}\n  ---\n"
 
     baseline_text = ""
     for em in FIVE_EMAIL_BASELINE:
-        baseline_text += f"  Email {em['num']}: {em['send_date']} — \"{em['subject']}\" — {em['type']}\n"
+        baseline_text += f"  Email {em['num']}: {em['send_date']} — \"{em['subject']}\" ({em['type']})\n"
 
     prompt = textwrap.dedent(f"""
         You are the email war room strategist for CoBa's Daughter — a Vietnamese DTC body care brand.
 
         BRAND SNAPSHOT:
-        - Launched March 2026 · ~2 500 subscribers · poor open + click rates (goal: fix both)
+        - Launched March 2026 · ~2 500 email subscribers · poor open + click rates
         - Products: Coffee Body Exfoliator (Scrub Duo) · Aloe Soothing Gel (Aloe Duo) ·
           3-in-1 Artisan Soap (Fig & Cedarwood / Grapefruit Peel & Eucalyptus / Persian Lime & Coconut) ·
           Gift Bundle Sets · Deluxe Bath & Body Care Gift Basket
-        - Last sent campaign (May 25): "Up to 27% OFF Sets & Bundles" · free shipping $50+
+        - Last campaign (May 25): "Up to 27% OFF Sets & Bundles" · free shipping $50+
         - Sender personas: ritual@cobasdaughter.com (founder/brand/story) · hi@cobasdaughter.com (commercial)
         - Brand voice: intimate · sensory · Vietnamese heritage · "low maintenance luxury"
-        - Brand story: CoBa = Cô Ba, the iconic Saigon woman, timeless beauty wisdom passed down
-        - Key product copy: "The only coffee scrub with a green tea scent" · "99% pure aloe vera" ·
+        - Hero product copy: "The only coffee scrub with a green tea scent" · "99% pure aloe vera" ·
           "3-in-1: hand wash / body wash / bubble bath"
 
         KLAVIYO CAMPAIGN HISTORY:
         {klaviyo_context}
 
-        BRAND INBOX SCAN (last 48h from 5 reference brands):
+        BRAND INBOX — LAST 5 DAYS (from 5 reference brand accounts):
         {brand_data_text}
 
-        5-EMAIL BASELINE PLAN (update with live intel):
+        5-EMAIL BASELINE (update with live intel):
         {baseline_text}
 
-        CALENDAR:
-        - Today: {today} (Vietnam, GMT+7)
-        - Memorial Day US: May 26 · Father's Day US: June 15 · Summer peak: June–July
+        CALENDAR: Today = {today} (GMT+7) · Father's Day US = June 15 · Summer peak = June–July
 
-        ══════════════════════════════════════════════
-        Write EXACTLY two sections separated by this line on its own: ===EMAIL TEMPLATE===
-        ══════════════════════════════════════════════
+        ══════════════════════════════════════════════════════════
+        OUTPUT: Write EXACTLY 6 sections with EXACT separator lines.
+        ══════════════════════════════════════════════════════════
 
-        SECTION 1 — SLACK WAR ROOM BRIEF (Slack mrkdwn · max 2 000 chars)
+        ─────────── SECTION 1: SLACK WAR ROOM BRIEF (Slack mrkdwn · max 2 500 chars) ───────────
 
         :red_circle: *CoBa's Daughter — Email War Room · {today}*
-        _Live Gmail scan · Klaviyo updated · 5-email plan_
+        _Live Gmail scan · 5-day competitor intel · Klaviyo updated_
 
 
         :inbox_tray: *WHAT YOUR INBOX SHOWS RIGHT NOW*
-        [For each brand that sent in last 48h: 1 sentence on their angle. Lead with most interesting.]
-        [If no brand sent anything: note the silence and what it means.]
-        *Key pattern:* [1 sentence — dominant theme across competitor inboxes today]
+        [1 sentence: what's the overall market mood this week]
+
+        | Brand | Offer | Emails sent | Started |
+        |-------|-------|-------------|---------|
+        [Fill one row per brand. Count exact emails from scan data. Be specific about offer amounts.
+         For brands with no emails: still include row with "No emails this week".]
+
+        *Key pattern:* [1 sentence — dominant competitive theme right now]
 
 
         :fire: *THE OPPORTUNITY RIGHT NOW*
-        [2–3 sentences: specific calendar window · what white space exists · CoBa's angle to own it]
+        [2–3 sentences: specific calendar white space · what nobody in body care is owning · CoBa's angle]
 
 
         :white_check_mark: *YOUR 5-EMAIL PLAN — Updated {today}*
 
-        :e-mail: *Email 1 — [date + urgency label]*
+        :e-mail: *Email 1 — [date · type label]*
         > Subject: _"[subject line]"_
-        > Product: [product name]
-        > Audience: [segment · Smart Sending ON/OFF · exclude rule]
-        > UTM: `[campaign-slug]`
-        > Copy: "[1–2 sentence hook, CoBa voice]"
+        > Product: [name] · From: [persona name · email]
+        > Audience: [segment · Smart Send ON/OFF · exclude rule]
+        > UTM: `[slug]`
         > CTA: _[button text]_
 
-        [Repeat for Emails 2, 3, 4, 5 — same format. Update dates/subjects based on live intel.]
+        [Emails 2–5: same compact format — full copy is in the template sections below]
 
 
-        :zap: *DO RIGHT NOW — Step by step*
-        Step 1 → [Klaviyo: exact menu path + specific action]
+        :zap: *DO RIGHT NOW*
+        Step 1 → [Klaviyo: exact menu path + action]
         Step 2 → [...]
         Step 3 → [...]
 
 
-        :bulb: *One strategic note:* [1 sentence — what competitor tactic to steal today]
+        :bulb: *One steal:* [1 tactic from competitor inbox · brand + tactic + why it works for CoBa]
 
 
-        ===EMAIL TEMPLATE===
+        ─────────────────────────────────────────────────────
+        ===EMAIL 1===
+        ─────────────────────────────────────────────────────
 
-        SECTION 2 — FULL EMAIL COPY FOR EMAIL 1 (paste into Klaviyo)
+        Subject: [exact subject line]
+        Preview text: [exact preview text]
+        From name: [Méline at CoBa's Daughter  OR  CoBa's Daughter]
+        From email: [ritual@cobasdaughter.com  OR  hi@cobasdaughter.com]
+        Segment: [exact segment description]
 
-        Subject: [exact subject]
-        Preview text: [exact preview]
-        From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
-        From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
-        Segment: [exact segment]
+        HERO IMAGE: [Describe what visual goes here — be specific: product name, mood, styling, angle.
+                     E.g. "Close-up of Scrub Duo jars on a marble surface with coffee grounds scattered around.
+                     Warm morning light. Use product lifestyle shot from Canva design."]
 
         BODY:
-        [Full email body — 150–200 words · CoBa's brand voice]
-        [Opening: 1 intimate/sensory hook sentence — no "Dear", no "Hi"]
-        [Body: 2–3 short paragraphs — ingredient story / ritual moment / specific product benefit]
-        [Reference Vietnamese heritage or brand story subtly if relevant]
-        [Closing: 1 soft CTA paragraph]
-        [Sign-off: — Méline  OR  — The CoBa's Daughter team]
+        [Full email copy · 160–200 words · CoBa brand voice]
+        [No "Dear" / no "Hi". Open with 1 intimate sensory hook sentence.]
+        [2–3 short paragraphs: ingredient or ritual story + benefit + emotional resonance]
+        [Reference Vietnamese heritage subtly if fitting]
+        [Closing paragraph: gentle CTA, not pushy]
+        [Sign-off: — Méline   OR   — The CoBa's Daughter team]
 
-        CTA BUTTON: [exact button text, 2–5 words]
+        PRODUCT IMAGE: [Optional secondary visual — describe: product name, angle, use case · 300×300px
+                        OR write "NONE" if not needed]
+
+        CTA BUTTON: [exact button text · 2–5 words]
+
+        ─────────────────────────────────────────────────────
+        ===EMAIL 2===
+        ─────────────────────────────────────────────────────
+        [same full format as Email 1]
+
+        ===EMAIL 3===
+        [same full format]
+
+        ===EMAIL 4===
+        [same full format]
+
+        ===EMAIL 5===
+        [same full format]
     """).strip()
 
     message = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=2048,
+        max_tokens=4096,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text
@@ -312,22 +336,16 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
 
 def post_to_slack(brief_text: str, today: str) -> str:
     from slack_sdk import WebClient
-    # Use dedicated CoBa Brief bot first; fall back to shared TrendPulse token
     token = os.environ.get("DAILY_BRIEF_SLACK_TOKEN") or os.environ.get("SLACK_BOT_TOKEN")
     if not token:
         raise ValueError("DAILY_BRIEF_SLACK_TOKEN or SLACK_BOT_TOKEN not set")
-
     client = WebClient(token=token)
-    # Only post the Slack section (before ===EMAIL TEMPLATE===)
-    slack_section = brief_text.split("===EMAIL TEMPLATE===")[0].strip()
-    resp = client.chat_postMessage(
-        channel=SLACK_USER_ID,
-        text=slack_section,
-        mrkdwn=True,
-    )
+    # Only send Slack section (before first ===EMAIL N===)
+    slack_section = re.split(r"===EMAIL \d+===", brief_text)[0].strip()
+    resp = client.chat_postMessage(channel=SLACK_USER_ID, text=slack_section, mrkdwn=True)
     return resp["ts"]
 
-# ─── EMAIL HTML RENDERER ──────────────────────────────────────────────────────
+# ─── HTML RENDERING ───────────────────────────────────────────────────────────
 
 SLACK_EMOJI_MAP = {
     ":red_circle:": "🔴", ":inbox_tray:": "📥", ":fire:": "🔥",
@@ -336,110 +354,253 @@ SLACK_EMOJI_MAP = {
 }
 
 
-def _line_to_html(line: str, p: dict) -> str:
+def _fmt_inline(text: str) -> str:
+    """Apply bold, italic, code inline formatting."""
+    text = re.sub(r"\*([^*]+)\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"_([^_]+)_",   r"<em>\1</em>",         text)
+    text = re.sub(r"`([^`]+)`",
+                  r"<code style='background:#f0ece4;padding:1px 5px;border-radius:3px;"
+                  r"font-size:11px;font-family:monospace'>\1</code>", text)
+    return text
+
+
+def _render_md_table(table_lines: list, p: dict) -> str:
+    """Convert | markdown table lines → styled HTML table."""
+    rows = []
+    for line in table_lines:
+        stripped = line.strip().strip("|")
+        if re.match(r"^[-| ]+$", stripped):
+            continue  # separator row
+        cells = [c.strip() for c in stripped.split("|")]
+        rows.append(cells)
+    if not rows:
+        return ""
+    header = rows[0]
+    data   = rows[1:]
+    thead = "".join(
+        f"<th style='padding:8px 12px;text-align:left;color:#c9b99a;font-size:10px;"
+        f"letter-spacing:1px;text-transform:uppercase;white-space:nowrap'>{h}</th>"
+        for h in header
+    )
+    tbody = ""
+    for i, row in enumerate(data):
+        bg = p["white"] if i % 2 == 0 else p["cream"]
+        cells = "".join(
+            f"<td style='padding:8px 12px;font-size:12px;color:{p['dark_brown']};border-bottom:1px solid {p['border']}'>"
+            f"{_fmt_inline(c)}</td>"
+            for c in row
+        )
+        tbody += f"<tr style='background:{bg}'>{cells}</tr>"
+    return (
+        f"<div style='overflow-x:auto;margin:12px 0 16px'>"
+        f"<table style='width:100%;border-collapse:collapse;background:{p['dark_brown']};border-radius:6px;overflow:hidden'>"
+        f"<thead><tr>{thead}</tr></thead>"
+        f"<tbody>{tbody}</tbody>"
+        f"</table></div>"
+    )
+
+
+def _slack_to_html(text: str, p: dict) -> str:
+    """Convert Slack mrkdwn to HTML, handling tables and emoji."""
     for code, emoji in SLACK_EMOJI_MAP.items():
-        line = line.replace(code, emoji)
-    line = line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        text = text.replace(code, emoji)
 
-    def fmt(l):
-        l = re.sub(r"\*([^*]+)\*", r"<strong>\1</strong>", l)
-        l = re.sub(r"_([^_]+)_",   r"<em>\1</em>",         l)
-        l = re.sub(r"`([^`]+)`",   rf"<code style='background:#f0ece4;padding:1px 5px;border-radius:3px;font-size:11px'>\1</code>", l)
-        return l
+    lines  = text.split("\n")
+    output = []
+    i      = 0
+    while i < len(lines):
+        line = lines[i]
+        # Detect markdown table block
+        if line.strip().startswith("|") and line.strip().endswith("|"):
+            table_lines = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                table_lines.append(lines[i])
+                i += 1
+            output.append(_render_md_table(table_lines, p))
+            continue
+        # Escape HTML
+        safe = line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        # Blockquote rows (> ...)
+        if safe.startswith("&gt; "):
+            inner = _fmt_inline(safe[5:])
+            output.append(
+                f"<p style='margin:2px 0 2px 12px;color:{p['olive']};font-size:12px;"
+                f"border-left:2px solid {p['rust']};padding-left:8px'>{inner}</p>"
+            )
+        # Step lines
+        elif re.match(r"^Step \d", safe):
+            output.append(f"<p style='margin:3px 0;font-size:12px;color:{p['dark_brown']}'>{_fmt_inline(safe)}</p>")
+        # Emoji-prefixed section headers
+        elif re.match(r"^[🔴📥🔥✅📧⚡💡⚠️]", safe):
+            output.append(f"<p style='margin:20px 0 6px;font-size:14px;line-height:1.4'>{_fmt_inline(safe)}</p>")
+        # Empty
+        elif not safe.strip():
+            output.append("<div style='height:6px'></div>")
+        else:
+            output.append(f"<p style='margin:4px 0;color:{p['dark_brown']};font-size:13px;line-height:1.6'>{_fmt_inline(safe)}</p>")
+        i += 1
+    return "\n".join(output)
 
-    # Blockquote (> ...) — plan detail rows
-    if line.startswith("&gt; "):
-        inner = fmt(line[5:])
-        return (
-            f"<p style='margin:2px 0 2px 12px;color:{p['olive']};font-size:12px;"
-            f"border-left:2px solid {p['rust']};padding-left:8px'>{inner}</p>"
+
+def _parse_email_template(section_text: str) -> dict:
+    """Parse an ===EMAIL N=== section into a structured dict."""
+    result = {
+        "subject": "", "preview": "", "from_name": "", "from_email": "",
+        "segment": "", "hero_image": "", "body": "", "product_image": "", "cta": "",
+    }
+    lines    = section_text.strip().split("\n")
+    in_body  = False
+    body_buf = []
+
+    for line in lines:
+        s = line.strip()
+        if s.startswith("Subject:"):
+            result["subject"]       = s[8:].strip()
+        elif s.startswith("Preview text:"):
+            result["preview"]       = s[13:].strip()
+        elif s.startswith("From name:"):
+            result["from_name"]     = s[10:].strip()
+        elif s.startswith("From email:"):
+            result["from_email"]    = s[11:].strip()
+        elif s.startswith("Segment:"):
+            result["segment"]       = s[8:].strip()
+        elif s.startswith("HERO IMAGE:"):
+            result["hero_image"]    = s[11:].strip()
+        elif s.startswith("PRODUCT IMAGE:"):
+            result["product_image"] = s[14:].strip()
+        elif s.startswith("CTA BUTTON:"):
+            result["cta"]           = s[11:].strip()
+        elif s == "BODY:":
+            in_body = True
+        elif in_body and not s.startswith("PRODUCT IMAGE:") and not s.startswith("CTA BUTTON:"):
+            body_buf.append(line)
+
+    result["body"] = "\n".join(body_buf).strip()
+    return result
+
+
+def _render_email_card(tpl: dict, num: int, p: dict) -> str:
+    """Render one parsed email template as a complete HTML email mockup card."""
+    # Metadata strip
+    meta_rows = ""
+    for label, val in [
+        ("Subject",      tpl["subject"]),
+        ("Preview",      tpl["preview"]),
+        ("From",         f"{tpl['from_name']} &lt;{tpl['from_email']}&gt;"),
+        ("To / Segment", tpl["segment"]),
+    ]:
+        if val:
+            meta_rows += (
+                f"<tr>"
+                f"<td style='padding:3px 14px 3px 0;color:{p['light_text']};font-size:10px;"
+                f"font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;vertical-align:top'>{label}</td>"
+                f"<td style='padding:3px 0;color:{p['dark_brown']};font-size:12px'>{val}</td>"
+                f"</tr>"
+            )
+
+    # Hero image block
+    hero_block = ""
+    if tpl["hero_image"] and tpl["hero_image"].upper() != "NONE":
+        hero_block = (
+            f"<div style='width:100%;height:200px;background:linear-gradient(135deg,{p['dark_brown']} 0%,{p['rust']} 100%);"
+            f"border-radius:4px;display:flex;align-items:center;justify-content:center;"
+            f"margin-bottom:20px;padding:20px;box-sizing:border-box;text-align:center'>"
+            f"<div>"
+            f"<div style='font-size:28px;margin-bottom:8px'>📸</div>"
+            f"<div style='color:rgba(255,255,255,.85);font-size:11px;line-height:1.6;font-style:italic'>"
+            f"{tpl['hero_image']}"
+            f"</div>"
+            f"<div style='color:rgba(255,255,255,.4);font-size:10px;margin-top:6px'>"
+            f"Hero image · 600 × 300 px · Replace with Canva asset"
+            f"</div>"
+            f"</div>"
+            f"</div>"
         )
-    # Step lines
-    if re.match(r"^Step \d", line):
-        return f"<p style='margin:3px 0;font-size:12px;color:{p['dark_brown']}'>{fmt(line)}</p>"
-    # Emoji section headers (e.g. 🔴 *...*  or  📥 *...*)
-    if re.match(r"^[🔴📥🔥✅📧⚡💡⚠️]", line):
-        return (
-            f"<p style='margin:20px 0 6px;font-size:14px'>{fmt(line)}</p>"
+
+    # Body copy
+    body_html = ""
+    for para in tpl["body"].split("\n\n"):
+        para = para.strip()
+        if para:
+            body_html += (
+                f"<p style='margin:0 0 16px;line-height:1.8;font-size:13px;"
+                f"color:{p['dark_brown']};font-family:Georgia,serif'>{para}</p>"
+            )
+
+    # Product image block
+    prod_block = ""
+    if tpl["product_image"] and tpl["product_image"].upper() not in ("NONE", ""):
+        prod_block = (
+            f"<div style='width:200px;height:200px;background:{p['beige']};border:1px solid {p['border']};"
+            f"border-radius:4px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;"
+            f"text-align:center;padding:12px;box-sizing:border-box'>"
+            f"<div>"
+            f"<div style='font-size:20px;margin-bottom:6px'>🖼</div>"
+            f"<div style='color:{p['light_text']};font-size:10px;line-height:1.5;font-style:italic'>"
+            f"{tpl['product_image']}"
+            f"</div>"
+            f"<div style='color:{p['light_text']};font-size:9px;margin-top:4px'>300 × 300 px</div>"
+            f"</div>"
+            f"</div>"
         )
-    # Empty
-    if not line.strip():
-        return "<div style='height:6px'></div>"
-    return f"<p style='margin:4px 0;color:{p['dark_brown']};font-size:13px;line-height:1.6'>{fmt(line)}</p>"
+
+    # CTA button
+    cta_label = tpl["cta"] or "Shop Now →"
+    cta_block = (
+        f"<div style='text-align:center;margin:8px 0 24px'>"
+        f"<span style='display:inline-block;background:{p['dark_brown']};color:#fff;"
+        f"padding:13px 32px;border-radius:3px;font-size:13px;font-weight:600;letter-spacing:.5px'>"
+        f"{cta_label}"
+        f"</span>"
+        f"</div>"
+    )
+
+    return (
+        f"<div style='margin-bottom:32px'>"
+        # Card header
+        f"<div style='background:{p['dark_brown']};padding:10px 20px;border-radius:6px 6px 0 0'>"
+        f"<span style='color:#c9b99a;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700'>"
+        f"✦ Email {num} — {tpl.get('from_name','').replace('CoBa','CoBa') or 'Campaign Template'}"
+        f"</span>"
+        f"</div>"
+        # Metadata
+        f"<div style='background:{p['beige']};padding:12px 20px;border-left:1px solid {p['border']};border-right:1px solid {p['border']}'>"
+        f"<table style='font-family:\"Segoe UI\",Arial,sans-serif'><tbody>{meta_rows}</tbody></table>"
+        f"</div>"
+        # Email body mockup
+        f"<div style='background:{p['white']};padding:24px 28px;border:1px solid {p['border']};border-top:none;border-radius:0 0 6px 6px'>"
+        f"{hero_block}"
+        f"{body_html}"
+        f"{prod_block}"
+        f"{cta_block}"
+        f"</div>"
+        f"</div>"
+    )
 
 
 def _render_html(brief_text: str, today: str) -> str:
     p = BRAND_PALETTE
 
-    parts          = brief_text.split("===EMAIL TEMPLATE===")
-    slack_section  = parts[0].strip()
-    email_template = parts[1].strip() if len(parts) > 1 else ""
+    # Split into Slack section + 5 email template sections
+    parts        = re.split(r"===EMAIL (\d+)===", brief_text)
+    slack_text   = parts[0].strip()
+    email_cards  = ""
 
-    brief_html = "\n".join(_line_to_html(l, p) for l in slack_section.split("\n"))
+    # parts = [slack, "1", template1, "2", template2, ..., "5", template5]
+    for idx in range(1, len(parts) - 1, 2):
+        num     = parts[idx]
+        content = parts[idx + 1].strip() if idx + 1 < len(parts) else ""
+        tpl     = _parse_email_template(content)
+        email_cards += _render_email_card(tpl, int(num), p)
 
-    # ── Parse + render the Email 1 template section ──────────────────────────
-    template_html = ""
-    if email_template:
-        header_fields = {}
-        body_lines    = []
-        in_body       = False
+    brief_html = _slack_to_html(slack_text, p)
 
-        for line in email_template.split("\n"):
-            stripped = line.strip()
-            if stripped == "BODY:":
-                in_body = True
-                continue
-            if not in_body:
-                for key in ("Subject", "Preview text", "From name", "From email", "Segment", "CTA BUTTON"):
-                    if stripped.startswith(key + ":"):
-                        header_fields[key] = stripped[len(key) + 1:].strip()
-                        break
-            else:
-                body_lines.append(line)
-
-        header_rows = "".join(
-            f"<tr>"
-            f"<td style='padding:3px 14px 3px 0;color:{p['light_text']};font-size:11px;font-weight:600;white-space:nowrap;vertical-align:top'>{k}</td>"
-            f"<td style='padding:3px 0;color:{p['dark_brown']};font-size:12px'>{v}</td>"
-            f"</tr>"
-            for k, v in header_fields.items() if k != "CTA BUTTON"
-        )
-
-        body_html = ""
-        for para in "\n".join(body_lines).split("\n\n"):
-            para = para.strip()
-            if para:
-                body_html += f"<p style='margin:0 0 14px;line-height:1.75;font-size:13px;color:{p['dark_brown']}'>{para}</p>"
-
-        cta_label = header_fields.get("CTA BUTTON", "Shop Now →")
-
-        template_html = f"""
-        <div style="background:{p['cream']};padding:28px 36px 8px">
-          <div style="color:{p['rust']};font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">
-            ✦ Today's Email — Full Copy Ready to Paste
-          </div>
-        </div>
-        <div style="background:{p['cream']};padding:0 24px 28px">
-          <div style="background:{p['white']};border-radius:8px;overflow:hidden;border:1px solid #e8e3da">
-            <div style="background:{p['beige']};padding:14px 20px;border-bottom:1px solid #e8e3da">
-              <table><tbody>{header_rows}</tbody></table>
-            </div>
-            <div style="padding:24px 28px 8px">
-              {body_html}
-            </div>
-            <div style="padding:8px 28px 24px">
-              <span style="display:inline-block;background:{p['dark_brown']};color:#fff;padding:11px 26px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:.5px">{cta_label}</span>
-            </div>
-          </div>
-        </div>
-        """
-
-    # ── Priority checklist ────────────────────────────────────────────────────
+    # Priority checklist
     items = [
         ("🔴", "Set up <strong>ICYMI resend</strong> — 48h after each campaign to non-openers, different subject"),
-        ("🔴", "Fill <strong>all preview texts</strong> — check every scheduled draft in Klaviyo now"),
+        ("🔴", "Fill <strong>all preview texts</strong> — check every scheduled Klaviyo draft now"),
         ("🔴", "Add <strong>5–10% off trigger</strong> to Abandon Cart Email 2 (steal from Nécessaire)"),
-        ("🟡", "Switch FROM name to <strong>\"Méline at CoBa's Daughter\"</strong> on brand/story emails"),
+        ("🟡", "Switch FROM name to <strong>\"Méline at CoBa's Daughter\"</strong> on brand emails"),
         ("🟡", "Create <strong>Engaged 90-day</strong> + <strong>At-Risk 90–180-day</strong> Klaviyo segments"),
         ("🟡", "Set up <strong>Post-Purchase Review Request</strong> flow (14 days after delivery)"),
         ("🟢", "Build <strong>Browse Abandonment</strong> flow (viewed product, no cart add)"),
@@ -447,7 +608,7 @@ def _render_html(brief_text: str, today: str) -> str:
         ("🟢", "Enable <strong>A/B subject line test</strong> on every future campaign"),
     ]
     checklist_rows = "".join(
-        f"<tr><td style='padding:4px 8px 4px 0;font-size:14px'>{icon}</td>"
+        f"<tr><td style='padding:4px 8px 4px 0;font-size:14px;vertical-align:top'>{icon}</td>"
         f"<td style='padding:4px 0;font-size:12px;color:{p['dark_brown']};line-height:1.5'>{text}</td></tr>"
         for icon, text in items
     )
@@ -455,24 +616,38 @@ def _render_html(brief_text: str, today: str) -> str:
     return f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:{p['beige']};font-family:'Segoe UI',Arial,sans-serif">
-<div style="max-width:700px;margin:24px auto 0;border-radius:8px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.09)">
+<div style="max-width:720px;margin:24px auto 0;border-radius:8px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.1)">
 
   <!-- HEADER -->
   <div style="background:{p['dark_brown']};padding:28px 36px">
     <div style="color:#c9b99a;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px">CoBa's Daughter</div>
-    <div style="color:#fff;font-size:22px;font-weight:700;letter-spacing:-.3px">Email War Room Brief</div>
-    <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:5px">{today} · 9:00 AM GMT+7 · Auto-generated daily</div>
+    <div style="color:#fff;font-size:22px;font-weight:700;letter-spacing:-.3px">Daily Email Marketing Update</div>
+    <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:5px">{today} · 9:00 AM GMT+7 · Email War Room · Auto-generated</div>
   </div>
 
-  <!-- BRIEF -->
+  <!-- WAR ROOM BRIEF -->
   <div style="background:{p['white']};padding:32px 36px 24px">
     {brief_html}
   </div>
 
-  {template_html}
+  <!-- EMAIL TEMPLATES HEADER -->
+  <div style="background:{p['beige']};padding:24px 36px 8px">
+    <div style="color:{p['rust']};font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">
+      ✦ This Week's 5 Email Templates — Full Copy + Visual Blocks
+    </div>
+    <p style="color:{p['light_text']};font-size:12px;margin:6px 0 0;line-height:1.5">
+      Each template below is ready to deploy in Klaviyo. Replace the 📸 image placeholders with assets from your
+      <a href="https://www.canva.com/design/{CANVA_DESIGN_ID}/" style="color:{p['rust']}">Canva design</a>.
+    </p>
+  </div>
+
+  <!-- EMAIL TEMPLATE CARDS -->
+  <div style="background:{p['beige']};padding:8px 36px 32px">
+    {email_cards}
+  </div>
 
   <!-- PRIORITY CHECKLIST -->
-  <div style="background:{p['beige']};padding:0 36px 28px">
+  <div style="background:{p['cream']};padding:0 36px 28px">
     <div style="background:{p['white']};border-left:3px solid {p['rust']};padding:16px 20px;border-radius:0 6px 6px 0">
       <div style="color:{p['rust']};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⚡ Ongoing Priority Checklist</div>
       <table style="width:100%"><tbody>{checklist_rows}</tbody></table>
@@ -481,7 +656,9 @@ def _render_html(brief_text: str, today: str) -> str:
 
   <!-- FOOTER -->
   <div style="background:{p['dark_brown']};padding:18px 36px;text-align:center">
-    <div style="color:rgba(255,255,255,.35);font-size:11px">CoBa's Daughter · Daily Email War Room · Auto-sent 9:02 AM GMT+7</div>
+    <div style="color:rgba(255,255,255,.35);font-size:11px">
+      CoBa's Daughter · Daily Email Marketing Update · Auto-sent 9:02 AM GMT+7
+    </div>
   </div>
 
 </div>
@@ -495,8 +672,9 @@ def send_email_brief(brief_text: str, today: str) -> None:
         raise ValueError("GMAIL_APP_PASSWORD not set — see GMAIL_APP_PASSWORD_SETUP.md")
 
     html_body = _render_html(brief_text, today)
-    plain     = brief_text.split("===EMAIL TEMPLATE===")[0].strip()
-    subject   = f"CoBa's Daughter Daily Email Marketing Update — {today}"
+    # Plain-text: just the Slack section
+    plain   = re.split(r"===EMAIL \d+===", brief_text)[0].strip()
+    subject = f"CoBa's Daughter Daily Email Marketing Update — {today}"
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -516,7 +694,6 @@ def send_email_brief(brief_text: str, today: str) -> None:
 def main():
     vn_tz = datetime.timezone(datetime.timedelta(hours=7))
     today = datetime.datetime.now(vn_tz).strftime("%A, %B %-d, %Y")
-
     print(f"[daily_brief] Starting for {today}")
 
     # 1. Gmail inbox scan (optional)
@@ -525,7 +702,7 @@ def main():
         service      = build_gmail_service()
         brand_emails = get_recent_brand_emails(service)
         found = sum(len(v) for v in brand_emails.values())
-        print(f"[daily_brief] {found} brand emails fetched")
+        print(f"[daily_brief] {found} brand emails fetched (last 5 days)")
     except Exception as e:
         print(f"[daily_brief] Gmail fetch failed: {e}")
 
@@ -535,19 +712,18 @@ def main():
         print(f"[daily_brief] Klaviyo: {len(klaviyo_context)} chars")
     except Exception as e:
         klaviyo_context = f"Klaviyo unavailable: {e}"
-        print(f"[daily_brief] Klaviyo failed: {e}")
 
-    # 3. Generate brief
-    print("[daily_brief] Generating brief…")
+    # 3. Generate brief + 5 email templates
+    print("[daily_brief] Generating War Room brief + 5 email templates…")
     try:
         brief = generate_brief(brand_emails, klaviyo_context, today)
-        print(f"[daily_brief] Brief ready ({len(brief)} chars)")
+        template_count = len(re.findall(r"===EMAIL \d+===", brief))
+        print(f"[daily_brief] Brief ready ({len(brief)} chars, {template_count} email templates)")
     except Exception as e:
         print(f"[daily_brief] Claude failed: {e}")
         brief = (
-            f":warning: *CoBa's Daily Brief failed today.*\n"
-            f"Error: {e}\n\n"
-            f"Check ANTHROPIC_API_KEY credits at console.anthropic.com"
+            f":warning: *Daily brief failed today.*\n"
+            f"Error: {e}\n\nCheck ANTHROPIC_API_KEY at console.anthropic.com"
         )
 
     # 4. Slack DM
