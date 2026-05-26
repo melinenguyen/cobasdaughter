@@ -496,7 +496,7 @@ def send_email_brief(brief_text: str, today: str) -> None:
 
     html_body = _render_html(brief_text, today)
     plain     = brief_text.split("===EMAIL TEMPLATE===")[0].strip()
-    subject   = f"CoBa's Email War Room — {today}"
+    subject   = f"CoBa's Daughter Daily Email Marketing Update — {today}"
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
