@@ -38,10 +38,22 @@ def scheduled_run():
         logger.error(f"Scheduled run failed: {e}")
 
 
+def scheduled_email_brief():
+    """Daily email marketing brief — 9AM GMT+7 only."""
+    logger.info("Daily email marketing brief triggered")
+    try:
+        from scripts.daily_brief import main as run_brief
+        run_brief()
+        logger.info("Email marketing brief complete")
+    except Exception as e:
+        logger.error(f"Email marketing brief failed: {e}")
+
+
 def start():
     tz = pytz.timezone("Asia/Bangkok")  # GMT+7
     scheduler = BackgroundScheduler(timezone=tz)
 
+    # ── 9AM: Trend report + Email marketing brief ────────────────────────────
     scheduler.add_job(
         scheduled_run,
         trigger=CronTrigger(hour=9, minute=0, timezone=tz),
@@ -51,6 +63,16 @@ def start():
         misfire_grace_time=1800,
     )
 
+    scheduler.add_job(
+        scheduled_email_brief,
+        trigger=CronTrigger(hour=9, minute=2, timezone=tz),  # 2 min after trend run
+        id="morning_email_brief",
+        name="Daily Email Marketing Brief at 9AM GMT+7",
+        replace_existing=True,
+        misfire_grace_time=1800,
+    )
+
+    # ── 3PM: Trend report only ────────────────────────────────────────────────
     scheduler.add_job(
         scheduled_run,
         trigger=CronTrigger(hour=15, minute=0, timezone=tz),
