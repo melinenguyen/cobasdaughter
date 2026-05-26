@@ -1,6 +1,4 @@
-"""
-AI-powered trend analysis. Uses Gemini (free) with Anthropic as fallback.
-"""
+"""AI-powered trend analysis using Claude (Anthropic)."""
 
 import json
 import logging
@@ -358,13 +356,9 @@ def analyze(
     collected_data: dict[str, Any],
     api_key: str = "",
     previous_report: dict[str, Any] | None = None,
-    gemini_key: str = "",
+    gemini_key: str = "",  # kept for signature compatibility, unused
 ) -> dict[str, Any]:
-    """Send collected trend data to the AI model and return structured analysis.
-
-    Tries Gemini first (free tier), falls back to Anthropic if api_key is set.
-    api_key is kept for backward compatibility but ignored when gemini_key is set.
-    """
+    """Send collected trend data to Claude and return structured analysis."""
     result: dict[str, Any] = {
         "status": "error",
         "report": None,
@@ -373,48 +367,18 @@ def analyze(
         "analyzed_at": datetime.utcnow().isoformat(),
     }
 
+    if not api_key:
+        result["error"] = "ANTHROPIC_API_KEY not configured"
+        return result
+
     data_summary = _build_data_summary(collected_data)
     dedup_block = _build_dedup_block(previous_report)
     prompt = ANALYSIS_PROMPT.format(data_summary=data_summary, dedup_block=dedup_block)
-    full_prompt = SYSTEM_PROMPT + "\n\n" + prompt
-
-    # ── Try Gemini first (direct REST API — no SDK needed) ──────
-    if gemini_key:
-        logger.info("Attempting Gemini analysis via REST API (gemini-2.0-flash)...")
-        try:
-            import requests as _requests
-            url = (
-                "https://generativelanguage.googleapis.com/v1beta/models"
-                f"/gemini-2.0-flash:generateContent?key={gemini_key}"
-            )
-            payload = {
-                "contents": [{"parts": [{"text": full_prompt}]}],
-                "generationConfig": {"temperature": 0.4, "maxOutputTokens": 16000},
-            }
-            resp = _requests.post(url, json=payload, timeout=120)
-            resp.raise_for_status()
-            raw = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
-            result["raw_response"] = raw
-            report = _parse_json(raw)
-            report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
-            report["ai_model"] = "gemini-2.0-flash"
-            result["report"] = report
-            result["status"] = "success"
-            logger.info(f"Gemini analysis complete: {len(report.get('top_trends', []))} trends")
-            return result
-        except Exception as e:
-            logger.warning(f"Gemini REST failed, trying Anthropic fallback: {e}")
-    else:
-        logger.warning("GEMINI_API_KEY not set — skipping Gemini, trying Anthropic")
-
-    # ── Fallback: Anthropic ─────────────────────────────────────
-    if not api_key:
-        result["error"] = "No AI API key configured (set GEMINI_API_KEY or ANTHROPIC_API_KEY)"
-        return result
 
     try:
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
+        logger.info("Sending data to Claude (claude-sonnet-4-6)...")
         message = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=16000,
@@ -428,11 +392,11 @@ def analyze(
         report["ai_model"] = "claude-sonnet-4-6"
         result["report"] = report
         result["status"] = "success"
-        logger.info(f"Anthropic analysis complete: {len(report.get('top_trends', []))} trends")
+        logger.info(f"Analysis complete: {len(report.get('top_trends', []))} trends identified")
 
     except json.JSONDecodeError as e:
         result["error"] = f"JSON parse error: {e}"
-        logger.error(f"Failed to parse AI response: {e}")
+        logger.error(f"Failed to parse Claude response: {e}")
     except Exception as e:
         result["error"] = str(e)
         logger.error(f"Analysis error: {e}")
