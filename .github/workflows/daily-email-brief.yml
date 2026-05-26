@@ -22,20 +22,14 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install --quiet \
-            anthropic \
-            slack-sdk \
-            google-auth \
-            google-auth-oauthlib \
-            google-auth-httplib2 \
-            google-api-python-client
+        run: pip install -r requirements.txt
 
       - name: Run daily brief
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_USER_ID: ${{ secrets.SLACK_USER_ID }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           GMAIL_TOKEN_JSON: ${{ secrets.GMAIL_TOKEN_JSON }}
         run: python scripts/daily_brief.py
 
