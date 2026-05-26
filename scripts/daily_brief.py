@@ -249,7 +249,7 @@ def generate_brief(brand_emails: dict, today: str) -> str:
     plan_text = f"This week ({week1['week']}) plan:\n"
     for idx, em in enumerate(week1["emails"], 1):
         plan_text += (
-            f"  Email {idx}: {em['send_date']} — "{em['subject']}" — {em['type']}\n"
+            f"  Email {idx}: {em['send_date']} — \"{em['subject']}\" — {em['type']}\n"
         )
 
     prompt = textwrap.dedent(f"""
