@@ -198,7 +198,7 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
 
     brand_data_text = ""
     for brand_name, emails in brand_emails.items():
-        brand_data_text += f"\n### {brand_name}\n"
+        brand_data_text += f"\n{brand_name}:\n"
         if not emails:
             brand_data_text += "  No emails in the last 5 days.\n"
             continue
@@ -212,122 +212,150 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
     for em in FIVE_EMAIL_BASELINE:
         baseline_text += f"  Email {em['num']}: {em['send_date']} — \"{em['subject']}\" ({em['type']})\n"
 
-    prompt = textwrap.dedent(f"""
-        You are the email war room strategist for CoBa's Daughter — a Vietnamese DTC body care brand.
+    prompt = f"""You are the email war room strategist for CoBa's Daughter — a Vietnamese DTC body care brand.
 
-        BRAND SNAPSHOT:
-        - Launched March 2026 · ~2 500 email subscribers · poor open + click rates
-        - Products: Coffee Body Exfoliator (Scrub Duo) · Aloe Soothing Gel (Aloe Duo) ·
-          3-in-1 Artisan Soap (Fig & Cedarwood / Grapefruit Peel & Eucalyptus / Persian Lime & Coconut) ·
-          Gift Bundle Sets · Deluxe Bath & Body Care Gift Basket
-        - Last campaign (May 25): "Up to 27% OFF Sets & Bundles" · free shipping $50+
-        - Sender personas: ritual@cobasdaughter.com (founder/brand/story) · hi@cobasdaughter.com (commercial)
-        - Brand voice: intimate · sensory · Vietnamese heritage · "low maintenance luxury"
-        - Hero product copy: "The only coffee scrub with a green tea scent" · "99% pure aloe vera" ·
-          "3-in-1: hand wash / body wash / bubble bath"
+BRAND SNAPSHOT:
+- Launched March 2026 · ~2,500 email subscribers · low open/click rates
+- Products: Coffee Body Exfoliator (Scrub Duo) · Aloe Soothing Gel (Aloe Duo) · 3-in-1 Artisan Soap · Gift Bundle Sets
+- Last campaign May 25: "Up to 27% OFF Sets & Bundles" · free shipping $50+
+- Sender personas: ritual@cobasdaughter.com (founder/intimate) · hi@cobasdaughter.com (commercial)
+- Voice: intimate · sensory · Vietnamese heritage · "low maintenance luxury"
+- Hero copy: "The only coffee scrub with a green tea scent" · "99% pure aloe vera" · "3-in-1: hand wash / body wash / bubble bath"
 
-        KLAVIYO CAMPAIGN HISTORY:
-        {klaviyo_context}
+KLAVIYO HISTORY:
+{klaviyo_context}
 
-        BRAND INBOX — LAST 5 DAYS (from 5 reference brand accounts):
-        {brand_data_text}
+COMPETITOR INBOX (last 5 days):
+{brand_data_text}
 
-        5-EMAIL BASELINE (update with live intel):
-        {baseline_text}
+BASELINE 5-EMAIL PLAN:
+{baseline_text}
 
-        CALENDAR: Today = {today} (GMT+7) · Father's Day US = June 15 · Summer peak = June–July
+CALENDAR: Today = {today} GMT+7 · Father's Day = June 15 · Summer peak = June-July
 
-        ══════════════════════════════════════════════════════════
-        OUTPUT: Write EXACTLY 6 sections with EXACT separator lines.
-        ══════════════════════════════════════════════════════════
+INSTRUCTIONS: Write a full Email War Room brief. Your response has exactly 6 parts.
+- Part 1 is a Slack message. Parts 2-6 are email templates.
+- Separate parts with ===EMAIL 1=== through ===EMAIL 5=== on their own lines.
+- Do NOT echo these instructions. Do NOT add section labels, dashes, or headers.
+- Start Part 1 immediately with the :red_circle: emoji line.
 
-        ─────────── SECTION 1: SLACK WAR ROOM BRIEF (Slack mrkdwn · max 2 500 chars) ───────────
+PART 1 FORMAT (Slack mrkdwn, under 2000 chars):
+Write the Slack brief starting exactly like this (replace bracketed placeholders):
 
-        :red_circle: *CoBa's Daughter — Email War Room · {today}*
-        _Live Gmail scan · 5-day competitor intel · Klaviyo updated_
+:red_circle: *CoBa's Daughter — Email War Room · {today}*
+_Live Gmail scan · 5-day competitor intel · Klaviyo updated_
 
+:inbox_tray: *WHAT YOUR INBOX SHOWS RIGHT NOW*
+[1-sentence market mood based on competitor scan data]
+• *Flamingo Estate* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
+• *Rhode* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
+• *OUAI* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
+• *Salt & Stone* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
+• *Nécessaire* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
+*Key pattern:* [1 sentence — dominant competitive theme right now]
 
-        :inbox_tray: *WHAT YOUR INBOX SHOWS RIGHT NOW*
-        [1 sentence: what's the overall market mood this week]
+:fire: *THE OPPORTUNITY RIGHT NOW*
+[2-3 sentences: specific calendar white space · what nobody in body care is owning · CoBa's angle]
 
-        | Brand | Offer | Emails sent | Started |
-        |-------|-------|-------------|---------|
-        [Fill one row per brand. Count exact emails from scan data. Be specific about offer amounts.
-         For brands with no emails: still include row with "No emails this week".]
+:white_check_mark: *YOUR 5-EMAIL PLAN — Updated {today}*
+:e-mail: *Email 1 — [date · type label]*
+> Subject: _"[subject line]"_
+> Product: [name] · From: [persona name · email]
+> Audience: [segment · Smart Send ON/OFF · exclude rule]
+> UTM: `[slug]`
+> CTA: _[button text]_
+[Emails 2–5 same compact format]
 
-        *Key pattern:* [1 sentence — dominant competitive theme right now]
+:zap: *DO RIGHT NOW*
+Step 1 → [exact Klaviyo menu path + action]
+Step 2 → [...]
+Step 3 → [...]
 
+:bulb: *One steal:* [brand + specific tactic + why it applies to CoBa]
 
-        :fire: *THE OPPORTUNITY RIGHT NOW*
-        [2–3 sentences: specific calendar white space · what nobody in body care is owning · CoBa's angle]
+===EMAIL 1===
+Subject: [exact subject line]
+Preview text: [exact preview text]
+From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
+From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
+Segment: [exact segment description]
 
+HERO IMAGE: [Specific visual: product name, styling, angle, lighting. E.g.: Scrub Duo jar on marble with scattered coffee grounds, warm morning light, overhead shot. Reference Canva design page if relevant.]
 
-        :white_check_mark: *YOUR 5-EMAIL PLAN — Updated {today}*
+BODY:
+[Full email copy, 160-200 words, CoBa brand voice. No "Dear"/"Hi". Open with 1 intimate sensory hook sentence. 2-3 short paragraphs: ingredient or ritual story + benefit + emotional resonance. Vietnamese heritage subtly if fitting. Gentle CTA close. Sign-off: — Méline OR — The CoBa's Daughter team]
 
-        :e-mail: *Email 1 — [date · type label]*
-        > Subject: _"[subject line]"_
-        > Product: [name] · From: [persona name · email]
-        > Audience: [segment · Smart Send ON/OFF · exclude rule]
-        > UTM: `[slug]`
-        > CTA: _[button text]_
+PRODUCT IMAGE: [Secondary visual description, 300x300px OR NONE]
 
-        [Emails 2–5: same compact format — full copy is in the template sections below]
+CTA BUTTON: [Button text, 2-5 words]
 
+===EMAIL 2===
+Subject: [exact subject line]
+Preview text: [exact preview text]
+From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
+From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
+Segment: [exact segment description]
 
-        :zap: *DO RIGHT NOW*
-        Step 1 → [Klaviyo: exact menu path + action]
-        Step 2 → [...]
-        Step 3 → [...]
+HERO IMAGE: [Specific visual description]
 
+BODY:
+[Full email copy, 160-200 words]
 
-        :bulb: *One steal:* [1 tactic from competitor inbox · brand + tactic + why it works for CoBa]
+PRODUCT IMAGE: [Description OR NONE]
 
+CTA BUTTON: [Button text]
 
-        ─────────────────────────────────────────────────────
-        ===EMAIL 1===
-        ─────────────────────────────────────────────────────
+===EMAIL 3===
+Subject: [exact subject line]
+Preview text: [exact preview text]
+From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
+From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
+Segment: [exact segment description]
 
-        Subject: [exact subject line]
-        Preview text: [exact preview text]
-        From name: [Méline at CoBa's Daughter  OR  CoBa's Daughter]
-        From email: [ritual@cobasdaughter.com  OR  hi@cobasdaughter.com]
-        Segment: [exact segment description]
+HERO IMAGE: [Specific visual description]
 
-        HERO IMAGE: [Describe what visual goes here — be specific: product name, mood, styling, angle.
-                     E.g. "Close-up of Scrub Duo jars on a marble surface with coffee grounds scattered around.
-                     Warm morning light. Use product lifestyle shot from Canva design."]
+BODY:
+[Full email copy, 160-200 words]
 
-        BODY:
-        [Full email copy · 160–200 words · CoBa brand voice]
-        [No "Dear" / no "Hi". Open with 1 intimate sensory hook sentence.]
-        [2–3 short paragraphs: ingredient or ritual story + benefit + emotional resonance]
-        [Reference Vietnamese heritage subtly if fitting]
-        [Closing paragraph: gentle CTA, not pushy]
-        [Sign-off: — Méline   OR   — The CoBa's Daughter team]
+PRODUCT IMAGE: [Description OR NONE]
 
-        PRODUCT IMAGE: [Optional secondary visual — describe: product name, angle, use case · 300×300px
-                        OR write "NONE" if not needed]
+CTA BUTTON: [Button text]
 
-        CTA BUTTON: [exact button text · 2–5 words]
+===EMAIL 4===
+Subject: [exact subject line]
+Preview text: [exact preview text]
+From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
+From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
+Segment: [exact segment description]
 
-        ─────────────────────────────────────────────────────
-        ===EMAIL 2===
-        ─────────────────────────────────────────────────────
-        [same full format as Email 1]
+HERO IMAGE: [Specific visual description]
 
-        ===EMAIL 3===
-        [same full format]
+BODY:
+[Full email copy, 160-200 words]
 
-        ===EMAIL 4===
-        [same full format]
+PRODUCT IMAGE: [Description OR NONE]
 
-        ===EMAIL 5===
-        [same full format]
-    """).strip()
+CTA BUTTON: [Button text]
+
+===EMAIL 5===
+Subject: [exact subject line]
+Preview text: [exact preview text]
+From name: [Méline at CoBa's Daughter OR CoBa's Daughter]
+From email: [ritual@cobasdaughter.com OR hi@cobasdaughter.com]
+Segment: [exact segment description]
+
+HERO IMAGE: [Specific visual description]
+
+BODY:
+[Full email copy, 160-200 words]
+
+PRODUCT IMAGE: [Description OR NONE]
+
+CTA BUTTON: [Button text]"""
 
     message = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=4096,
+        max_tokens=8000,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text
@@ -443,39 +471,43 @@ def _slack_to_html(text: str, p: dict) -> str:
 
 
 def _parse_email_template(section_text: str) -> dict:
-    """Parse an ===EMAIL N=== section into a structured dict."""
+    """Parse an ===EMAIL N=== section into a structured dict using regex."""
+    txt = section_text.strip()
+
+    def field(pattern, default=""):
+        m = re.search(pattern, txt, re.MULTILINE | re.IGNORECASE)
+        return m.group(1).strip() if m else default
+
     result = {
-        "subject": "", "preview": "", "from_name": "", "from_email": "",
-        "segment": "", "hero_image": "", "body": "", "product_image": "", "cta": "",
+        "subject":       field(r"^\**Subject:\**\s*[\"']?(.*?)[\"']?\s*$"),
+        "preview":       field(r"^\**Preview text:\**\s*[\"']?(.*?)[\"']?\s*$"),
+        "from_name":     field(r"^\**From name:\**\s*(.+)$"),
+        "from_email":    field(r"^\**From email:\**\s*(.+)$"),
+        "segment":       field(r"^\**Segment:\**\s*(.+)$"),
+        "product_image": field(r"^\**PRODUCT IMAGE:\**\s*(.+)$"),
+        "cta":           field(r"^\**CTA BUTTON:\**\s*(.+)$"),
+        "hero_image":    "",
+        "body":          "",
     }
-    lines    = section_text.strip().split("\n")
-    in_body  = False
-    body_buf = []
 
-    for line in lines:
-        s = line.strip()
-        if s.startswith("Subject:"):
-            result["subject"]       = s[8:].strip()
-        elif s.startswith("Preview text:"):
-            result["preview"]       = s[13:].strip()
-        elif s.startswith("From name:"):
-            result["from_name"]     = s[10:].strip()
-        elif s.startswith("From email:"):
-            result["from_email"]    = s[11:].strip()
-        elif s.startswith("Segment:"):
-            result["segment"]       = s[8:].strip()
-        elif s.startswith("HERO IMAGE:"):
-            result["hero_image"]    = s[11:].strip()
-        elif s.startswith("PRODUCT IMAGE:"):
-            result["product_image"] = s[14:].strip()
-        elif s.startswith("CTA BUTTON:"):
-            result["cta"]           = s[11:].strip()
-        elif s == "BODY:":
-            in_body = True
-        elif in_body and not s.startswith("PRODUCT IMAGE:") and not s.startswith("CTA BUTTON:"):
-            body_buf.append(line)
+    # Hero image: grab everything from HERO IMAGE: up to next blank line or BODY:
+    hero_m = re.search(
+        r"^\**HERO IMAGE:\**\s*\n?(.*?)(?=\n\s*\n|\nBODY:)",
+        txt, re.DOTALL | re.MULTILINE | re.IGNORECASE
+    )
+    if not hero_m:
+        hero_m = re.search(r"^\**HERO IMAGE:\**\s*(.+)$", txt, re.MULTILINE | re.IGNORECASE)
+    if hero_m:
+        result["hero_image"] = re.sub(r"\s+", " ", hero_m.group(1)).strip()
 
-    result["body"] = "\n".join(body_buf).strip()
+    # Body: everything between BODY: and PRODUCT IMAGE: or CTA BUTTON:
+    body_m = re.search(
+        r"^\**BODY:\**\s*\n(.*?)(?=\n\s*\n*\**PRODUCT IMAGE:|\n\s*\n*\**CTA BUTTON:)",
+        txt, re.DOTALL | re.MULTILINE | re.IGNORECASE
+    )
+    if body_m:
+        result["body"] = body_m.group(1).strip()
+
     return result
 
 
