@@ -380,17 +380,13 @@ def analyze(
 
     # ── Try Gemini first ────────────────────────────────────────
     if gemini_key:
+        logger.info("Attempting Gemini analysis (gemini-2.0-flash)...")
         try:
             from google import genai
-            from google.genai import types
             client = genai.Client(api_key=gemini_key)
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
                 contents=full_prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.4,
-                    max_output_tokens=16000,
-                ),
             )
             raw = response.text
             result["raw_response"] = raw
@@ -403,6 +399,8 @@ def analyze(
             return result
         except Exception as e:
             logger.warning(f"Gemini failed, trying Anthropic fallback: {e}")
+    else:
+        logger.warning("GEMINI_API_KEY not set — skipping Gemini, trying Anthropic")
 
     # ── Fallback: Anthropic ─────────────────────────────────────
     if not api_key:
