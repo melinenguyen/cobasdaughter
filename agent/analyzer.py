@@ -1,11 +1,5 @@
 """
-AI-powered trend analysis using Claude.
-
-Takes raw collected data from all sources and returns:
- - Categorised trend cards with new categories incl. Equestrian
- - Virality score (1-10) for each trend
- - CoBa's Daughter brand relevance score per trend
- - Actionable brand tactics (post ideas, UGC brief hooks, asset suggestions, seeding ops)
+AI-powered trend analysis. Uses Gemini (free) with Anthropic as fallback.
 """
 
 import json
@@ -13,9 +7,17 @@ import logging
 from datetime import datetime
 from typing import Any
 
-import anthropic
-
 logger = logging.getLogger(__name__)
+
+
+def _parse_json(raw: str) -> dict:
+    from json_repair import repair_json
+    cleaned = raw.strip().replace("```json", "").replace("```", "").strip()
+    start = cleaned.find("{")
+    end = cleaned.rfind("}") + 1
+    if start == -1 or end == 0:
+        raise ValueError("No JSON object found in response")
+    return json.loads(repair_json(cleaned[start:end]))
 
 SYSTEM_PROMPT = """You are the lead trend strategist for CoBa's Daughter — a luxury equestrian-meets-beauty
 lifestyle brand for the modern, discerning woman. CoBa's Daughter sits at the intersection of:
@@ -51,8 +53,11 @@ Tone: Urgent, direct, creative-director energy. You are briefing a CMO who needs
 No fluff. No hedging. State what is happening and exactly what CoBa's Daughter should do."""
 
 
-ANALYSIS_PROMPT = """TODAY's real-time US trend intelligence data for CoBa's Daughter:
+ANALYSIS_PROMPT = """TODAY's real-time US trend intelligence — articles from the LAST 8 HOURS ONLY:
+{dedup_block}
 
+
+RAW DATA:
 {data_summary}
 
 Produce a trend intelligence report as COMPACT valid JSON. Keep ALL text values SHORT (max 20 words each). Schema:
@@ -178,6 +183,26 @@ STRICT RULES:
     explicitly asking for brand recommendations, in which case it can be mentioned once naturally"""
 
 
+def _build_dedup_block(previous_report: dict[str, Any] | None) -> str:
+    """Build a block telling Claude which trends were already reported."""
+    if not previous_report:
+        return ""
+    prev_date = previous_report.get("report_date", "")
+    prev_trends = previous_report.get("top_trends", [])
+    prev_launches = previous_report.get("brand_launches_now", [])
+    if not prev_trends and not prev_launches:
+        return ""
+
+    lines = [f"\n=== ALREADY REPORTED IN PREVIOUS RUN ({prev_date}) — DO NOT REPEAT ==="]
+    lines.append("These were in the last report. Skip them unless the story has SIGNIFICANTLY escalated:")
+    for t in prev_trends:
+        lines.append(f"  • [{t.get('category','')}] {t.get('trend_name','')} — {t.get('heat_level','')}")
+    for bl in prev_launches[:5]:
+        lines.append(f"  • [Brand Launch] {bl.get('brand','')} — {bl.get('what','')}")
+    lines.append("Surface FRESH trends and stories not in the above list.")
+    return "\n".join(lines)
+
+
 def _build_data_summary(collected_data: dict[str, Any]) -> str:
     """Compress collected data into a readable summary for the AI prompt."""
     lines = []
@@ -254,18 +279,22 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
         for v in yt["niche_videos"][:8]:
             lines.append(f"  [{v['query']}] {v['title']} by {v['channel']}")
 
-    # Brand Intelligence — NEW: product launches, luxury brand moves
+    def _age(art: dict) -> str:
+        h = art.get("hours_ago")
+        return f" [{h}h ago]" if h is not None else ""
+
+    # Brand Intelligence — product launches, luxury brand moves
     brand = collected_data.get("brand_intel", {})
     if brand.get("brand_launches"):
-        lines.append("\n=== 🚨 BRAND LAUNCHES & DROPS (RIGHT NOW) ===")
+        lines.append("\n=== 🚨 BRAND LAUNCHES & DROPS (LAST 8 HOURS) ===")
         for art in brand["brand_launches"][:15]:
             brands = ", ".join(art.get("brands_mentioned", [])[:3])
-            lines.append(f"  [LAUNCH][{art['outlet']}] {art['title']}"
+            lines.append(f"  [LAUNCH]{_age(art)}[{art['outlet']}] {art['title']}"
                          + (f" | Brands: {brands}" if brands else ""))
     if brand.get("brand_moves"):
         lines.append("\nBrand Campaigns & Collabs:")
         for art in brand["brand_moves"][:10]:
-            lines.append(f"  [{art['outlet']}] {art['title']}")
+            lines.append(f"  {_age(art)}[{art['outlet']}] {art['title']}")
     if brand.get("top_brand_topics"):
         lines.append("\nMost-Mentioned Brands Right Now:")
         topics = [f"{b['brand']} ({b['mentions']}x)" for b in brand["top_brand_topics"][:10]]
@@ -274,26 +303,26 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     # News — Hollywood bucket first
     news = collected_data.get("news", {})
     if news.get("hollywood_articles"):
-        lines.append("\n=== 🎬 HOLLYWOOD & CELEBRITY (LIVE FEED) ===")
+        lines.append("\n=== 🎬 HOLLYWOOD & CELEBRITY (LAST 8 HOURS) ===")
         for a in news["hollywood_articles"][:20]:
-            lines.append(f"  [{a['outlet']}] {a['title']}")
+            lines.append(f"  {_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("launch_articles"):
         lines.append("\n=== 🛍️ PRODUCT LAUNCHES IN THE NEWS ===")
         for a in news["launch_articles"][:15]:
-            lines.append(f"  [{a['outlet']}] {a['title']}")
+            lines.append(f"  {_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("articles"):
         lines.append("\n=== MEDIA ARTICLES (Beauty/Fashion/Equestrian) ===")
         trend_articles = [a for a in news["articles"]
                           if a.get("trend_relevant") and not a.get("is_hollywood")][:15]
         for article in trend_articles:
-            lines.append(f"  [{article['outlet']}] {article['title']}")
+            lines.append(f"  {_age(article)}[{article['outlet']}] {article['title']}")
 
     if news.get("viral_articles"):
         lines.append("\nViral Media Signals:")
         for a in news["viral_articles"][:10]:
-            lines.append(f"  [VIRAL][{a['outlet']}] {a['title']}")
+            lines.append(f"  [VIRAL]{_age(a)}[{a['outlet']}] {a['title']}")
 
     if news.get("top_topics"):
         lines.append("\nTop Media Topics:")
@@ -325,8 +354,17 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
-    """Send collected trend data to Claude and return structured analysis."""
+def analyze(
+    collected_data: dict[str, Any],
+    api_key: str = "",
+    previous_report: dict[str, Any] | None = None,
+    gemini_key: str = "",
+) -> dict[str, Any]:
+    """Send collected trend data to the AI model and return structured analysis.
+
+    Tries Gemini first (free tier), falls back to Anthropic if api_key is set.
+    api_key is kept for backward compatibility but ignored when gemini_key is set.
+    """
     result: dict[str, Any] = {
         "status": "error",
         "report": None,
@@ -335,47 +373,59 @@ def analyze(collected_data: dict[str, Any], api_key: str) -> dict[str, Any]:
         "analyzed_at": datetime.utcnow().isoformat(),
     }
 
+    data_summary = _build_data_summary(collected_data)
+    dedup_block = _build_dedup_block(previous_report)
+    prompt = ANALYSIS_PROMPT.format(data_summary=data_summary, dedup_block=dedup_block)
+    full_prompt = SYSTEM_PROMPT + "\n\n" + prompt
+
+    # ── Try Gemini first ────────────────────────────────────────
+    if gemini_key:
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=gemini_key)
+            model = genai.GenerativeModel(
+                model_name="gemini-1.5-flash",
+                generation_config={"temperature": 0.4, "max_output_tokens": 16000},
+            )
+            response = model.generate_content(full_prompt)
+            raw = response.text
+            result["raw_response"] = raw
+            report = _parse_json(raw)
+            report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
+            report["ai_model"] = "gemini-1.5-flash"
+            result["report"] = report
+            result["status"] = "success"
+            logger.info(f"Gemini analysis complete: {len(report.get('top_trends', []))} trends")
+            return result
+        except Exception as e:
+            logger.warning(f"Gemini failed, trying Anthropic fallback: {e}")
+
+    # ── Fallback: Anthropic ─────────────────────────────────────
     if not api_key:
-        result["error"] = "ANTHROPIC_API_KEY not configured"
+        result["error"] = "No AI API key configured (set GEMINI_API_KEY or ANTHROPIC_API_KEY)"
         return result
 
-    data_summary = _build_data_summary(collected_data)
-    prompt = ANALYSIS_PROMPT.format(data_summary=data_summary)
-
     try:
+        import anthropic
         client = anthropic.Anthropic(api_key=api_key)
-
         message = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=16000,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
-
         raw = message.content[0].text
         result["raw_response"] = raw
-
-        from json_repair import repair_json
-
-        cleaned = raw.strip()
-        cleaned = cleaned.replace("```json", "").replace("```", "").strip()
-        start = cleaned.find("{")
-        end = cleaned.rfind("}") + 1
-        if start == -1 or end == 0:
-            raise ValueError("No JSON object found in response")
-        cleaned = cleaned[start:end]
-
-        repaired = repair_json(cleaned)
-        report = json.loads(repaired)
+        report = _parse_json(raw)
         report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
+        report["ai_model"] = "claude-sonnet-4-6"
         result["report"] = report
         result["status"] = "success"
-
-        logger.info(f"Analysis complete: {len(report.get('top_trends', []))} trends identified")
+        logger.info(f"Anthropic analysis complete: {len(report.get('top_trends', []))} trends")
 
     except json.JSONDecodeError as e:
         result["error"] = f"JSON parse error: {e}"
-        logger.error(f"Failed to parse Claude response: {e}")
+        logger.error(f"Failed to parse AI response: {e}")
     except Exception as e:
         result["error"] = str(e)
         logger.error(f"Analysis error: {e}")

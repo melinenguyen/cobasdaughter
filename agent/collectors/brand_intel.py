@@ -5,8 +5,10 @@ and competitor moves via RSS feeds, no API keys required.
 
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Any
+
+FRESHNESS_HOURS = 8  # match news.py — only articles from the last 8 hours
 
 logger = logging.getLogger(__name__)
 
@@ -113,15 +115,30 @@ def collect() -> dict[str, Any]:
         import feedparser
 
         all_articles = []
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=FRESHNESS_HOURS)
 
         for outlet, feed_url in BRAND_FEEDS.items():
             try:
                 feed = feedparser.parse(feed_url)
-                for entry in feed.entries[:20]:
+                for entry in feed.entries[:30]:
+                    # Skip stale articles
+                    pub_dt = None
+                    if entry.get("published_parsed"):
+                        try:
+                            pub_dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+                        except Exception:
+                            pass
+                    if pub_dt and pub_dt < cutoff:
+                        continue
+
                     title = entry.get("title", "")
                     summary = _clean_html(entry.get("summary", entry.get("description", "")))
                     link = entry.get("link", "")
                     published = entry.get("published", "")
+                    hours_ago = (
+                        round((datetime.now(timezone.utc) - pub_dt).total_seconds() / 3600, 1)
+                        if pub_dt else None
+                    )
 
                     scored = _score_article(title, summary)
 
@@ -131,6 +148,7 @@ def collect() -> dict[str, Any]:
                         "summary": summary[:400],
                         "url": link,
                         "published": published,
+                        "hours_ago": hours_ago,
                         **scored,
                     }
                     all_articles.append(article)

@@ -1,7 +1,7 @@
 import logging
 import re
-import requests
-from datetime import datetime
+import time
+from datetime import datetime, timezone, timedelta
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -103,8 +103,34 @@ LAUNCH_SIGNALS = [
 ]
 
 
+FRESHNESS_HOURS = 8  # only surface articles published in last 8 hours
+
+
 def _clean_html(text: str) -> str:
     return re.sub(r"<[^>]+>", "", text or "").strip()
+
+
+def _parse_published(entry) -> datetime | None:
+    """Try to extract a timezone-aware published datetime from a feedparser entry."""
+    if entry.get("published_parsed"):
+        try:
+            return datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+        except Exception:
+            pass
+    if entry.get("updated_parsed"):
+        try:
+            return datetime(*entry.updated_parsed[:6], tzinfo=timezone.utc)
+        except Exception:
+            pass
+    return None
+
+
+def _is_fresh(entry, cutoff: datetime) -> bool:
+    """Return True if the article was published after the cutoff, or if we can't tell."""
+    pub = _parse_published(entry)
+    if pub is None:
+        return True  # unknown publish time — include it, better safe than sorry
+    return pub >= cutoff
 
 
 def _is_trend_relevant(title: str, summary: str) -> bool:
@@ -144,17 +170,27 @@ def collect() -> dict[str, Any]:
     try:
         import feedparser
 
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=FRESHNESS_HOURS)
+
         for outlet, feed_url in RSS_FEEDS.items():
             try:
                 feed = feedparser.parse(feed_url)
                 outlet_articles = []
 
-                for entry in feed.entries[:15]:
+                for entry in feed.entries[:25]:  # scan more, filter by freshness
+                    if not _is_fresh(entry, cutoff):
+                        continue
+
                     title = entry.get("title", "")
                     summary = _clean_html(entry.get("summary", entry.get("description", "")))
                     link = entry.get("link", "")
                     published = entry.get("published", "")
                     tags = [t.term for t in entry.get("tags", [])[:5]]
+                    pub_dt = _parse_published(entry)
+                    hours_ago = (
+                        round((datetime.now(timezone.utc) - pub_dt).total_seconds() / 3600, 1)
+                        if pub_dt else None
+                    )
 
                     article = {
                         "outlet": outlet,
@@ -162,6 +198,7 @@ def collect() -> dict[str, Any]:
                         "summary": summary[:300],
                         "url": link,
                         "published": published,
+                        "hours_ago": hours_ago,
                         "tags": tags,
                         "trend_relevant": _is_trend_relevant(title, summary),
                         "is_viral": _is_viral(title, summary),
