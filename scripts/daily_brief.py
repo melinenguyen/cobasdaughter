@@ -524,8 +524,16 @@ def main():
 
     # 2. Claude brief
     print("[daily_brief] Generating brief…")
-    brief = generate_brief(brand_emails, today)
-    print(f"[daily_brief] Brief ready ({len(brief)} chars)")
+    try:
+        brief = generate_brief(brand_emails, today)
+        print(f"[daily_brief] Brief ready ({len(brief)} chars)")
+    except Exception as e:
+        print(f"[daily_brief] Claude failed: {e}")
+        brief = (
+            f"⚠️ *Daily brief could not be generated today.*\n"
+            f"Error: {e}\n\n"
+            f"Check your ANTHROPIC_API_KEY credits at console.anthropic.com"
+        )
 
     # 3. Slack DM
     print("[daily_brief] Posting to Slack…")

@@ -41,10 +41,17 @@ jobs:
         run: |
           python - <<'EOF'
           import os
-          from slack_sdk import WebClient
-          client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
-          client.chat_postMessage(
-            channel=os.environ["SLACK_USER_ID"],
-            text="⚠️ *CoBa's Daily Brief failed today.* Check GitHub Actions for details."
-          )
+          token = os.environ.get("SLACK_BOT_TOKEN", "")
+          uid   = os.environ.get("SLACK_USER_ID", "")
+          if not token or not uid:
+              print("Slack secrets not set — skipping failure notification")
+          else:
+              from slack_sdk import WebClient
+              try:
+                  WebClient(token=token).chat_postMessage(
+                      channel=uid,
+                      text="⚠️ *CoBa's Daily Brief failed today.* Check GitHub Actions for details."
+                  )
+              except Exception as e:
+                  print(f"Slack notification failed: {e}")
           EOF
