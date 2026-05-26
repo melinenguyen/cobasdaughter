@@ -8,13 +8,15 @@ Environment vars / GitHub Secrets needed:
   ANTHROPIC_API_KEY    — Claude API key
   SLACK_BOT_TOKEN      — Slack bot token (xoxb-...)
   SLACK_USER_ID        — Méline's Slack user ID  (default: U08V8865GD7)
-  GMAIL_TOKEN_JSON     — Gmail OAuth token JSON, base64-encoded
+  GMAIL_APP_PASSWORD   — Gmail App Password for meline.nguyen@lixibox.com (for sending)
+  GMAIL_TOKEN_JSON     — Gmail OAuth token JSON, base64-encoded (optional, for reading brand emails)
 """
 
 import os
 import json
 import base64
 import datetime
+import smtplib
 import textwrap
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -479,23 +481,26 @@ def _render_html(brief_text: str, today: str) -> str:
 </body></html>"""
 
 
-def send_email_brief(service, brief_text: str, today: str) -> str:
+def send_email_brief(brief_text: str, today: str) -> None:
+    app_password = os.environ.get("GMAIL_APP_PASSWORD")
+    if not app_password:
+        raise ValueError("GMAIL_APP_PASSWORD not set — see GMAIL_APP_PASSWORD_SETUP.md")
+
     html_body = _render_html(brief_text, today)
     subject   = f"CoBa's Daughter Daily Brief — {today}"
 
     msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"]    = f"CoBa's Daughter <{EMAIL_TO}>"
     msg["To"]      = EMAIL_TO
     msg["Cc"]      = EMAIL_CC
-    msg["From"]    = "me"
-    msg["Subject"] = subject
 
-    # Build recipients string for the "to" field in the API call
     msg.attach(MIMEText(brief_text, "plain"))
     msg.attach(MIMEText(html_body,  "html"))
 
-    raw    = base64.urlsafe_b64encode(msg.as_bytes()).decode()
-    result = service.users().messages().send(userId="me", body={"raw": raw}).execute()
-    return result.get("id", "")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(EMAIL_TO, app_password)
+        smtp.sendmail(EMAIL_TO, [EMAIL_TO, EMAIL_CC], msg.as_bytes())
 
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
@@ -532,14 +537,11 @@ def main():
 
     # 4. Email
     print(f"[daily_brief] Sending email to {EMAIL_TO} (cc {EMAIL_CC})…")
-    if service:
-        try:
-            msg_id = send_email_brief(service, brief, today)
-            print(f"[daily_brief] Email sent. id: {msg_id}")
-        except Exception as e:
-            print(f"[daily_brief] Email failed: {e}")
-    else:
-        print("[daily_brief] Gmail unavailable — skipping email.")
+    try:
+        send_email_brief(brief, today)
+        print(f"[daily_brief] Email sent.")
+    except Exception as e:
+        print(f"[daily_brief] Email failed: {e}")
 
     print("[daily_brief] Done.")
 
