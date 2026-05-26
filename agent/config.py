@@ -5,7 +5,8 @@ load_dotenv()
 
 
 class Config:
-    ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+    ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")  # fallback if Gemini not set
     SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "")
     SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID", "")
 

@@ -1,11 +1,5 @@
 """
-AI-powered trend analysis using Claude.
-
-Takes raw collected data from all sources and returns:
- - Categorised trend cards with new categories incl. Equestrian
- - Virality score (1-10) for each trend
- - CoBa's Daughter brand relevance score per trend
- - Actionable brand tactics (post ideas, UGC brief hooks, asset suggestions, seeding ops)
+AI-powered trend analysis. Uses Gemini (free) with Anthropic as fallback.
 """
 
 import json
@@ -13,9 +7,17 @@ import logging
 from datetime import datetime
 from typing import Any
 
-import anthropic
-
 logger = logging.getLogger(__name__)
+
+
+def _parse_json(raw: str) -> dict:
+    from json_repair import repair_json
+    cleaned = raw.strip().replace("```json", "").replace("```", "").strip()
+    start = cleaned.find("{")
+    end = cleaned.rfind("}") + 1
+    if start == -1 or end == 0:
+        raise ValueError("No JSON object found in response")
+    return json.loads(repair_json(cleaned[start:end]))
 
 SYSTEM_PROMPT = """You are the lead trend strategist for CoBa's Daughter — a luxury equestrian-meets-beauty
 lifestyle brand for the modern, discerning woman. CoBa's Daughter sits at the intersection of:
@@ -354,10 +356,15 @@ def _build_data_summary(collected_data: dict[str, Any]) -> str:
 
 def analyze(
     collected_data: dict[str, Any],
-    api_key: str,
+    api_key: str = "",
     previous_report: dict[str, Any] | None = None,
+    gemini_key: str = "",
 ) -> dict[str, Any]:
-    """Send collected trend data to Claude and return structured analysis."""
+    """Send collected trend data to the AI model and return structured analysis.
+
+    Tries Gemini first (free tier), falls back to Anthropic if api_key is set.
+    api_key is kept for backward compatibility but ignored when gemini_key is set.
+    """
     result: dict[str, Any] = {
         "status": "error",
         "report": None,
@@ -366,48 +373,59 @@ def analyze(
         "analyzed_at": datetime.utcnow().isoformat(),
     }
 
-    if not api_key:
-        result["error"] = "ANTHROPIC_API_KEY not configured"
-        return result
-
     data_summary = _build_data_summary(collected_data)
     dedup_block = _build_dedup_block(previous_report)
     prompt = ANALYSIS_PROMPT.format(data_summary=data_summary, dedup_block=dedup_block)
+    full_prompt = SYSTEM_PROMPT + "\n\n" + prompt
+
+    # ── Try Gemini first ────────────────────────────────────────
+    if gemini_key:
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=gemini_key)
+            model = genai.GenerativeModel(
+                model_name="gemini-1.5-flash",
+                generation_config={"temperature": 0.4, "max_output_tokens": 16000},
+            )
+            response = model.generate_content(full_prompt)
+            raw = response.text
+            result["raw_response"] = raw
+            report = _parse_json(raw)
+            report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
+            report["ai_model"] = "gemini-1.5-flash"
+            result["report"] = report
+            result["status"] = "success"
+            logger.info(f"Gemini analysis complete: {len(report.get('top_trends', []))} trends")
+            return result
+        except Exception as e:
+            logger.warning(f"Gemini failed, trying Anthropic fallback: {e}")
+
+    # ── Fallback: Anthropic ─────────────────────────────────────
+    if not api_key:
+        result["error"] = "No AI API key configured (set GEMINI_API_KEY or ANTHROPIC_API_KEY)"
+        return result
 
     try:
+        import anthropic
         client = anthropic.Anthropic(api_key=api_key)
-
         message = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=16000,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
-
         raw = message.content[0].text
         result["raw_response"] = raw
-
-        from json_repair import repair_json
-
-        cleaned = raw.strip()
-        cleaned = cleaned.replace("```json", "").replace("```", "").strip()
-        start = cleaned.find("{")
-        end = cleaned.rfind("}") + 1
-        if start == -1 or end == 0:
-            raise ValueError("No JSON object found in response")
-        cleaned = cleaned[start:end]
-
-        repaired = repair_json(cleaned)
-        report = json.loads(repaired)
+        report = _parse_json(raw)
         report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
+        report["ai_model"] = "claude-sonnet-4-6"
         result["report"] = report
         result["status"] = "success"
-
-        logger.info(f"Analysis complete: {len(report.get('top_trends', []))} trends identified")
+        logger.info(f"Anthropic analysis complete: {len(report.get('top_trends', []))} trends")
 
     except json.JSONDecodeError as e:
         result["error"] = f"JSON parse error: {e}"
-        logger.error(f"Failed to parse Claude response: {e}")
+        logger.error(f"Failed to parse AI response: {e}")
     except Exception as e:
         result["error"] = str(e)
         logger.error(f"Analysis error: {e}")

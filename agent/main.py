@@ -101,9 +101,14 @@ def run_agent(
         except Exception as e:
             logger.warning(f"Could not load previous report: {e}")
 
-    # 3. Analyze
-    logger.info("Sending data to Claude for analysis...")
-    analysis = analyzer.analyze(collected, Config.ANTHROPIC_API_KEY, previous_report=previous_report)
+    # 3. Analyze (Gemini free tier first, Anthropic as fallback)
+    logger.info("Sending data to AI for analysis...")
+    analysis = analyzer.analyze(
+        collected,
+        api_key=Config.ANTHROPIC_API_KEY,
+        previous_report=previous_report,
+        gemini_key=Config.GEMINI_API_KEY,
+    )
 
     if analysis["status"] != "success":
         logger.error(f"Analysis failed: {analysis.get('error')}")
