@@ -381,18 +381,22 @@ def analyze(
     # ── Try Gemini first ────────────────────────────────────────
     if gemini_key:
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
-                generation_config={"temperature": 0.4, "max_output_tokens": 16000},
+            from google import genai
+            from google.genai import types
+            client = genai.Client(api_key=gemini_key)
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=full_prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.4,
+                    max_output_tokens=16000,
+                ),
             )
-            response = model.generate_content(full_prompt)
             raw = response.text
             result["raw_response"] = raw
             report = _parse_json(raw)
             report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
-            report["ai_model"] = "gemini-1.5-flash"
+            report["ai_model"] = "gemini-2.0-flash"
             result["report"] = report
             result["status"] = "success"
             logger.info(f"Gemini analysis complete: {len(report.get('top_trends', []))} trends")
