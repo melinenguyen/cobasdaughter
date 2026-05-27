@@ -19,6 +19,9 @@ import json
 import base64
 import datetime
 import smtplib
+import imaplib
+import email as emaillib
+from email.header import decode_header as _hdr_decode
 import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -26,21 +29,20 @@ from email.mime.text import MIMEText
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 REFERENCE_BRANDS = [
-    # Use display-name OR domain — reliable regardless of which ESP they use.
-    # Do NOT prefix with "in:all" — that is not a valid Gmail search operator
-    # and silently returns zero results. No in: filter = search all folders.
-    {"name": "Flamingo Estate", "query": '(from:flamingoestate.com OR from:"Flamingo Estate")'},
-    {"name": "Rhode",           "query": '(from:rhodeskin.com OR from:rhode.com OR from:"Rhode")'},
-    {"name": "OUAI",            "query": '(from:theouai.com OR from:ouai.com OR from:"OUAI")'},
-    {"name": "Salt & Stone",    "query": '(from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")'},
-    {"name": "Nécessaire",      "query": '(from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")'},
-    {"name": "Frank Body",      "query": '(from:frankbody.com OR from:"Frank Body")'},
-    {"name": "Koala Eco",       "query": '(from:koalaeco.com OR from:"Koala Eco")'},
-    {"name": "Kopari",          "query": '(from:koparibeauty.com OR from:kopari.com OR from:"Kopari")'},
-    {"name": "Herbivore",       "query": '(from:herbivorebotanicals.com OR from:"Herbivore")'},
-    {"name": "Golde",           "query": '(from:golde.co OR from:"Golde")'},
-    {"name": "Youth To The People", "query": '(from:yttpbeauty.com OR from:"Youth To The People" OR from:"YTTP")'},
-    {"name": "Osea",            "query": '(from:oseamalibu.com OR from:"OSEA" OR from:"Osea")'},
+    # imap_terms: substrings searched inside the From header (display name + email address).
+    # List most specific term first. IMAP FROM search is case-insensitive substring match.
+    {"name": "Flamingo Estate",     "imap_terms": ["flamingoestate", "Flamingo Estate"]},
+    {"name": "Rhode",               "imap_terms": ["rhodeskin", "rhode.com"]},
+    {"name": "OUAI",                "imap_terms": ["theouai", "ouai.com"]},
+    {"name": "Salt & Stone",        "imap_terms": ["saltandstone"]},
+    {"name": "Nécessaire",          "imap_terms": ["necessaire"]},
+    {"name": "Frank Body",          "imap_terms": ["frankbody", "Frank Body"]},
+    {"name": "Koala Eco",           "imap_terms": ["koalaeco", "Koala Eco"]},
+    {"name": "Kopari",              "imap_terms": ["koparibeauty", "kopari.com"]},
+    {"name": "Herbivore",           "imap_terms": ["herbivorebotanicals", "Herbivore Botanicals"]},
+    {"name": "Golde",               "imap_terms": ["golde.co", "hello@golde"]},
+    {"name": "Youth To The People", "imap_terms": ["yttpbeauty", "yttp.com"]},
+    {"name": "Osea",                "imap_terms": ["oseamalibu", "osea.com"]},
 ]
 
 SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
@@ -226,106 +228,133 @@ def get_klaviyo_context() -> str:
     except Exception as e:
         return f"Klaviyo fetch failed: {e}"
 
-# ─── GMAIL HELPERS ────────────────────────────────────────────────────────────
+# ─── GMAIL HELPERS (IMAP — uses GMAIL_APP_PASSWORD, no OAuth needed) ──────────
 
-def build_gmail_service():
-    from google.oauth2.credentials import Credentials
-    from googleapiclient.discovery import build
-    token_json = os.environ.get("GMAIL_TOKEN_JSON")
-    if not token_json:
-        raise ValueError("GMAIL_TOKEN_JSON not set")
-    token_data = json.loads(base64.b64decode(token_json))
-    creds = Credentials.from_authorized_user_info(token_data)
-    svc = build("gmail", "v1", credentials=creds)
+def _imap_decode(value: str) -> str:
+    """Decode encoded email header value (handles UTF-8, ISO-8859, etc.)."""
+    if not value:
+        return ""
+    parts = []
+    for chunk, enc in _hdr_decode(value):
+        if isinstance(chunk, bytes):
+            parts.append(chunk.decode(enc or "utf-8", errors="replace"))
+        else:
+            parts.append(str(chunk))
+    return " ".join(parts)
+
+
+def build_imap_connection():
+    """Connect to Gmail via IMAP using GMAIL_APP_PASSWORD — same password used for sending."""
+    password = os.environ.get("GMAIL_APP_PASSWORD")
+    if not password:
+        raise ValueError("GMAIL_APP_PASSWORD not set")
+    mail = imaplib.IMAP4_SSL("imap.gmail.com", 993)
+    mail.login(EMAIL_TO, password)
+    print(f"[daily_brief] IMAP connected as: {EMAIL_TO}")
+    return mail
+
+
+def _imap_fetch_emails(mail, search_term: str, since_str: str) -> list:
+    """Search [Gmail]/All Mail for emails FROM a term since a date."""
+    results = []
     try:
-        profile = svc.users().getProfile(userId="me").execute()
-        addr    = profile.get("emailAddress", "unknown")
-        total   = profile.get("messagesTotal", "?")
-        print(f"[daily_brief] Gmail connected as: {addr}  ({total} total messages in mailbox)")
-        # Sanity check: count ANY message in the last 7 days
-        check = svc.users().messages().list(userId="me", q="newer_than:7d", maxResults=1).execute()
-        n7d = check.get("resultSizeEstimate", 0)
-        print(f"[daily_brief] Gmail health check: ~{n7d} messages found with newer_than:7d")
-        if n7d == 0:
-            print("[daily_brief] WARNING: 0 messages found in last 7 days — token may be "
-                  "for the wrong account or may be expired. Check GMAIL_TOKEN_JSON secret.")
+        # IMAP FROM search is a substring match against the full From header
+        status, data = mail.search(None, f'FROM "{search_term}" SINCE "{since_str}"')
+        if status != "OK" or not data[0]:
+            return []
+        nums = data[0].split()[-15:]  # up to 15 most recent
+        for num in nums:
+            _, msg_data = mail.fetch(num, "(BODY.PEEK[HEADER.FIELDS (SUBJECT FROM DATE)])")
+            if not msg_data or not msg_data[0]:
+                continue
+            raw = msg_data[0][1] if isinstance(msg_data[0], tuple) else b""
+            msg = emaillib.message_from_bytes(raw)
+            results.append({
+                "subject": _imap_decode(msg.get("Subject", "(no subject)")),
+                "from":    _imap_decode(msg.get("From", "")),
+                "date":    msg.get("Date", ""),
+                "snippet": "",
+            })
     except Exception as e:
-        print(f"[daily_brief] Gmail profile/health check failed: {e}")
-    return svc
-
-
-def get_recent_brand_emails(service, hours_back: int = 120) -> dict:
-    """Scan inbox for reference brands over last 5 days (120h) rolling window."""
-    results     = {}
-    cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
-    after_epoch = int(cutoff.timestamp())
-    for brand in REFERENCE_BRANDS:
-        # No in: prefix — searching without it covers all folders (inbox, promotions, etc.)
-        query = f"{brand['query']} after:{after_epoch}"
-        try:
-            resp = service.users().messages().list(userId="me", q=query, maxResults=15).execute()
-            msgs = resp.get("messages", [])
-            brand_emails = []
-            for ref in msgs:
-                msg = service.users().messages().get(
-                    userId="me", messageId=ref["id"], format="metadata",
-                    metadataHeaders=["Subject", "From", "Date"],
-                ).execute()
-                hdrs = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
-                brand_emails.append({
-                    "subject": hdrs.get("Subject", "(no subject)"),
-                    "from":    hdrs.get("From", ""),
-                    "date":    hdrs.get("Date", ""),
-                    "snippet": msg.get("snippet", "")[:200],
-                })
-            results[brand["name"]] = brand_emails
-            print(f"[daily_brief]   {brand['name']}: {len(brand_emails)} emails")
-        except Exception as e:
-            results[brand["name"]] = [{"error": str(e)}]
-            print(f"[daily_brief]   {brand['name']}: ERROR — {e}")
+        print(f"[daily_brief]   IMAP search '{search_term}': {e}")
     return results
 
 
-def get_all_promo_senders(service, hours_back: int = 120) -> list:
-    """Scan ALL marketing emails in the last 5 days — catches every brand not in reference list.
+def get_recent_brand_emails(mail, days_back: int = 5) -> dict:
+    """Scan Gmail via IMAP for all reference brands over the last 5 days."""
+    cutoff    = datetime.datetime.utcnow() - datetime.timedelta(days=days_back)
+    since_str = cutoff.strftime("%d-%b-%Y")  # e.g. "22-May-2026"
 
-    Uses has:list-unsubscribe which matches every legitimate marketing email regardless
-    of which Gmail tab it lands in (Primary, Promotions, Social, Updates, etc.).
+    # Select All Mail so we search every folder (inbox, promotions, social, etc.)
+    status, _ = mail.select('"[Gmail]/All Mail"', readonly=True)
+    if status != "OK":
+        mail.select("INBOX", readonly=True)
+
+    results = {}
+    for brand in REFERENCE_BRANDS:
+        seen_ids = set()
+        brand_emails = []
+        for term in brand["imap_terms"]:
+            for em in _imap_fetch_emails(mail, term, since_str):
+                key = (em["date"], em["subject"])
+                if key not in seen_ids:
+                    seen_ids.add(key)
+                    brand_emails.append(em)
+        results[brand["name"]] = brand_emails
+        print(f"[daily_brief]   {brand['name']}: {len(brand_emails)} emails")
+    return results
+
+
+def get_all_promo_senders(mail, days_back: int = 5) -> list:
+    """Scan ALL marketing emails from last 5 days — catches every brand not in reference list.
+
+    Searches Gmail's Promotions folder, then checks for List-Unsubscribe header
+    (present in all legitimate marketing email regardless of which tab it lands in).
     """
-    cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
-    after_epoch = int(cutoff.timestamp())
-    ref_names   = {b["name"].lower() for b in REFERENCE_BRANDS}
-    try:
-        # has:list-unsubscribe is legally required on all marketing email — far more
-        # reliable than category:promotions which misses emails Gmail puts in Primary.
-        resp = service.users().messages().list(
-            userId="me",
-            q=f"has:list-unsubscribe after:{after_epoch}",
-            maxResults=100,
-        ).execute()
-        msgs = resp.get("messages", [])
-        seen_senders = set()
-        senders = []
-        for ref in msgs:
-            msg = service.users().messages().get(
-                userId="me", messageId=ref["id"], format="metadata",
-                metadataHeaders=["Subject", "From", "Date"],
-            ).execute()
-            hdrs     = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
-            from_raw = hdrs.get("From", "")
-            subject  = hdrs.get("Subject", "")
-            snippet  = msg.get("snippet", "")[:150]
-            # Deduplicate by sender + skip already-tracked reference brands
-            sender_key      = from_raw.lower()
-            already_tracked = any(name in sender_key for name in ref_names)
-            if not already_tracked and from_raw and sender_key not in seen_senders:
-                seen_senders.add(sender_key)
-                senders.append({"from": from_raw, "subject": subject, "snippet": snippet})
-        print(f"[daily_brief] Full promo scan: {len(msgs)} total, {len(senders)} unique non-reference senders")
-        return senders
-    except Exception as e:
-        print(f"[daily_brief] Full promo scan failed: {e}")
+    cutoff    = datetime.datetime.utcnow() - datetime.timedelta(days=days_back)
+    since_str = cutoff.strftime("%d-%b-%Y")
+    ref_names = {b["name"].lower() for b in REFERENCE_BRANDS}
+
+    # Try Promotions folder first, fall back to All Mail
+    folder_selected = None
+    for folder in ['"[Gmail]/Promotions"', '"Promotions"', '"[Gmail]/All Mail"']:
+        try:
+            status, _ = mail.select(folder, readonly=True)
+            if status == "OK":
+                folder_selected = folder
+                print(f"[daily_brief] Promo scan folder: {folder}")
+                break
+        except Exception:
+            continue
+
+    if not folder_selected:
         return []
+
+    senders, seen = [], set()
+    try:
+        _, nums = mail.search(None, f'SINCE "{since_str}"')
+        for num in (nums[0].split() or [])[-100:]:
+            _, msg_data = mail.fetch(
+                num,
+                "(BODY.PEEK[HEADER.FIELDS (FROM SUBJECT LIST-UNSUBSCRIBE)])"
+            )
+            if not msg_data or not msg_data[0]:
+                continue
+            raw = msg_data[0][1] if isinstance(msg_data[0], tuple) else b""
+            msg      = emaillib.message_from_bytes(raw)
+            from_raw = _imap_decode(msg.get("From", ""))
+            subject  = _imap_decode(msg.get("Subject", ""))
+            has_unsub        = bool(msg.get("List-Unsubscribe"))
+            already_tracked  = any(n in from_raw.lower() for n in ref_names)
+            sender_key       = from_raw.lower()
+            if has_unsub and not already_tracked and from_raw and sender_key not in seen:
+                seen.add(sender_key)
+                senders.append({"from": from_raw, "subject": subject, "snippet": ""})
+    except Exception as e:
+        print(f"[daily_brief] Promo scan error: {e}")
+
+    print(f"[daily_brief] Full promo scan: {len(senders)} unique non-reference senders")
+    return senders
 
 # ─── BRIEF GENERATOR ─────────────────────────────────────────────────────────
 
@@ -873,25 +902,25 @@ def main():
     today = datetime.datetime.now(vn_tz).strftime("%A, %B %-d, %Y")
     print(f"[daily_brief] Starting for {today}")
 
-    # 1. Gmail inbox scan (optional)
+    # 1. Gmail inbox scan via IMAP (uses GMAIL_APP_PASSWORD — no OAuth token needed)
     brand_emails  = {b["name"]: [] for b in REFERENCE_BRANDS}
     all_promos    = []
     gmail_warning = ""
     try:
-        service      = build_gmail_service()
-        brand_emails = get_recent_brand_emails(service)
-        all_promos   = get_all_promo_senders(service)
+        mail         = build_imap_connection()
+        brand_emails = get_recent_brand_emails(mail)
+        all_promos   = get_all_promo_senders(mail)
+        mail.logout()
         found = sum(len(v) for v in brand_emails.values())
         print(f"[daily_brief] {found} reference brand emails + {len(all_promos)} unique other promo senders (last 5 days)")
         if found == 0 and len(all_promos) == 0:
             gmail_warning = (
-                "\n\n⚠️ *Gmail scan returned 0 emails.* This usually means the "
-                "GMAIL_TOKEN_JSON secret is for the wrong account or has expired. "
-                "Check the GitHub Actions log for the 'Gmail connected as:' line "
-                "and verify it shows the correct inbox."
+                "\n\n⚠️ *Gmail inbox scan returned 0 emails.* "
+                "Make sure IMAP is enabled in Gmail settings: "
+                "Gmail → Settings → See all settings → Forwarding and POP/IMAP → Enable IMAP."
             )
     except Exception as e:
-        print(f"[daily_brief] Gmail fetch failed: {e}")
+        print(f"[daily_brief] Gmail IMAP failed: {e}")
         gmail_warning = f"\n\n⚠️ *Gmail scan failed:* `{e}`"
 
     # 2. Klaviyo context (optional)
