@@ -26,29 +26,22 @@ from email.mime.text import MIMEText
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 REFERENCE_BRANDS = [
-    # Gmail's from: operator matches exact domain only (not subdomains).
-    # Marketing ESPs send from subdomains (email.*, mail.*, em.*) so we
-    # also search the sender display name — it's reliable regardless of ESP.
-    {
-        "name": "Flamingo Estate",
-        "query": 'in:all (from:flamingoestate.com OR from:"Flamingo Estate")',
-    },
-    {
-        "name": "Rhode",
-        "query": 'in:all (from:rhodeskin.com OR from:rhode.com OR from:"Rhode")',
-    },
-    {
-        "name": "OUAI",
-        "query": 'in:all (from:theouai.com OR from:ouai.com OR from:"OUAI")',
-    },
-    {
-        "name": "Salt & Stone",
-        "query": 'in:all (from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")',
-    },
-    {
-        "name": "Nécessaire",
-        "query": 'in:all (from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")',
-    },
+    # Gmail from: matches exact domain only (not subdomains).
+    # ESPs send from subdomains (email.*, mail.*, em.*) so we also match
+    # the sender display name — reliable regardless of which ESP they use.
+    {"name": "Flamingo Estate", "query": 'in:all (from:flamingoestate.com OR from:"Flamingo Estate")'},
+    {"name": "Rhode",           "query": 'in:all (from:rhodeskin.com OR from:rhode.com OR from:"Rhode")'},
+    {"name": "OUAI",            "query": 'in:all (from:theouai.com OR from:ouai.com OR from:"OUAI")'},
+    {"name": "Salt & Stone",    "query": 'in:all (from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")'},
+    {"name": "Nécessaire",      "query": 'in:all (from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")'},
+    # Direct competitors / close style references
+    {"name": "Frank Body",      "query": 'in:all (from:frankbody.com OR from:"Frank Body")'},
+    {"name": "Koala Eco",       "query": 'in:all (from:koalaeco.com OR from:"Koala Eco")'},
+    {"name": "Kopari",          "query": 'in:all (from:koparibeauty.com OR from:kopari.com OR from:"Kopari")'},
+    {"name": "Herbivore",       "query": 'in:all (from:herbivorebotanicals.com OR from:"Herbivore")'},
+    {"name": "Golde",           "query": 'in:all (from:golde.co OR from:"Golde")'},
+    {"name": "Youth To The People", "query": 'in:all (from:yttpbeauty.com OR from:"Youth To The People" OR from:"YTTP")'},
+    {"name": "Osea",            "query": 'in:all (from:oseamalibu.com OR from:"OSEA" OR from:"Osea")'},
 ]
 
 SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
@@ -248,7 +241,7 @@ def build_gmail_service():
 
 
 def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
-    """Scan brand inbox for last 48h — daily real-time competitor tracking."""
+    """Scan inbox for reference brands over last 48h — real-time competitor tracking."""
     results     = {}
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
@@ -274,9 +267,42 @@ def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
             results[brand["name"]] = [{"error": str(e)}]
     return results
 
+
+def get_all_promo_senders(service, hours_back: int = 26) -> list:
+    """Scan ALL promotional emails in the last 26h — catches every brand not in reference list."""
+    cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
+    after_epoch = int(cutoff.timestamp())
+    ref_names   = {b["name"].lower() for b in REFERENCE_BRANDS}
+    try:
+        resp = service.users().messages().list(
+            userId="me",
+            q=f"in:all (category:promotions OR category:updates) after:{after_epoch}",
+            maxResults=80,
+        ).execute()
+        msgs = resp.get("messages", [])
+        senders = []
+        for ref in msgs:
+            msg = service.users().messages().get(
+                userId="me", messageId=ref["id"], format="metadata",
+                metadataHeaders=["Subject", "From", "Date"],
+            ).execute()
+            hdrs      = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
+            from_raw  = hdrs.get("From", "")
+            subject   = hdrs.get("Subject", "")
+            snippet   = msg.get("snippet", "")[:150]
+            # Skip brands already in the detailed reference list
+            already_tracked = any(name in from_raw.lower() for name in ref_names)
+            if not already_tracked and from_raw:
+                senders.append({"from": from_raw, "subject": subject, "snippet": snippet})
+        print(f"[daily_brief] Full promo scan: {len(senders)} additional senders found")
+        return senders
+    except Exception as e:
+        print(f"[daily_brief] Full promo scan failed: {e}")
+        return []
+
 # ─── BRIEF GENERATOR ─────────────────────────────────────────────────────────
 
-def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
+def generate_brief(brand_emails: dict, klaviyo_context: str, today: str, all_promos: list = None) -> str:
     from anthropic import Anthropic
     client = Anthropic()
 
@@ -284,13 +310,20 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str) -> str:
     for brand_name, emails in brand_emails.items():
         brand_data_text += f"\n{brand_name}:\n"
         if not emails:
-            brand_data_text += "  No emails in the last 5 days.\n"
+            brand_data_text += "  No emails in the last 48h.\n"
             continue
         for e in emails:
             if "error" in e:
                 brand_data_text += f"  Error: {e['error']}\n"
             else:
                 brand_data_text += f"  [{e['date'][:16]}] Subject: {e['subject']}\n  Snippet: {e['snippet']}\n  ---\n"
+
+    other_promos_text = ""
+    if all_promos:
+        for p in all_promos:
+            other_promos_text += f"  From: {p['from']}\n  Subject: {p['subject']}\n  Preview: {p['snippet']}\n  ---\n"
+    else:
+        other_promos_text = "  No additional promotional emails found.\n"
 
     baseline_text = ""
     for em in FIVE_EMAIL_BASELINE:
@@ -309,8 +342,11 @@ BRAND SNAPSHOT:
 KLAVIYO HISTORY:
 {klaviyo_context}
 
-COMPETITOR INBOX (last 48 hours — real-time):
+REFERENCE BRAND INBOX (last 48h — detailed tracking):
 {brand_data_text}
+
+FULL PROMOTIONAL INBOX SCAN (last 24h — every other brand that emailed):
+{other_promos_text}
 
 BASELINE 5-EMAIL PLAN:
 {baseline_text}
@@ -330,13 +366,12 @@ Write the Slack brief starting exactly like this (replace bracketed placeholders
 _Live Gmail scan · 48h real-time competitor intel · Klaviyo updated_
 
 :inbox_tray: *WHAT YOUR INBOX SHOWS IN THE LAST 24H*
-[1-sentence market mood based on competitor scan data — include specific subjects and offers if found]
-• *Flamingo Estate* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
-• *Rhode* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
-• *OUAI* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
-• *Salt & Stone* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
-• *Nécessaire* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
-*Key pattern:* [1 sentence — dominant competitive theme right now]
+[1-sentence market mood — based on ALL brands that emailed today, not just reference brands]
+[For every reference brand that sent an email, write one bullet. Skip brands with zero emails — do not write "No emails". Only report what actually sent.]
+• *[Brand name]* — [specific offer or theme from subject/snippet] · [N] emails · [key subject line]
+[After reference brands, add a compact block for any notable brands from the full promo scan:]
+:mailbox: *Also in your inbox today:* [comma-separated list of other brand names that sent promotional emails — include all of them]
+*Key pattern:* [1 sentence — dominant theme across everything that landed today]
 
 :fire: *THE OPPORTUNITY RIGHT NOW*
 [2-3 sentences: specific calendar white space · what nobody in body care is owning · CoBa's angle]
@@ -813,11 +848,13 @@ def main():
 
     # 1. Gmail inbox scan (optional)
     brand_emails = {b["name"]: [] for b in REFERENCE_BRANDS}
+    all_promos   = []
     try:
         service      = build_gmail_service()
         brand_emails = get_recent_brand_emails(service)
+        all_promos   = get_all_promo_senders(service)
         found = sum(len(v) for v in brand_emails.values())
-        print(f"[daily_brief] {found} brand emails fetched (last 5 days)")
+        print(f"[daily_brief] {found} reference brand emails + {len(all_promos)} other promo senders fetched")
     except Exception as e:
         print(f"[daily_brief] Gmail fetch failed: {e}")
 
@@ -831,7 +868,7 @@ def main():
     # 3. Generate brief + 5 email templates
     print("[daily_brief] Generating War Room brief + 5 email templates…")
     try:
-        brief = generate_brief(brand_emails, klaviyo_context, today)
+        brief = generate_brief(brand_emails, klaviyo_context, today, all_promos)
         template_count = len(re.findall(r"===EMAIL \d+===", brief))
         print(f"[daily_brief] Brief ready ({len(brief)} chars, {template_count} email templates)")
     except Exception as e:
