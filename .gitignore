@@ -16,3 +16,8 @@ env/
 *.log
 reports/latest.json
 reports/latest.html
+
+# Gmail OAuth — never commit these
+scripts/client_secret.json
+scripts/gmail_token.json
+*.json
