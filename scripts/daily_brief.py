@@ -577,9 +577,8 @@ def _parse_email_template(section_text: str) -> dict:
     return result
 
 
-def _render_email_card(tpl: dict, num: int, p: dict, canva_img: str = "") -> str:
-    """Render one parsed email template as a complete HTML email mockup card.
-    canva_img: base64 data URI from Canva design page, or "" to show gradient placeholder."""
+def _render_email_card(tpl: dict, num: int, p: dict) -> str:
+    """Render one parsed email template as a complete HTML email mockup card."""
     # Metadata strip
     meta_rows = ""
     for label, val in [
@@ -597,34 +596,21 @@ def _render_email_card(tpl: dict, num: int, p: dict, canva_img: str = "") -> str
                 f"</tr>"
             )
 
-    # Hero image block — real Canva asset or gradient placeholder
-    hero_block = ""
-    if canva_img:
-        alt = tpl["hero_image"] or "CoBa's Daughter product visual"
-        hero_block = (
-            f"<div style='margin-bottom:20px'>"
-            f"<img src='{canva_img}' alt='{alt}' width='600' "
-            f"style='max-width:100%;height:auto;border-radius:4px;display:block' />"
-            f"<div style='font-size:10px;color:{p['light_text']};margin-top:4px;font-style:italic'>"
-            f"📌 Canva visual — swap in Klaviyo before sending</div>"
-            f"</div>"
-        )
-    elif tpl["hero_image"] and tpl["hero_image"].upper() != "NONE":
-        hero_block = (
-            f"<div style='width:100%;height:200px;background:linear-gradient(135deg,{p['dark_brown']} 0%,{p['rust']} 100%);"
-            f"border-radius:4px;display:flex;align-items:center;justify-content:center;"
-            f"margin-bottom:20px;padding:20px;box-sizing:border-box;text-align:center'>"
-            f"<div>"
-            f"<div style='font-size:28px;margin-bottom:8px'>📸</div>"
-            f"<div style='color:rgba(255,255,255,.85);font-size:11px;line-height:1.6;font-style:italic'>"
-            f"{tpl['hero_image']}"
-            f"</div>"
-            f"<div style='color:rgba(255,255,255,.4);font-size:10px;margin-top:6px'>"
-            f"Add CANVA_ACCESS_TOKEN to GitHub Secrets to show real image"
-            f"</div>"
-            f"</div>"
-            f"</div>"
-        )
+    # Visual brief block — descriptive placeholder for the Canva image
+    hero_desc = tpl.get("hero_image", "") or "Product lifestyle shot"
+    hero_block = (
+        f"<div style='width:100%;background:{p['beige']};border:2px dashed {p['border']};"
+        f"border-radius:6px;margin-bottom:20px;padding:20px 24px;box-sizing:border-box'>"
+        f"<div style='font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;"
+        f"color:{p['rust']};margin-bottom:8px'>📸 Visual Block — Use from Canva design</div>"
+        f"<div style='font-size:13px;color:{p['dark_brown']};line-height:1.7;font-style:italic'>"
+        f"{hero_desc}"
+        f"</div>"
+        f"<div style='font-size:10px;color:{p['light_text']};margin-top:8px'>"
+        f"600 × 300 px · hero image · upload to Klaviyo before sending"
+        f"</div>"
+        f"</div>"
+    )
 
     # Body copy
     body_html = ""
@@ -687,15 +673,8 @@ def _render_email_card(tpl: dict, num: int, p: dict, canva_img: str = "") -> str
     )
 
 
-def _render_html(brief_text: str, today: str, canva_images: dict = None) -> str:
-    p            = BRAND_PALETTE
-    canva_images = canva_images or {}
-
-    # Build email-num → canva page number mapping from FIVE_EMAIL_BASELINE
-    email_page_map = {
-        em["num"]: CANVA_PAGES.get(em.get("canva_page", ""), 0)
-        for em in FIVE_EMAIL_BASELINE
-    }
+def _render_html(brief_text: str, today: str) -> str:
+    p = BRAND_PALETTE
 
     # Split into Slack section + 5 email template sections
     parts       = re.split(r"===EMAIL (\d+)===", brief_text)
@@ -707,9 +686,7 @@ def _render_html(brief_text: str, today: str, canva_images: dict = None) -> str:
         num     = int(parts[idx])
         content = parts[idx + 1].strip() if idx + 1 < len(parts) else ""
         tpl     = _parse_email_template(content)
-        page_num  = email_page_map.get(num, 0)
-        canva_img = canva_images.get(page_num, "")
-        email_cards += _render_email_card(tpl, num, p, canva_img)
+        email_cards += _render_email_card(tpl, num, p)
 
     brief_html = _slack_to_html(slack_text, p)
 
@@ -754,9 +731,10 @@ def _render_html(brief_text: str, today: str, canva_images: dict = None) -> str:
       ✦ This Week's 5 Email Templates — Full Copy + Visual Blocks
     </div>
     <p style="color:{p['light_text']};font-size:12px;margin:6px 0 0;line-height:1.5">
-      Each template below is ready to deploy in Klaviyo. Images are sourced from your
+      Each template is ready to build in Klaviyo. Visual block descriptions are inside each card —
+      pull the matching asset from your
       <a href="https://www.canva.com/design/{CANVA_DESIGN_ID}/" style="color:{p['rust']}">Canva design</a>
-      {"(live)" if canva_images else "— add <code>CANVA_ACCESS_TOKEN</code> to GitHub Secrets for real images"}.
+      before sending.
     </p>
   </div>
 
@@ -785,12 +763,12 @@ def _render_html(brief_text: str, today: str, canva_images: dict = None) -> str:
 
 # ─── EMAIL SENDER ─────────────────────────────────────────────────────────────
 
-def send_email_brief(brief_text: str, today: str, canva_images: dict = None) -> None:
+def send_email_brief(brief_text: str, today: str) -> None:
     app_password = os.environ.get("GMAIL_APP_PASSWORD")
     if not app_password:
         raise ValueError("GMAIL_APP_PASSWORD not set — see GMAIL_APP_PASSWORD_SETUP.md")
 
-    html_body = _render_html(brief_text, today, canva_images)
+    html_body = _render_html(brief_text, today)
     # Plain-text: just the Slack section
     plain   = re.split(r"===EMAIL \d+===", brief_text)[0].strip()
     subject = f"CoBa's Daughter Daily Email Marketing Update — {today}"
@@ -845,16 +823,7 @@ def main():
             f"Error: {e}\n\nCheck ANTHROPIC_API_KEY at console.anthropic.com"
         )
 
-    # 4. Fetch Canva images for email template visual blocks
-    canva_images = {}
-    try:
-        page_nums = list({CANVA_PAGES.get(em.get("canva_page", ""), 0)
-                          for em in FIVE_EMAIL_BASELINE} - {0})
-        canva_images = get_canva_page_images(page_nums)
-    except Exception as e:
-        print(f"[daily_brief] Canva images skipped: {e}")
-
-    # 5. Slack DM
+    # 4. Slack DM
     print("[daily_brief] Posting to Slack…")
     try:
         ts = post_to_slack(brief, today)
@@ -862,10 +831,10 @@ def main():
     except Exception as e:
         print(f"[daily_brief] Slack failed: {e}")
 
-    # 6. Email
+    # 5. Email
     print(f"[daily_brief] Sending email to {EMAIL_TO} (cc {EMAIL_CC})…")
     try:
-        send_email_brief(brief, today, canva_images)
+        send_email_brief(brief, today)
         print("[daily_brief] Email sent.")
     except Exception as e:
         print(f"[daily_brief] Email failed: {e}")
