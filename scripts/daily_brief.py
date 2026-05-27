@@ -237,13 +237,20 @@ def build_gmail_service():
     token_data = json.loads(base64.b64decode(token_json))
     creds = Credentials.from_authorized_user_info(token_data)
     svc = build("gmail", "v1", credentials=creds)
-    # Diagnostic: confirm which account the OAuth token is actually reading
     try:
         profile = svc.users().getProfile(userId="me").execute()
-        print(f"[daily_brief] Gmail OAuth connected as: {profile.get('emailAddress')} "
-              f"({profile.get('messagesTotal', '?')} messages total)")
+        addr    = profile.get("emailAddress", "unknown")
+        total   = profile.get("messagesTotal", "?")
+        print(f"[daily_brief] Gmail connected as: {addr}  ({total} total messages in mailbox)")
+        # Sanity check: count ANY message in the last 7 days
+        check = svc.users().messages().list(userId="me", q="newer_than:7d", maxResults=1).execute()
+        n7d = check.get("resultSizeEstimate", 0)
+        print(f"[daily_brief] Gmail health check: ~{n7d} messages found with newer_than:7d")
+        if n7d == 0:
+            print("[daily_brief] WARNING: 0 messages found in last 7 days — token may be "
+                  "for the wrong account or may be expired. Check GMAIL_TOKEN_JSON secret.")
     except Exception as e:
-        print(f"[daily_brief] Gmail profile check failed: {e}")
+        print(f"[daily_brief] Gmail profile/health check failed: {e}")
     return svc
 
 
@@ -280,16 +287,20 @@ def get_recent_brand_emails(service, hours_back: int = 120) -> dict:
 
 
 def get_all_promo_senders(service, hours_back: int = 120) -> list:
-    """Scan ALL promotional/marketing emails in the last 5 days — catches every brand not in reference list."""
+    """Scan ALL marketing emails in the last 5 days — catches every brand not in reference list.
+
+    Uses has:list-unsubscribe which matches every legitimate marketing email regardless
+    of which Gmail tab it lands in (Primary, Promotions, Social, Updates, etc.).
+    """
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
     ref_names   = {b["name"].lower() for b in REFERENCE_BRANDS}
     try:
-        # category:promotions covers the Promotions tab; category:updates covers transactional-style
-        # No in: prefix — covers all folders without using invalid "in:all"
+        # has:list-unsubscribe is legally required on all marketing email — far more
+        # reliable than category:promotions which misses emails Gmail puts in Primary.
         resp = service.users().messages().list(
             userId="me",
-            q=f"(category:promotions OR category:updates) after:{after_epoch}",
+            q=f"has:list-unsubscribe after:{after_epoch}",
             maxResults=100,
         ).execute()
         msgs = resp.get("messages", [])
@@ -863,16 +874,25 @@ def main():
     print(f"[daily_brief] Starting for {today}")
 
     # 1. Gmail inbox scan (optional)
-    brand_emails = {b["name"]: [] for b in REFERENCE_BRANDS}
-    all_promos   = []
+    brand_emails  = {b["name"]: [] for b in REFERENCE_BRANDS}
+    all_promos    = []
+    gmail_warning = ""
     try:
         service      = build_gmail_service()
         brand_emails = get_recent_brand_emails(service)
         all_promos   = get_all_promo_senders(service)
         found = sum(len(v) for v in brand_emails.values())
         print(f"[daily_brief] {found} reference brand emails + {len(all_promos)} unique other promo senders (last 5 days)")
+        if found == 0 and len(all_promos) == 0:
+            gmail_warning = (
+                "\n\n⚠️ *Gmail scan returned 0 emails.* This usually means the "
+                "GMAIL_TOKEN_JSON secret is for the wrong account or has expired. "
+                "Check the GitHub Actions log for the 'Gmail connected as:' line "
+                "and verify it shows the correct inbox."
+            )
     except Exception as e:
         print(f"[daily_brief] Gmail fetch failed: {e}")
+        gmail_warning = f"\n\n⚠️ *Gmail scan failed:* `{e}`"
 
     # 2. Klaviyo context (optional)
     try:
@@ -885,6 +905,9 @@ def main():
     print("[daily_brief] Generating War Room brief + 5 email templates…")
     try:
         brief = generate_brief(brand_emails, klaviyo_context, today, all_promos)
+        if gmail_warning:
+            # Prepend warning to Slack section (before first ===EMAIL===)
+            brief = gmail_warning.strip() + "\n\n" + brief
         template_count = len(re.findall(r"===EMAIL \d+===", brief))
         print(f"[daily_brief] Brief ready ({len(brief)} chars, {template_count} email templates)")
     except Exception as e:
