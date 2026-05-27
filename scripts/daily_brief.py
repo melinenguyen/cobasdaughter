@@ -26,22 +26,21 @@ from email.mime.text import MIMEText
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 REFERENCE_BRANDS = [
-    # Gmail from: matches exact domain only (not subdomains).
-    # ESPs send from subdomains (email.*, mail.*, em.*) so we also match
-    # the sender display name — reliable regardless of which ESP they use.
-    {"name": "Flamingo Estate", "query": 'in:all (from:flamingoestate.com OR from:"Flamingo Estate")'},
-    {"name": "Rhode",           "query": 'in:all (from:rhodeskin.com OR from:rhode.com OR from:"Rhode")'},
-    {"name": "OUAI",            "query": 'in:all (from:theouai.com OR from:ouai.com OR from:"OUAI")'},
-    {"name": "Salt & Stone",    "query": 'in:all (from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")'},
-    {"name": "Nécessaire",      "query": 'in:all (from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")'},
-    # Direct competitors / close style references
-    {"name": "Frank Body",      "query": 'in:all (from:frankbody.com OR from:"Frank Body")'},
-    {"name": "Koala Eco",       "query": 'in:all (from:koalaeco.com OR from:"Koala Eco")'},
-    {"name": "Kopari",          "query": 'in:all (from:koparibeauty.com OR from:kopari.com OR from:"Kopari")'},
-    {"name": "Herbivore",       "query": 'in:all (from:herbivorebotanicals.com OR from:"Herbivore")'},
-    {"name": "Golde",           "query": 'in:all (from:golde.co OR from:"Golde")'},
-    {"name": "Youth To The People", "query": 'in:all (from:yttpbeauty.com OR from:"Youth To The People" OR from:"YTTP")'},
-    {"name": "Osea",            "query": 'in:all (from:oseamalibu.com OR from:"OSEA" OR from:"Osea")'},
+    # Use display-name OR domain — reliable regardless of which ESP they use.
+    # Do NOT prefix with "in:all" — that is not a valid Gmail search operator
+    # and silently returns zero results. No in: filter = search all folders.
+    {"name": "Flamingo Estate", "query": '(from:flamingoestate.com OR from:"Flamingo Estate")'},
+    {"name": "Rhode",           "query": '(from:rhodeskin.com OR from:rhode.com OR from:"Rhode")'},
+    {"name": "OUAI",            "query": '(from:theouai.com OR from:ouai.com OR from:"OUAI")'},
+    {"name": "Salt & Stone",    "query": '(from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")'},
+    {"name": "Nécessaire",      "query": '(from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")'},
+    {"name": "Frank Body",      "query": '(from:frankbody.com OR from:"Frank Body")'},
+    {"name": "Koala Eco",       "query": '(from:koalaeco.com OR from:"Koala Eco")'},
+    {"name": "Kopari",          "query": '(from:koparibeauty.com OR from:kopari.com OR from:"Kopari")'},
+    {"name": "Herbivore",       "query": '(from:herbivorebotanicals.com OR from:"Herbivore")'},
+    {"name": "Golde",           "query": '(from:golde.co OR from:"Golde")'},
+    {"name": "Youth To The People", "query": '(from:yttpbeauty.com OR from:"Youth To The People" OR from:"YTTP")'},
+    {"name": "Osea",            "query": '(from:oseamalibu.com OR from:"OSEA" OR from:"Osea")'},
 ]
 
 SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
@@ -237,18 +236,27 @@ def build_gmail_service():
         raise ValueError("GMAIL_TOKEN_JSON not set")
     token_data = json.loads(base64.b64decode(token_json))
     creds = Credentials.from_authorized_user_info(token_data)
-    return build("gmail", "v1", credentials=creds)
+    svc = build("gmail", "v1", credentials=creds)
+    # Diagnostic: confirm which account the OAuth token is actually reading
+    try:
+        profile = svc.users().getProfile(userId="me").execute()
+        print(f"[daily_brief] Gmail OAuth connected as: {profile.get('emailAddress')} "
+              f"({profile.get('messagesTotal', '?')} messages total)")
+    except Exception as e:
+        print(f"[daily_brief] Gmail profile check failed: {e}")
+    return svc
 
 
-def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
-    """Scan inbox for reference brands over last 48h — real-time competitor tracking."""
+def get_recent_brand_emails(service, hours_back: int = 120) -> dict:
+    """Scan inbox for reference brands over last 5 days (120h) rolling window."""
     results     = {}
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
     for brand in REFERENCE_BRANDS:
-        query = f"({brand['query']}) after:{after_epoch}"
+        # No in: prefix — searching without it covers all folders (inbox, promotions, etc.)
+        query = f"{brand['query']} after:{after_epoch}"
         try:
-            resp = service.users().messages().list(userId="me", q=query, maxResults=10).execute()
+            resp = service.users().messages().list(userId="me", q=query, maxResults=15).execute()
             msgs = resp.get("messages", [])
             brand_emails = []
             for ref in msgs:
@@ -259,42 +267,50 @@ def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
                 hdrs = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
                 brand_emails.append({
                     "subject": hdrs.get("Subject", "(no subject)"),
+                    "from":    hdrs.get("From", ""),
                     "date":    hdrs.get("Date", ""),
                     "snippet": msg.get("snippet", "")[:200],
                 })
             results[brand["name"]] = brand_emails
+            print(f"[daily_brief]   {brand['name']}: {len(brand_emails)} emails")
         except Exception as e:
             results[brand["name"]] = [{"error": str(e)}]
+            print(f"[daily_brief]   {brand['name']}: ERROR — {e}")
     return results
 
 
-def get_all_promo_senders(service, hours_back: int = 26) -> list:
-    """Scan ALL promotional emails in the last 26h — catches every brand not in reference list."""
+def get_all_promo_senders(service, hours_back: int = 120) -> list:
+    """Scan ALL promotional/marketing emails in the last 5 days — catches every brand not in reference list."""
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
     ref_names   = {b["name"].lower() for b in REFERENCE_BRANDS}
     try:
+        # category:promotions covers the Promotions tab; category:updates covers transactional-style
+        # No in: prefix — covers all folders without using invalid "in:all"
         resp = service.users().messages().list(
             userId="me",
-            q=f"in:all (category:promotions OR category:updates) after:{after_epoch}",
-            maxResults=80,
+            q=f"(category:promotions OR category:updates) after:{after_epoch}",
+            maxResults=100,
         ).execute()
         msgs = resp.get("messages", [])
+        seen_senders = set()
         senders = []
         for ref in msgs:
             msg = service.users().messages().get(
                 userId="me", messageId=ref["id"], format="metadata",
                 metadataHeaders=["Subject", "From", "Date"],
             ).execute()
-            hdrs      = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
-            from_raw  = hdrs.get("From", "")
-            subject   = hdrs.get("Subject", "")
-            snippet   = msg.get("snippet", "")[:150]
-            # Skip brands already in the detailed reference list
-            already_tracked = any(name in from_raw.lower() for name in ref_names)
-            if not already_tracked and from_raw:
+            hdrs     = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
+            from_raw = hdrs.get("From", "")
+            subject  = hdrs.get("Subject", "")
+            snippet  = msg.get("snippet", "")[:150]
+            # Deduplicate by sender + skip already-tracked reference brands
+            sender_key      = from_raw.lower()
+            already_tracked = any(name in sender_key for name in ref_names)
+            if not already_tracked and from_raw and sender_key not in seen_senders:
+                seen_senders.add(sender_key)
                 senders.append({"from": from_raw, "subject": subject, "snippet": snippet})
-        print(f"[daily_brief] Full promo scan: {len(senders)} additional senders found")
+        print(f"[daily_brief] Full promo scan: {len(msgs)} total, {len(senders)} unique non-reference senders")
         return senders
     except Exception as e:
         print(f"[daily_brief] Full promo scan failed: {e}")
@@ -342,10 +358,10 @@ BRAND SNAPSHOT:
 KLAVIYO HISTORY:
 {klaviyo_context}
 
-REFERENCE BRAND INBOX (last 48h — detailed tracking):
+REFERENCE BRAND INBOX (last 5 days — rolling window):
 {brand_data_text}
 
-FULL PROMOTIONAL INBOX SCAN (last 24h — every other brand that emailed):
+FULL PROMOTIONAL INBOX SCAN (last 5 days — every other brand that emailed):
 {other_promos_text}
 
 BASELINE 5-EMAIL PLAN:
@@ -363,7 +379,7 @@ PART 1 FORMAT (Slack mrkdwn, under 2000 chars):
 Write the Slack brief starting exactly like this (replace bracketed placeholders):
 
 :red_circle: *CoBa's Daughter — Email War Room · {today}*
-_Live Gmail scan · 48h real-time competitor intel · Klaviyo updated_
+_Live Gmail scan · 5-day rolling window · Klaviyo updated_
 
 :inbox_tray: *WHAT YOUR INBOX SHOWS IN THE LAST 24H*
 [1-sentence market mood — based on ALL brands that emailed today, not just reference brands]
@@ -854,7 +870,7 @@ def main():
         brand_emails = get_recent_brand_emails(service)
         all_promos   = get_all_promo_senders(service)
         found = sum(len(v) for v in brand_emails.values())
-        print(f"[daily_brief] {found} reference brand emails + {len(all_promos)} other promo senders fetched")
+        print(f"[daily_brief] {found} reference brand emails + {len(all_promos)} unique other promo senders (last 5 days)")
     except Exception as e:
         print(f"[daily_brief] Gmail fetch failed: {e}")
 
