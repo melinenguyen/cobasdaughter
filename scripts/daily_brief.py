@@ -2,7 +2,7 @@
 """
 CoBa's Daughter — Daily Email War Room Brief
 Runs daily at 9AM GMT+7.
-Scans brand inbox (5 days) → Klaviyo context → War Room brief + 5 email templates → Slack + email.
+Scans brand inbox (last 48h real-time) → Klaviyo context → War Room brief + 5 email templates → Slack + email.
 
 Environment vars:
   ANTHROPIC_API_KEY        — Claude API key (required)
@@ -26,11 +26,29 @@ from email.mime.text import MIMEText
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 REFERENCE_BRANDS = [
-    {"name": "Flamingo Estate", "query": "from:flamingoestate.com newer_than:5d"},
-    {"name": "Rhode",           "query": "from:rhodeskin.com newer_than:5d"},
-    {"name": "OUAI",            "query": "from:theouai.com newer_than:5d"},
-    {"name": "Salt & Stone",    "query": "from:saltandstone.com newer_than:5d"},
-    {"name": "Nécessaire",      "query": "from:necessaire.com newer_than:5d"},
+    # Gmail's from: operator matches exact domain only (not subdomains).
+    # Marketing ESPs send from subdomains (email.*, mail.*, em.*) so we
+    # also search the sender display name — it's reliable regardless of ESP.
+    {
+        "name": "Flamingo Estate",
+        "query": 'in:all (from:flamingoestate.com OR from:"Flamingo Estate")',
+    },
+    {
+        "name": "Rhode",
+        "query": 'in:all (from:rhodeskin.com OR from:rhode.com OR from:"Rhode")',
+    },
+    {
+        "name": "OUAI",
+        "query": 'in:all (from:theouai.com OR from:ouai.com OR from:"OUAI")',
+    },
+    {
+        "name": "Salt & Stone",
+        "query": 'in:all (from:saltandstone.com OR from:"Salt & Stone" OR from:"SALT & STONE")',
+    },
+    {
+        "name": "Nécessaire",
+        "query": 'in:all (from:necessaire.com OR from:"Necessaire" OR from:"Nécessaire")',
+    },
 ]
 
 SLACK_USER_ID = os.environ.get("SLACK_USER_ID", "U08V8865GD7")
@@ -229,8 +247,8 @@ def build_gmail_service():
     return build("gmail", "v1", credentials=creds)
 
 
-def get_recent_brand_emails(service, hours_back: int = 120) -> dict:
-    """Scan brand inbox for last 5 days (120h) for richer competitive analysis."""
+def get_recent_brand_emails(service, hours_back: int = 48) -> dict:
+    """Scan brand inbox for last 48h — daily real-time competitor tracking."""
     results     = {}
     cutoff      = datetime.datetime.utcnow() - datetime.timedelta(hours=hours_back)
     after_epoch = int(cutoff.timestamp())
@@ -291,7 +309,7 @@ BRAND SNAPSHOT:
 KLAVIYO HISTORY:
 {klaviyo_context}
 
-COMPETITOR INBOX (last 5 days):
+COMPETITOR INBOX (last 48 hours — real-time):
 {brand_data_text}
 
 BASELINE 5-EMAIL PLAN:
@@ -309,10 +327,10 @@ PART 1 FORMAT (Slack mrkdwn, under 2000 chars):
 Write the Slack brief starting exactly like this (replace bracketed placeholders):
 
 :red_circle: *CoBa's Daughter — Email War Room · {today}*
-_Live Gmail scan · 5-day competitor intel · Klaviyo updated_
+_Live Gmail scan · 48h real-time competitor intel · Klaviyo updated_
 
-:inbox_tray: *WHAT YOUR INBOX SHOWS RIGHT NOW*
-[1-sentence market mood based on competitor scan data]
+:inbox_tray: *WHAT YOUR INBOX SHOWS IN THE LAST 24H*
+[1-sentence market mood based on competitor scan data — include specific subjects and offers if found]
 • *Flamingo Estate* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
 • *Rhode* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
 • *OUAI* — [specific offer or "No emails this week"] · [N] sent · [started date or —]
