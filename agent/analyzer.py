@@ -378,27 +378,34 @@ def analyze(
     prompt = ANALYSIS_PROMPT.format(data_summary=data_summary, dedup_block=dedup_block)
     full_prompt = SYSTEM_PROMPT + "\n\n" + prompt
 
-    # ── Try Gemini first ────────────────────────────────────────
+    # ── Try Gemini first (direct REST API — no SDK needed) ──────
     if gemini_key:
+        logger.info("Attempting Gemini analysis via REST API (gemini-2.0-flash)...")
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
-                generation_config={"temperature": 0.4, "max_output_tokens": 16000},
+            import requests as _requests
+            url = (
+                "https://generativelanguage.googleapis.com/v1beta/models"
+                f"/gemini-2.0-flash:generateContent?key={gemini_key}"
             )
-            response = model.generate_content(full_prompt)
-            raw = response.text
+            payload = {
+                "contents": [{"parts": [{"text": full_prompt}]}],
+                "generationConfig": {"temperature": 0.4, "maxOutputTokens": 16000},
+            }
+            resp = _requests.post(url, json=payload, timeout=120)
+            resp.raise_for_status()
+            raw = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
             result["raw_response"] = raw
             report = _parse_json(raw)
             report["report_date"] = datetime.utcnow().strftime("%Y-%m-%d")
-            report["ai_model"] = "gemini-1.5-flash"
+            report["ai_model"] = "gemini-2.0-flash"
             result["report"] = report
             result["status"] = "success"
             logger.info(f"Gemini analysis complete: {len(report.get('top_trends', []))} trends")
             return result
         except Exception as e:
-            logger.warning(f"Gemini failed, trying Anthropic fallback: {e}")
+            logger.warning(f"Gemini REST failed, trying Anthropic fallback: {e}")
+    else:
+        logger.warning("GEMINI_API_KEY not set — skipping Gemini, trying Anthropic")
 
     # ── Fallback: Anthropic ─────────────────────────────────────
     if not api_key:
