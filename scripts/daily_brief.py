@@ -20,7 +20,6 @@ import base64
 import datetime
 import smtplib
 import re
-import textwrap
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -49,21 +48,88 @@ BRAND_PALETTE = {
     "border":     "#e8e3da",
 }
 
-# Canva design page thumbnails — mapped to product themes
-# Design: https://www.canva.com/design/DAGqEHj884k/
+# Canva design: https://www.canva.com/design/DAGqEHj884k/
 CANVA_DESIGN_ID = "DAGqEHj884k"
+
+# Maps product theme → Canva design page number (1-based)
+# Update these when you change the Canva design page order
 CANVA_PAGES = {
-    "scrub_duo":    1,   # Coffee Body Exfoliator / Scrub Duo
-    "aloe_duo":     2,   # Aloe Soothing Gel / Aloe Duo
-    "soap":         3,   # 3-in-1 Artisan Soap
-    "gift_bundle":  4,   # Gift Bundle / Gift Sets
-    "lifestyle":    5,   # Lifestyle / ritual
-    "brand_story":  6,   # Brand story / founder
-    "ingredients":  7,   # Ingredient story
-    "ritual":       8,   # Ritual / how-to
-    "hero":         9,   # Hero product shot
-    "summer":       10,  # Summer / seasonal
+    "scrub_duo":   1,
+    "aloe_duo":    2,
+    "soap":        3,
+    "gift_bundle": 4,
+    "lifestyle":   5,
+    "brand_story": 6,
+    "ingredients": 7,
+    "ritual":      8,
+    "hero":        9,
+    "summer":      10,
 }
+
+# ─── CANVA IMAGE FETCHER ──────────────────────────────────────────────────────
+
+def _get_canva_token() -> str:
+    """Return a live Canva API access token. Tries refresh flow if direct token absent."""
+    token = os.environ.get("CANVA_ACCESS_TOKEN", "")
+    if token:
+        return token
+    client_id     = os.environ.get("CANVA_CLIENT_ID", "")
+    client_secret = os.environ.get("CANVA_CLIENT_SECRET", "")
+    refresh_token = os.environ.get("CANVA_REFRESH_TOKEN", "")
+    if not (client_id and client_secret and refresh_token):
+        return ""
+    import requests
+    creds = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
+    try:
+        r = requests.post(
+            "https://api.canva.com/rest/v1/oauth/token",
+            headers={"Authorization": f"Basic {creds}",
+                     "Content-Type": "application/x-www-form-urlencoded"},
+            data={"grant_type": "refresh_token", "refresh_token": refresh_token},
+            timeout=15,
+        )
+        r.raise_for_status()
+        return r.json().get("access_token", "")
+    except Exception as e:
+        print(f"[daily_brief] Canva token refresh failed: {e}")
+        return ""
+
+
+def get_canva_page_images(page_nums: list) -> dict:
+    """Fetch Canva design page thumbnails as base64 data URIs.
+    Returns {} if CANVA_ACCESS_TOKEN / CANVA_REFRESH_TOKEN not configured."""
+    import requests
+    token = _get_canva_token()
+    if not token:
+        print("[daily_brief] Canva not configured — using gradient placeholders for visuals")
+        return {}
+    try:
+        resp = requests.get(
+            f"https://api.canva.com/rest/v1/designs/{CANVA_DESIGN_ID}/pages",
+            headers={"Authorization": f"Bearer {token}"},
+            params={"limit": 50},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        page_map = {p["index"]: p["thumbnail"]["url"] for p in resp.json().get("items", [])}
+        result = {}
+        for num in set(page_nums):
+            url = page_map.get(num)
+            if not url:
+                continue
+            try:
+                img = requests.get(url, timeout=20)
+                if img.status_code == 200:
+                    b64 = base64.b64encode(img.content).decode()
+                    ct  = img.headers.get("Content-Type", "image/png").split(";")[0]
+                    result[num] = f"data:{ct};base64,{b64}"
+            except Exception:
+                pass
+        print(f"[daily_brief] Canva images: {len(result)}/{len(set(page_nums))} fetched")
+        return result
+    except Exception as e:
+        print(f"[daily_brief] Canva API failed: {e}")
+        return {}
 
 # Five-email baseline — Claude updates this daily with live intel
 FIVE_EMAIL_BASELINE = [
@@ -511,8 +577,9 @@ def _parse_email_template(section_text: str) -> dict:
     return result
 
 
-def _render_email_card(tpl: dict, num: int, p: dict) -> str:
-    """Render one parsed email template as a complete HTML email mockup card."""
+def _render_email_card(tpl: dict, num: int, p: dict, canva_img: str = "") -> str:
+    """Render one parsed email template as a complete HTML email mockup card.
+    canva_img: base64 data URI from Canva design page, or "" to show gradient placeholder."""
     # Metadata strip
     meta_rows = ""
     for label, val in [
@@ -530,9 +597,19 @@ def _render_email_card(tpl: dict, num: int, p: dict) -> str:
                 f"</tr>"
             )
 
-    # Hero image block
+    # Hero image block — real Canva asset or gradient placeholder
     hero_block = ""
-    if tpl["hero_image"] and tpl["hero_image"].upper() != "NONE":
+    if canva_img:
+        alt = tpl["hero_image"] or "CoBa's Daughter product visual"
+        hero_block = (
+            f"<div style='margin-bottom:20px'>"
+            f"<img src='{canva_img}' alt='{alt}' width='600' "
+            f"style='max-width:100%;height:auto;border-radius:4px;display:block' />"
+            f"<div style='font-size:10px;color:{p['light_text']};margin-top:4px;font-style:italic'>"
+            f"📌 Canva visual — swap in Klaviyo before sending</div>"
+            f"</div>"
+        )
+    elif tpl["hero_image"] and tpl["hero_image"].upper() != "NONE":
         hero_block = (
             f"<div style='width:100%;height:200px;background:linear-gradient(135deg,{p['dark_brown']} 0%,{p['rust']} 100%);"
             f"border-radius:4px;display:flex;align-items:center;justify-content:center;"
@@ -543,7 +620,7 @@ def _render_email_card(tpl: dict, num: int, p: dict) -> str:
             f"{tpl['hero_image']}"
             f"</div>"
             f"<div style='color:rgba(255,255,255,.4);font-size:10px;margin-top:6px'>"
-            f"Hero image · 600 × 300 px · Replace with Canva asset"
+            f"Add CANVA_ACCESS_TOKEN to GitHub Secrets to show real image"
             f"</div>"
             f"</div>"
             f"</div>"
@@ -610,20 +687,29 @@ def _render_email_card(tpl: dict, num: int, p: dict) -> str:
     )
 
 
-def _render_html(brief_text: str, today: str) -> str:
-    p = BRAND_PALETTE
+def _render_html(brief_text: str, today: str, canva_images: dict = None) -> str:
+    p            = BRAND_PALETTE
+    canva_images = canva_images or {}
+
+    # Build email-num → canva page number mapping from FIVE_EMAIL_BASELINE
+    email_page_map = {
+        em["num"]: CANVA_PAGES.get(em.get("canva_page", ""), 0)
+        for em in FIVE_EMAIL_BASELINE
+    }
 
     # Split into Slack section + 5 email template sections
-    parts        = re.split(r"===EMAIL (\d+)===", brief_text)
-    slack_text   = parts[0].strip()
-    email_cards  = ""
+    parts       = re.split(r"===EMAIL (\d+)===", brief_text)
+    slack_text  = parts[0].strip()
+    email_cards = ""
 
     # parts = [slack, "1", template1, "2", template2, ..., "5", template5]
     for idx in range(1, len(parts) - 1, 2):
-        num     = parts[idx]
+        num     = int(parts[idx])
         content = parts[idx + 1].strip() if idx + 1 < len(parts) else ""
         tpl     = _parse_email_template(content)
-        email_cards += _render_email_card(tpl, int(num), p)
+        page_num  = email_page_map.get(num, 0)
+        canva_img = canva_images.get(page_num, "")
+        email_cards += _render_email_card(tpl, num, p, canva_img)
 
     brief_html = _slack_to_html(slack_text, p)
 
@@ -668,8 +754,9 @@ def _render_html(brief_text: str, today: str) -> str:
       ✦ This Week's 5 Email Templates — Full Copy + Visual Blocks
     </div>
     <p style="color:{p['light_text']};font-size:12px;margin:6px 0 0;line-height:1.5">
-      Each template below is ready to deploy in Klaviyo. Replace the 📸 image placeholders with assets from your
-      <a href="https://www.canva.com/design/{CANVA_DESIGN_ID}/" style="color:{p['rust']}">Canva design</a>.
+      Each template below is ready to deploy in Klaviyo. Images are sourced from your
+      <a href="https://www.canva.com/design/{CANVA_DESIGN_ID}/" style="color:{p['rust']}">Canva design</a>
+      {"(live)" if canva_images else "— add <code>CANVA_ACCESS_TOKEN</code> to GitHub Secrets for real images"}.
     </p>
   </div>
 
@@ -698,12 +785,12 @@ def _render_html(brief_text: str, today: str) -> str:
 
 # ─── EMAIL SENDER ─────────────────────────────────────────────────────────────
 
-def send_email_brief(brief_text: str, today: str) -> None:
+def send_email_brief(brief_text: str, today: str, canva_images: dict = None) -> None:
     app_password = os.environ.get("GMAIL_APP_PASSWORD")
     if not app_password:
         raise ValueError("GMAIL_APP_PASSWORD not set — see GMAIL_APP_PASSWORD_SETUP.md")
 
-    html_body = _render_html(brief_text, today)
+    html_body = _render_html(brief_text, today, canva_images)
     # Plain-text: just the Slack section
     plain   = re.split(r"===EMAIL \d+===", brief_text)[0].strip()
     subject = f"CoBa's Daughter Daily Email Marketing Update — {today}"
@@ -758,7 +845,16 @@ def main():
             f"Error: {e}\n\nCheck ANTHROPIC_API_KEY at console.anthropic.com"
         )
 
-    # 4. Slack DM
+    # 4. Fetch Canva images for email template visual blocks
+    canva_images = {}
+    try:
+        page_nums = list({CANVA_PAGES.get(em.get("canva_page", ""), 0)
+                          for em in FIVE_EMAIL_BASELINE} - {0})
+        canva_images = get_canva_page_images(page_nums)
+    except Exception as e:
+        print(f"[daily_brief] Canva images skipped: {e}")
+
+    # 5. Slack DM
     print("[daily_brief] Posting to Slack…")
     try:
         ts = post_to_slack(brief, today)
@@ -766,10 +862,10 @@ def main():
     except Exception as e:
         print(f"[daily_brief] Slack failed: {e}")
 
-    # 5. Email
+    # 6. Email
     print(f"[daily_brief] Sending email to {EMAIL_TO} (cc {EMAIL_CC})…")
     try:
-        send_email_brief(brief, today)
+        send_email_brief(brief, today, canva_images)
         print("[daily_brief] Email sent.")
     except Exception as e:
         print(f"[daily_brief] Email failed: {e}")
