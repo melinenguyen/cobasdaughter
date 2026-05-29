@@ -9,6 +9,9 @@ Smart-funnel static ad system for the **Broad (self-care + gifting)** wedge of t
 | `100-ads.md` | Human-readable review matrix of all 100 ads |
 | `bulk-create-1x1.csv` | Canva Bulk Create data for the **1:1** master |
 | `bulk-create-9x16.csv` | Canva Bulk Create data for the **9:16** master |
+| `100-ad-copy.md` / `.csv` | Full Meta copy per ad: hook + **Headline (CTA)** + **Caption** (primary text) + **Ad Description** |
+| `generate_copy.py` | Builds the copy files (merges Meta copy onto the design system) |
+| `PRODUCED-ADS.md` | The finished 1:1 ads already built in Canva (batch 1) |
 | `CANVA-RUNBOOK.md` | Step-by-step: polish masters → Bulk Create → add photos → batch export |
 | `generate_ads.py` | Single source of truth; regenerates the CSVs + matrix (`python3 generate_ads.py`) |
 
