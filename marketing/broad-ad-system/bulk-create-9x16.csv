@@ -1,0 +1,101 @@
+ad_id,funnel,angle,concept,headline,subhead,badge,cta,product,visual
+MOF-001,MOF,M-RITUAL,Make it a ritual,Your shower called. It wants to be a ritual.,Ten quiet minutes that feel like a small vacation for your skin.,Cold-pressed coffee + raw cane sugar,Discover the ritual,Coffee Scrub,"Steam, warm bathroom light, a hand scooping scrub from the jar"
+MOF-002,MOF,M-RITUAL,Make it a ritual,Self-care isn't selfish. It's maintenance.,Begin and end the day with something that's only for you.,Ritual body care,Start the ritual,Body care range,Candle + scrub jar styled on a rattan tray
+MOF-003,MOF,M-RITUAL,Make it a ritual,The five minutes that change the other 23 hours.,"A scrub-and-soak ritual to reset, slowly.",Slow body care,Build your ritual,Coffee Scrub + Soap,"Bath, linen, soft morning light"
+MOF-004,MOF,M-RITUAL,Make it a ritual,Romanticize the mundane. Start with your shower.,"Texture, warmth, scent — small luxuries that add up.",Everyday ritual,Explore the ritual,Coffee Scrub,Water droplets catching light on skin
+MOF-005,MOF,M-RITUAL,Heritage ritual,Some rituals are inherited. This one's worth keeping.,Body care made the slow way — the way it was meant to be.,Rooted in heritage,Discover CoBa's Daughter,Brand range,"Hands, rattan, warm earthy tones"
+MOF-006,MOF,M-RITUAL,PM wind-down,Wash the day off. Properly.,A grounding end-of-day ritual for skin that's had enough.,Evening ritual,Shop the ritual,Soap + Scrub,"Night scene, candle, folded towel"
+MOF-007,MOF,M-RITUAL,Glow is a habit,"Glow is a habit, not an accident.","Two minutes of scrub, three times a week. That's it.",The 2-minute ritual,Start glowing,Coffee Scrub,"Glowing shoulder, golden light"
+MOF-008,MOF,M-RITUAL,Beautiful bathroom,Make your bathroom the nicest room in the house.,Objects and rituals worth slowing down for.,Considered body care,Explore the collection,Range + Rattan,Styled rattan shelf with products
+MOF-009,MOF,M-SENSE,Scent story,It smells like a slow morning in a warm kitchen.,"Real coffee, raw sugar — nothing synthetic pretending to be.",Cold-pressed coffee scent,Smell for yourself,Coffee Scrub,Macro of scrub texture with coffee grounds
+MOF-010,MOF,M-SENSE,Texture proof,Texture you can feel working.,"Grains that melt as they buff — never sandpaper, never slip.",Sugar + coffee grain,Feel the difference,Coffee Scrub,"Scrub on fingertips, extreme macro"
+MOF-011,MOF,M-SENSE,Aromatherapy,"Aromatherapy, minus the woo.",Scents that actually slow your breathing down.,Mood: unbothered,Find your scent,Soap Trio,"Soap bars with botanicals, soft styling"
+MOF-012,MOF,M-SENSE,Cooling sensory,The first cold gel of summer on warm skin.,Instant relief that sinks in — never sticky.,"Pure aloe, cooling",Cool down,Aloe Gel,"Gel on shoulder, dewy skin"
+MOF-013,MOF,M-SENSE,Escape,Close your eyes. You're not in the shower anymore.,"Scent that takes you somewhere, even on a Tuesday.",Sensory body care,Escape daily,Range,"Steam, eyes closed, serene"
+MOF-014,MOF,M-SENSE,Smells expensive,Skin that smells expensive. (Quietly.),The kind of scent people lean in to ask about.,Signature scent,Discover the scent,Range,"Close skin, golden hour glow"
+MOF-015,MOF,M-SENSE,Addictive cool,"Cool, clean, and a little addictive.",Aloe gel that disappears into skin — and takes the heat with it.,Lightweight aloe,Try the gel,Aloe Gel,"Gel texture macro, fresh"
+MOF-016,MOF,M-SENSE,Coffee mood,"Coffee for your skin, not your nerves.","All the ritual of your morning cup, none of the jitters.",Cold-pressed coffee,Wake up your skin,Coffee Scrub,Coffee cup + scrub jar flatlay
+MOF-017,MOF,M-RESULT,Fast smooth,Smoother in one shower. We timed it.,"Buff away the dull, reveal the skin that was always there.",Exfoliate + nourish,See the glow,Coffee Scrub,Before/after texture on a leg
+MOF-018,MOF,M-RESULT,Bumpy arms,"Goodbye, bumpy arms.",Gentle exfoliation for the rough patches nobody talks about.,Smooths rough + bumpy skin,Smooth it out,Coffee Scrub,"Upper-arm close-up, smooth result"
+MOF-019,MOF,M-RESULT,Razor bumps,Razor bumps didn't stand a chance.,"Exfoliate before, soothe after — smooth, settled skin.",Pre-shave + post-shave,See how,Coffee Scrub + Aloe Gel,"Smooth legs, clean styling"
+MOF-020,MOF,M-RESULT,Compliment glow,The 'what are you using?' kind of glow.,"Soft, lit-from-within skin from the neck down.",Visible glow,Get the glow,Coffee Scrub,"Glowing décolleté, natural light"
+MOF-021,MOF,M-RESULT,Tan prep,"Self-tan, but make it even.",Exfoliate first and watch your glow go on flawless.,Preps for an even glow,Prep + glow,Coffee Scrub,"Smooth, evenly-tanned legs"
+MOF-022,MOF,M-RESULT,After-sun,Sunburn's worst enemy.,Pure aloe that calms the heat and saves the weekend.,Cooling relief,Soothe skin,Aloe Gel,"Shoulder with aloe, soft focus"
+MOF-023,MOF,M-RESULT,Body = face,Soft enough to notice. Every time you sit down.,Body skin that finally feels as cared-for as your face.,"Nourished, not stripped",Feel softer,Exfoliate & Nourish Set,Hand resting on soft thigh
+MOF-024,MOF,M-RESULT,Routine,Your body skincare routine has been waiting.,"Exfoliate, nourish, repeat — results you can feel.",Body skincare,Build the routine,Exfoliate & Nourish Set,"Set flatlay, editorial"
+MOF-025,MOF,M-CLEAN,Short list,Ingredients you can pronounce. That's the point.,"Coffee, sugar, oil — nothing to hide.",Clean by design,Read the label,Coffee Scrub,Ingredients laid out neatly on stone
+MOF-026,MOF,M-CLEAN,Slow made,Made the slow way. On purpose.,"Small batches, real ingredients, no shortcuts.",Small batch,Meet the maker,Brand,"Hands at work, craft, rattan"
+MOF-027,MOF,M-CLEAN,Food-grade,"If it's not good enough to eat, it's not going on your skin.","Food-grade ingredients, head to toe.",Food-grade,See what's inside,Coffee Scrub,Coffee beans + raw sugar styled
+MOF-028,MOF,M-CLEAN,Free-from,No synthetic fragrance. No fake glow. No filler.,Just what your skin actually wants.,Free from the nonsense,Shop clean,Range,Minimalist single-product still life
+MOF-029,MOF,M-CLEAN,Real aloe,The aloe inside is actually aloe.,Not water with a green tint and a promise.,"Real aloe, high %",Check the gel,Aloe Gel,Cut aloe leaf beside the tube
+MOF-030,MOF,M-CLEAN,Cruelty-free,"Cruelty-free, because obviously.","Kind to skin, kinder to everything else.",Cruelty-free,Learn more,Brand,"Soft, ethical, natural styling"
+MOF-031,MOF,M-CLEAN,Nothing extra,We left out everything your skin doesn't need.,And kept the ingredients that earn their place.,Intentional formulas,Discover why,Range,Clean flatlay on neutral linen
+MOF-032,MOF,M-CLEAN,Heritage jar,Heritage in a jar.,"Rooted in Vietnamese ritual, made for everyday skin.",Crafted with heritage,Discover the story,Brand,"Rattan, coffee, heritage cues"
+MOF-033,MOF,M-GIFT,Thoughtful,The gift that says 'I actually thought about this.',Beautiful enough to give. Good enough they'll rebuy.,Giftable body care,Explore gifts,Rattan Valise,"Wrapped rattan valise, ribbon"
+MOF-034,MOF,M-GIFT,Not another candle,Skip the candle. Again.,A gift she'll use every single day — not shelve.,Gifts that get used,Find the gift,Exfoliate & Nourish Set,Set styled as a gift
+MOF-035,MOF,M-GIFT,Keepsake,"Hand-woven rattan, filled with the good stuff.",A keepsake basket she'll keep long after.,Rattan keepsake,See the gift sets,Rattan Basket,"Rattan basket gift, overhead"
+MOF-036,MOF,M-GIFT,Their turn,For the person who buys everyone else's gifts.,It's their turn — make it easy and make it beautiful.,Considered gifting,Shop gifts,Rattan Valise,Elegant gift moment
+MOF-037,MOF,M-GIFT,Travels well,A gift that travels well.,The Rattan Valise looks as good on a shelf as in a suitcase.,The Rattan Valise,Discover the valise,Rattan Valise,Valise styled with travel cues
+MOF-038,MOF,M-GIFT,Anniversary,Anniversaries deserve more than flowers that die.,Give a ritual that lasts longer than a bouquet.,Anniversary gifting,Find the gift,Gift Set,Romantic set with flowers
+MOF-039,MOF,M-GIFT,Gift-ready,"Wrapped, ribboned, and ready to impress.",Gifting handled — you just sign the card.,Gift-ready,Explore gift sets,Gift Set,Ribbon and wrapping detail
+MOF-040,MOF,M-GIFT,Foolproof,"Give the glow, not the guesswork.",A body care set anyone will be happy to unwrap.,Foolproof gift,Shop the set,Exfoliate & Nourish Set,"Set as a gift, clean"
+BOF-041,BOF,B-SCRUBDUO,Save $15,Two scrubs. One smoother you.,The Scrub Duo is $69 (was $84).,Scrub Duo · Save $15,Shop the Scrub Duo,Scrub Duo,Two coffee scrub jars side by side
+BOF-042,BOF,B-SCRUBDUO,Double glow,Double the glow for $15 less.,"Our bestselling scrub, now in a duo.",$69 (was $84),Get the duo,Scrub Duo,Duo flatlay on linen
+BOF-043,BOF,B-SCRUBDUO,Keep+give,One for the shower. One for the gift bag.,"Scrub Duo, $69 — keep one, give one.",Save $15,Shop the duo,Scrub Duo,"Two jars, one tied with ribbon"
+BOF-044,BOF,B-SCRUBDUO,Stock up,Never run out of your favorite scrub again.,Stock up with the Scrub Duo and save $15.,Scrub Duo · $69,Stock up now,Scrub Duo,Two jars stacked
+BOF-045,BOF,B-SCRUBDUO,Twice over,"Smooth skin, twice over.",The Scrub Duo: $69 instead of $84.,Save $15,Buy the duo,Scrub Duo,Glowing skin beside the duo
+BOF-046,BOF,B-SCRUBDUO,Bestseller duo,"Your bestseller, now buy-in-twos.",Two coffee scrubs for $69. Save $15.,Bestseller · Save $15,Shop now,Scrub Duo,Duo with bestseller tag
+BOF-047,BOF,B-SCRUBDUO,Urgency,The duo that disappears fastest.,"Scrub Duo, $69 (was $84) — while it lasts.",Save $15,Grab the duo,Scrub Duo,"Two jars, warm light"
+BOF-048,BOF,B-SCRUBDUO,Easy math,$15 off your smoothest skin yet.,Two coffee scrubs. One easy decision.,Scrub Duo · $69,Shop the Scrub Duo,Scrub Duo,Macro scrub + duo
+BOF-049,BOF,B-ALOEDUO,Save $5,"Cool skin, doubled.",The Aloe Duo is $59 (was $64).,Aloe Duo · Save $5,Shop the Aloe Duo,Aloe Duo,Two aloe tubes side by side
+BOF-050,BOF,B-ALOEDUO,Home+away,One by the bed. One in the bag.,"Aloe Duo, $59 — cooling relief, everywhere.",Save $5,Get the duo,Aloe Duo,"Two tubes, lifestyle"
+BOF-051,BOF,B-ALOEDUO,Sunburn season,"Sunburn season, sorted.",Two aloe gels for $59. Be ready.,Aloe Duo · $59,Stock up now,Aloe Duo,Beach scene with aloe
+BOF-052,BOF,B-ALOEDUO,Cool-down,Twice the cool-down for $5 less.,The Aloe Duo: $59 instead of $64.,Save $5,Buy the duo,Aloe Duo,"Gel macro, fresh"
+BOF-053,BOF,B-ALOEDUO,Never search,Never search for your aloe again.,"Aloe Duo, $59 — one for home, one for away.",Aloe Duo · Save $5,Shop now,Aloe Duo,Two tubes flatlay
+BOF-054,BOF,B-ALOEDUO,Buy in twos,"Cooling relief, buy-in-twos.",Two pure aloe gels for $59.,Save $5,Grab the duo,Aloe Duo,Aloe leaf + two tubes
+BOF-055,BOF,B-ALOEDUO,After-sun,The after-sun your skin will thank you for.,"Aloe Duo, $59 (was $64).",Aloe Duo · $59,Soothe + save,Aloe Duo,Shoulder with aloe
+BOF-056,BOF,B-ALOEDUO,In pairs,Hydration that travels in pairs.,"Two aloe gels, $59. Save $5.",Save $5,Shop the Aloe Duo,Aloe Duo,"Tubes flatlay, clean"
+BOF-057,BOF,B-SOAPTRIO,Buy 3 for 2,"Buy 3, pay for 2.",The 3-in-1 Soap Trio: $72 instead of $108.,Buy 3 For 2,Shop the trio,3in1 Soap Trio,Three soap bars stacked
+BOF-058,BOF,B-SOAPTRIO,Save $36,Three soaps. The price of two.,"Soap Trio, $72 — save $36.",Save $36,Get the trio,3in1 Soap Trio,Stacked bars on stone
+BOF-059,BOF,B-SOAPTRIO,Never enough,One bar's never enough. Good thing there's three.,"Buy 3 for 2 — Soap Trio, $72.",Buy 3 For 2,Shop now,3in1 Soap Trio,Bars with botanicals
+BOF-060,BOF,B-SOAPTRIO,Repeat,"Cleanse, lather, repeat — three times over.",The Soap Trio is $72 (was $108).,Save $36,Buy the trio,3in1 Soap Trio,Lather + bars
+BOF-061,BOF,B-SOAPTRIO,Keep+gift,Keep one. Gift two. (Or keep all three.),"Buy 3 for 2: Soap Trio, $72.",Buy 3 For 2,Shop the trio,3in1 Soap Trio,"Three bars, one wrapped"
+BOF-062,BOF,B-SOAPTRIO,Third free,Your free third bar is waiting.,"Soap Trio: buy 3 for 2, just $72.",3rd Bar Free,Claim it,3in1 Soap Trio,"Three bars, spotlight on one"
+BOF-063,BOF,B-SOAPTRIO,Spa x3,The soap that turns showers into spa time. ×3.,$72 for three. Save $36.,Buy 3 For 2,Get the trio,3in1 Soap Trio,Spa styling with bars
+BOF-064,BOF,B-SOAPTRIO,Stock dish,Stock the soap dish for a season.,"Buy 3 for 2 — Soap Trio, $72 (was $108).",Save $36,Shop the Soap Trio,3in1 Soap Trio,Styled soap dish
+BOF-065,BOF,B-SHIP,Ships free,Your glow ships free.,Free US shipping on orders $50+.,Free US Shipping $50+,Shop now,Bestsellers,Package with rattan + products
+BOF-066,BOF,B-SHIP,Add one more,Add one more. Shipping's on us at $50.,Free US shipping over $50.,Free Shipping $50+,Reach free shipping,Range,"Cart of products, overhead"
+BOF-067,BOF,B-SHIP,Easy math,Treat yourself + free shipping. Easy math.,"Spend $50, ship free across the US.",Free Shipping $50+,Build your order,Bestsellers,Bundle of bestsellers
+BOF-068,BOF,B-SHIP,Almost there,Almost at $50? Your skin says go for it.,Free US shipping when you hit $50.,Free Shipping $50+,Top up + ship free,Range,Products with progress cue
+BOF-069,BOF,B-SHIP,Bestsellers,Bestsellers in. Shipping out — free.,Orders $50+ ship free in the US.,Free US Shipping $50+,Shop bestsellers,Hero SKUs,Hero lineup flatlay
+BOF-070,BOF,B-SHIP,Worth it,The glow's worth it. The shipping's free.,Free US shipping over $50.,Free Shipping $50+,Shop the edit,Range,Styled product edit
+BOF-071,BOF,B-SHIP,One order,Everything you've been eyeing. One order. Free shipping.,$50+ ships free across the US.,Free Shipping $50+,Fill your cart,Range,Full flatlay of range
+BOF-072,BOF,B-SHIP,Skip the fee,"Skip the shipping fee, not the self-care.",Free US shipping on $50+.,Free Shipping $50+,Shop now,Range,Self-care flatlay
+BOF-073,BOF,B-HERO,10k showers,"Meet the scrub 10,000 showers swear by.",Our #1 coffee scrub — now in your routine.,#1 Bestseller,Shop the Coffee Scrub,Coffee Scrub,"Hero jar, dramatic light"
+BOF-074,BOF,B-HERO,The one,The Coffee Scrub. The one everyone means.,Cold-pressed coffee + raw sugar. Smoother in one wash.,Bestseller,Shop the hero,Coffee Scrub,Hero jar macro
+BOF-075,BOF,B-HERO,Bedside aloe,The aloe gel that earns its spot by your bed.,"Cooling, fast-absorbing, endlessly reached-for.",Bestseller,Shop the Aloe Gel,Aloe Gel,Aloe tube on a nightstand
+BOF-076,BOF,B-HERO,Back in stock,Sold out twice. Back for good.,The Coffee Scrub everyone waited for.,Back In Stock,Get it now,Coffee Scrub,Jar with restock cue
+BOF-077,BOF,B-HERO,Start here,"If you buy one thing, make it this.",The Coffee Scrub — where everyone starts.,Start Here,Shop the Coffee Scrub,Coffee Scrub,"Hero jar, clean"
+BOF-078,BOF,B-HERO,Reviews,"5 stars, 2,000+ times over.",The Coffee Scrub our reviewers can't stop talking about.,"★★★★★ 2,000+ reviews",See why,Coffee Scrub,Jar beside a review card
+BOF-079,BOF,B-HERO,Does the most,The aloe gel that does the most by doing the least.,One-ingredient hero. Endless uses.,Bestseller,Shop the Aloe Gel,Aloe Gel,"Gel macro, minimalist"
+BOF-080,BOF,B-HERO,Worth the hype,Your shelf called. It wants the bestseller.,The Coffee Scrub — the one worth the hype.,#1 Bestseller,Shop now,Coffee Scrub,Styled shelf with jar
+BOF-081,BOF,B-GIFTSET,Handled,"Gifting, beautifully handled.",The Rattan Valise set — wrapped and ready.,Gift-Ready,Shop the gift set,Rattan Valise,"Valise gift, ribbon"
+BOF-082,BOF,B-GIFTSET,Looks expensive,The gift that arrives looking expensive.,"Hand-woven rattan, filled with bestsellers.",Gift-Ready,Shop gift sets,Rattan Basket,Basket gift overhead
+BOF-083,BOF,B-GIFTSET,Covers all,One set. Every base covered.,Exfoliate & Nourish Set — the gift that does it all.,The Gift Set,Shop the set,Exfoliate & Nourish Set,"Set styled, editorial"
+BOF-084,BOF,B-GIFTSET,Keep basket,She'll keep the basket forever.,Rattan keepsake + body care she'll actually use.,Keepsake Gift,Shop the basket,Rattan Basket,"Basket close-up, texture"
+BOF-085,BOF,B-GIFTSET,Anniversary,Anniversary sorted in one click.,The Rattan Valise — a gift that lasts past the date.,Anniversary-Ready,Shop the valise,Rattan Valise,Romantic gift styling
+BOF-086,BOF,B-GIFTSET,Whole ritual,"Give the whole ritual, not just a piece.","Exfoliate & Nourish Set, ready to gift.",Complete Gift,Shop the set,Exfoliate & Nourish Set,Full set styled
+BOF-087,BOF,B-GIFTSET,Where from,The 'where did you get that?' gift.,"Rattan, ribbon, and bestsellers inside.",Gift-Ready,Shop gift sets,Rattan Valise,"Gift moment, hands"
+BOF-088,BOF,B-GIFTSET,Birthday,"Birthdays handled, beautifully.",A body care set worth unwrapping.,Birthday Gift,Shop the set,Exfoliate & Nourish Set,Birthday gift styling
+BOF-089,BOF,B-PROOF,Repurchased,"""I've repurchased four times.""",Find out what the fuss is about.,★★★★★ Verified review,Shop bestsellers,Coffee Scrub,Review card beside jar
+BOF-090,BOF,B-PROOF,Smoothest,"""My legs have never been this smooth.""",Join thousands who made the switch.,★★★★★ Verified,Shop the scrub,Coffee Scrub,Smooth legs + quote overlay
+BOF-091,BOF,B-PROOF,10k loved,"10,000+ smoother showers and counting.",See why the Coffee Scrub keeps selling out.,"Loved by 10,000+",Join them,Coffee Scrub,"Hero jar, social cue"
+BOF-092,BOF,B-PROOF,Actually finish,"""The only body product I actually finish.""",Real words from real skin.,★★★★★,Shop now,Range,"Quote card, clean"
+BOF-093,BOF,B-PROOF,Rated 4.9,"Rated 4.9. Earned, not bought.",Thousands of reviews can't all be wrong.,4.9 ★ rating,See the reviews,Coffee Scrub,Jar + star rating
+BOF-094,BOF,B-PROOF,Gifted obsessed,"""Gifted it. Now they're obsessed too.""",The body care that converts everyone.,★★★★★,Shop gifts,Gift Set,Gift + quote overlay
+BOF-095,BOF,B-ZODIAC,Gemini,"Happy birthday, Gemini. Here's 15% off.",Use GEMINI15 — your glow deserves a gift too.,15% Off · GEMINI15,Treat yourself,Bestsellers,"Celestial Gemini theme, products"
+BOF-096,BOF,B-ZODIAC,Cancer,"It's your season, Cancer. Glow accordingly.",15% off with CANCER15.,15% Off · CANCER15,Shop your birthday,Range,Celestial Cancer theme
+BOF-097,BOF,B-ZODIAC,Leo,Leo season = your season. Take 15% off.,Use LEO15. Self-gifting is written in the stars.,15% Off · LEO15,Treat yourself,Range,Celestial Leo theme
+BOF-098,BOF,B-ZODIAC,Virgo,"Virgo, you've earned a little softness.",Use VIRGO15 on your birthday glow.,15% Off · VIRGO15,Shop now,Range,Celestial Virgo theme
+BOF-099,BOF,B-ZODIAC,Generic code,The stars say: treat yourself. (15% off.),Your birthday code is waiting — [SIGN]15.,Birthday 15% Off,Claim your code,Range,Zodiac wheel motif
+BOF-100,BOF,B-ZODIAC,Generic edit,"A birthday glow, written in the stars.",15% off your sign's season — use [SIGN]15.,Birthday 15% Off,Shop your birthday edit,Bestsellers,Celestial gifting scene
