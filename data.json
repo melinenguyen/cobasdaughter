@@ -3,7 +3,7 @@
     "today": "2026-06-17",
     "month_label": "June 2026",
     "mtd_label": "Jun 1 – Jun 17, 2026",
-    "generated": "2026-06-17 05:39 UTC",
+    "generated": "2026-06-17 06:08 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -72,7 +72,7 @@
       "by_platform": [
         {
           "platform": "TikTok",
-          "value": 67136
+          "value": 67137
         },
         {
           "platform": "Instagram",
@@ -83,7 +83,7 @@
           "value": 30848
         }
       ],
-      "total": 155128
+      "total": 155129
     },
     "engagement": {
       "fed": true,
@@ -242,7 +242,7 @@
     "creators": 0,
     "seeding": 123,
     "impressions": {
-      "TikTok": 67136.0,
+      "TikTok": 67137.0,
       "Pinterest": 30848,
       "Instagram": 57144
     },
@@ -544,7 +544,7 @@
         "handle": "@lily.bloomx",
         "platform": "tiktok",
         "url": "https://www.tiktok.com/@lily.bloomx/video/7650095526393777422",
-        "views": 8219,
+        "views": 8220,
         "eng": 18,
         "title": "Event & Community — How do I get invited / intentionality",
         "date": "2026-06-10",
@@ -588,7 +588,7 @@
       "title": "Event & Community — How do I get invited / intentionality",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 8219,
+      "impressions": 8220,
       "engagement": 18,
       "status": "Posted"
     },
@@ -2862,5 +2862,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon drove 79.6% of revenue at $8,088 NMV, with awareness expanding 5,805% MoM to 277K impressions—we're winning the category.\n\n• Ad efficiency is underwater at 0.88 ROAS on 72.8% paid spend; we're overspending to acquire customers who aren't converting downstream.\n\n• Valiset is our cash cow at $5,104 NMV (50% of total), while Shopify and TikTok Shop combined contribute only $2,072—DTC expansion is stalled.\n\n• Instagram gained 121 followers from 155K brand impressions (2.3% engagement rate) but TYB membership sits at 1,889—community activation isn't matching awareness metrics."
+  "exec_summary": "• Amazon is dominating but efficiency is broken: 80% of revenue ($8,088 of $10,160 NMV) flows through Amazon while paid ads deliver only 0.88 ROAS—we're losing money on 72.8% of spend and need immediate creative or targeting overhaul on that channel.\n\n• Valiset is carrying the brand on a single SKU: one product generates 50% of total revenue ($5,104), signaling either exceptional product-market fit worth scaling or dangerous over-concentration that demands urgency on secondary products.\n\n• Amazon awareness skyrocketed 5,805% MoM to 277k impressions, but conversion efficiency collapsed: massive visibility gains aren't translating to proportional sales, indicating a funnel leak between awareness and checkout that needs diagnosis.\n\n• DTC and TikTok Shop are afterthoughts: Shopify ($1,778) and TikTok ($294) combined equal 21% of revenue despite being higher-margin, owned channels—reallocate creative resources and paid budget away from Amazon's sinkhole toward owned channels where unit economics can actually work."
 }
