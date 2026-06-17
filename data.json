@@ -3,7 +3,7 @@
     "today": "2026-06-17",
     "month_label": "June 2026",
     "mtd_label": "Jun 1 – Jun 17, 2026",
-    "generated": "2026-06-17 06:10 UTC",
+    "generated": "2026-06-17 06:14 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -46,7 +46,7 @@
   },
   "brand": {
     "total_assets": 123,
-    "source": "June 16",
+    "source": "June 17",
     "assets_by_channel": [
       {
         "channel": "owned",
@@ -72,53 +72,53 @@
       "by_platform": [
         {
           "platform": "TikTok",
-          "value": 67137
+          "value": 65283
         },
         {
           "platform": "Instagram",
-          "value": 57144
+          "value": 59057
         },
         {
           "platform": "Pinterest",
-          "value": 30848
+          "value": 33091
         }
       ],
-      "total": 155129
+      "total": 157431
     },
     "engagement": {
       "fed": true,
       "by_platform": [
         {
           "platform": "Instagram",
-          "value": 1563
+          "value": 1664
         },
         {
           "platform": "Pinterest",
-          "value": 1131
+          "value": 1205
         },
         {
           "platform": "TikTok",
-          "value": 865
+          "value": 819
         }
       ],
-      "total": 3559
+      "total": 3688
     },
     "reach": {
-      "Instagram": 14288
+      "Instagram": 15035
     },
     "community": {
-      "ig_follows_gained": 121,
+      "ig_follows_gained": 125,
       "tyb_now": 1889.0,
       "tyb_start": 1827.0
     },
     "compare": {
       "Instagram": {
-        "impr": 7.9,
+        "impr": 21.8,
         "eng": 45.0
       },
       "Pinterest": {
-        "impr": -7.8,
-        "eng": 1.5
+        "impr": -5.8,
+        "eng": -2.1
       }
     }
   },
@@ -242,14 +242,14 @@
     "creators": 0,
     "seeding": 123,
     "impressions": {
-      "TikTok": 67137.0,
-      "Pinterest": 30848,
-      "Instagram": 57144
+      "Pinterest": 33091,
+      "Instagram": 59057,
+      "TikTok": 65283.0
     },
     "engagement": {
-      "TikTok": 865.0,
-      "Pinterest": 1131,
-      "Instagram": 1563
+      "Pinterest": 1205,
+      "Instagram": 1664,
+      "TikTok": 819.0
     },
     "undated": 40
   },
@@ -2301,16 +2301,16 @@
     ],
     "latest": "June 16",
     "ads": {
-      "spend": 8432,
+      "spend": 8692,
       "impressions": 0,
       "clicks": 0,
       "purchases": 0,
       "gmv": 7398,
-      "roas": 0.88,
+      "roas": 0.85,
       "by_channel": [
         {
           "label": "Meta Ads",
-          "spend": 5314
+          "spend": 5574
         },
         {
           "label": "Amazon Ads",
@@ -2395,7 +2395,12 @@
         {
           "label": "Jun 15",
           "gmv": 249,
-          "spend": 468
+          "spend": 470
+        },
+        {
+          "label": "Jun 16",
+          "gmv": 0,
+          "spend": 258
         }
       ]
     },
@@ -2428,13 +2433,13 @@
     "paid": {
       "available": true,
       "gmv": 7398,
-      "spend": 8432,
-      "roas": 0.88,
+      "spend": 8692,
+      "roas": 0.85,
       "share": 72.8,
       "by_channel": [
         {
           "label": "Meta Ads",
-          "spend": 5314
+          "spend": 5574
         },
         {
           "label": "Amazon Ads",
@@ -2862,5 +2867,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon dominance masks a critical efficiency problem: 79.6% of revenue ($8,088 NMV) flows through a single channel while paid ads deliver only $0.88 ROAS—well below the 2.0x+ threshold needed to scale profitably.\n\n• The Valiset SKU is carrying the business at 50.2% of total revenue ($5,104 of $10,160 NMV), indicating dangerous over-reliance on one product when the brand needs a balanced portfolio to reduce customer acquisition risk.\n\n• Amazon awareness exploded 5,804.7% MoM to 277,345 impressions, but conversion efficiency remains unproven—we're generating noise without confirmed sales lift, suggesting the visibility gains haven't yet translated to sustainable demand.\n\n• TikTok Shop and Shopify DTC combined represent only $2,072 in revenue (20.4% of sales) despite strong social signals (155K impressions, 3.6K engagement, 121 new IG followers), indicating untapped leverage in creator-driven and first-party channels where margins are higher."
+  "exec_summary": "• Amazon is now driving 80% of revenue ($8,088 of $10,160 NMV) with awareness exploding 5,804% MoM to 277K, signaling massive marketplace momentum that justifies doubling down on A+ content and sponsored ads.\n\n• Ad efficiency is underwater at 0.85 ROAS on 72.8% paid spend ($7,396 invested), meaning we're burning cash on underperforming creative—pause low-converting channels and reallocate to Amazon's proven engine immediately.\n\n• Valiset is carrying the brand at 50% of total revenue ($5,104), creating dangerous SKU concentration risk that demands urgent diversification through bundling, cross-sell, and testing secondary hero products.\n\n• Organic reach is strong (157K impressions, 2.3% engagement rate, +125 IG followers) but DTC Shopify is anemic at $1,778 (17.5% of sales), suggesting paid traffic isn't converting on-site—audit checkout flow and consider redirecting paid budget away from Shopify until UX improves."
 }
