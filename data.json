@@ -3,7 +3,7 @@
     "today": "2026-06-17",
     "month_label": "June 2026",
     "mtd_label": "Jun 1 – Jun 17, 2026",
-    "generated": "2026-06-17 06:18 UTC",
+    "generated": "2026-06-17 07:20 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -71,54 +71,71 @@
       "fed": true,
       "by_platform": [
         {
-          "platform": "TikTok",
-          "value": 65286
+          "platform": "Instagram",
+          "value": 233116,
+          "owned": 228809,
+          "earned": 4307
         },
         {
-          "platform": "Instagram",
-          "value": 59057
+          "platform": "TikTok",
+          "value": 67299,
+          "owned": 2012,
+          "earned": 65287
         },
         {
           "platform": "Pinterest",
-          "value": 33091
+          "value": 33091,
+          "owned": 33091,
+          "earned": 0
         }
       ],
-      "total": 157434
+      "total": 333506,
+      "owned_total": 263912,
+      "earned_total": 69594
     },
     "engagement": {
       "fed": true,
       "by_platform": [
         {
           "platform": "Instagram",
-          "value": 1664
+          "value": 13842,
+          "owned": 13830,
+          "earned": 12
         },
         {
           "platform": "Pinterest",
-          "value": 1205
+          "value": 1205,
+          "owned": 1205,
+          "earned": 0
         },
         {
           "platform": "TikTok",
-          "value": 819
+          "value": 871,
+          "owned": 52,
+          "earned": 819
         }
       ],
-      "total": 3688
+      "total": 15918,
+      "owned_total": 15087,
+      "earned_total": 831
     },
     "reach": {
-      "Instagram": 15035
+      "Instagram": 87934
     },
     "community": {
-      "ig_follows_gained": 125,
+      "ig_follows_gained": 201,
       "tyb_now": 1889.0,
-      "tyb_start": 1827.0
+      "tyb_start": 1827.0,
+      "ig_follows_mom": 60.8
     },
     "compare": {
       "Instagram": {
-        "impr": 21.8,
-        "eng": 45.0
+        "impr": 317.9,
+        "eng": 271.3
       },
       "Pinterest": {
-        "impr": -5.8,
-        "eng": -2.1
+        "impr": null,
+        "eng": null
       }
     }
   },
@@ -241,16 +258,8 @@
     "platforms": 2,
     "creators": 0,
     "seeding": 123,
-    "impressions": {
-      "Pinterest": 33091,
-      "Instagram": 59057,
-      "TikTok": 65286.0
-    },
-    "engagement": {
-      "Pinterest": 1205,
-      "Instagram": 1664,
-      "TikTok": 819.0
-    },
+    "impressions": 333506,
+    "engagement": 15918,
     "undated": 40
   },
   "byPlatform": [
@@ -616,7 +625,7 @@
       "title": "Event & Community — Not the usual cities (Austin/SF)",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 5691,
+      "impressions": 5688,
       "engagement": 10,
       "status": "Posted"
     },
@@ -658,7 +667,7 @@
       "title": "Event & Community — Not the usual cities (Austin/SF)",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 4491,
+      "impressions": 4492,
       "engagement": 8,
       "status": "Posted"
     },
@@ -756,7 +765,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 730,
+      "impressions": 731,
       "engagement": 28,
       "status": "POSTED"
     },
@@ -1436,6 +1445,20 @@
       "platform": "tiktok",
       "channel": "shared",
       "type": "post",
+      "handle": "@o_jademusic",
+      "creator": "o_jademusic",
+      "url": "https://www.tiktok.com/@o_jademusic/video/7651958586754600206?_r=1&_t=ZT-97GJGi2qRLC",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 44,
+      "engagement": 3,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
       "handle": "@tricia.g.rutledge",
       "creator": "tricia.g.rutledge",
       "url": "https://www.tiktok.com/@tricia.g.rutledge/video/7649924229864885534",
@@ -1444,20 +1467,6 @@
       "is_seeding": true,
       "impressions": 42,
       "engagement": 4,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@o_jademusic",
-      "creator": "o_jademusic",
-      "url": "https://www.tiktok.com/@o_jademusic/video/7651958586754600206?_r=1&_t=ZT-97GJGi2qRLC",
-      "title": "Event & Community — Creator recap / who was there",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 42,
-      "engagement": 3,
       "status": "POSTED"
     },
     {
@@ -2867,5 +2876,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon dominance is masking a profitability crisis: 79.6% of revenue flows through Amazon at 0.85x ROAS, while paid spend consumes 72.8% of NMV, leaving razor-thin margins across all channels.\n\n• Valiset is carrying the brand—generating $5,104 of $10,160 total NMV (50.2%)—which exposes dangerous SKU concentration risk if this hero product loses momentum.\n\n• Amazon awareness exploded 5,804.7% MoM to 277,345 impressions, but conversion isn't following: brand engagement sits at just 3,688 actions on 157,434 impressions (2.3% engagement rate), signaling awareness-to-sale leakage.\n\n• Shopify and TikTok Shop are afterthoughts at 17.5% and 2.9% of revenue respectively, despite 125 Instagram follows gained MTD—organic social potential remains untapped while paid channels dominate unsustainably."
+  "exec_summary": "• Amazon is driving 80% of revenue at $8,088 NMV but ad ROAS of 0.85 signals paid spend is underperforming—immediate audit of creative and bidding strategy required.\n\n• Valiset accounts for 50% of total NMV ($5,104), creating dangerous concentration risk that demands urgent diversification of product-level marketing investment.\n\n• Amazon awareness exploded 5,805% MoM to 277K impressions, yet conversion efficiency suggests the traffic surge isn't translating to proportional sales lift.\n\n• Instagram audience growth of 201 followers MTD is flat relative to 333K brand impressions—engagement rate of 4.8% indicates content resonance gap between awareness campaigns and community building."
 }
