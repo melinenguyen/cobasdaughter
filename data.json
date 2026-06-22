@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-21",
+    "today": "2026-06-22",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 21, 2026",
-    "generated": "2026-06-21 09:35 UTC",
+    "mtd_label": "Jun 1 – Jun 22, 2026",
+    "generated": "2026-06-22 11:34 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -45,7 +45,7 @@
     "Total": "#716a56"
   },
   "brand": {
-    "total_assets": 123,
+    "total_assets": 128,
     "source": "June 17",
     "assets_by_channel": [
       {
@@ -63,7 +63,7 @@
       {
         "channel": "shared",
         "label": "Shared (Seeding)",
-        "count": 123,
+        "count": 128,
         "color": "#6b7a8f"
       }
     ],
@@ -78,9 +78,9 @@
         },
         {
           "platform": "TikTok",
-          "value": 142501,
+          "value": 142855,
           "owned": 2012,
-          "earned": 140489
+          "earned": 140843
         },
         {
           "platform": "Pinterest",
@@ -89,9 +89,9 @@
           "earned": 0
         }
       ],
-      "total": 408953,
+      "total": 409307,
       "owned_total": 263912,
-      "earned_total": 145041
+      "earned_total": 145395
     },
     "engagement": {
       "fed": true,
@@ -110,14 +110,14 @@
         },
         {
           "platform": "TikTok",
-          "value": 1107,
+          "value": 1109,
           "owned": 52,
-          "earned": 1055
+          "earned": 1057
         }
       ],
-      "total": 16155,
+      "total": 16157,
       "owned_total": 15087,
-      "earned_total": 1068
+      "earned_total": 1070
     },
     "reach": {
       "Instagram": 87934
@@ -537,33 +537,33 @@
     }
   },
   "kpi": {
-    "mentions_total": 123,
+    "mentions_total": 128,
     "platforms": 2,
     "creators": 0,
-    "seeding": 123,
-    "impressions": 408953,
-    "engagement": 16155,
-    "undated": 40
+    "seeding": 128,
+    "impressions": 409307,
+    "engagement": 16157,
+    "undated": 43
   },
   "byPlatform": [
+    {
+      "platform": "tiktok",
+      "label": "TikTok",
+      "count": 65,
+      "color": "#2c332f"
+    },
     {
       "platform": "instagram",
       "label": "Instagram",
       "count": 63,
       "color": "#b08968"
-    },
-    {
-      "platform": "tiktok",
-      "label": "TikTok",
-      "count": 60,
-      "color": "#2c332f"
     }
   ],
   "byChannel": [
     {
       "channel": "shared",
       "label": "Shared (Seeding)",
-      "count": 123,
+      "count": 128,
       "color": "#6b7a8f"
     }
   ],
@@ -573,14 +573,14 @@
       "label": "Jun 1",
       "byPlatform": {
         "instagram": 0,
-        "tiktok": 9
+        "tiktok": 14
       },
       "byChannel": {
         "owned": 0,
         "earned": 0,
-        "shared": 9
+        "shared": 14
       },
-      "total": 9
+      "total": 14
     },
     {
       "date": "2026-06-02",
@@ -851,6 +851,20 @@
     {
       "date": "2026-06-21",
       "label": "Jun 21",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
+    },
+    {
+      "date": "2026-06-22",
+      "label": "Jun 22",
       "byPlatform": {
         "instagram": 0,
         "tiktok": 0
@@ -1398,6 +1412,20 @@
       "title": "Event & Community — Event Recap",
       "date": "2026-06-01",
       "is_seeding": true,
+      "impressions": 198.0,
+      "engagement": 0.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
+      "title": "Event & Community — Event Recap",
+      "date": "2026-06-01",
+      "is_seeding": true,
       "impressions": 197.0,
       "engagement": 6.0,
       "status": "POSTED"
@@ -1535,11 +1563,11 @@
       "handle": "@kimberlymadds",
       "creator": "kimberlymadds",
       "url": "https://www.tiktok.com/@kimberlymadds/photo/7651360708042427661",
-      "title": "Event & Community — Event Recap",
+      "title": "Brand Discovery — Who is this brand / discovery",
       "date": "2026-06-01",
       "is_seeding": true,
       "impressions": 135.0,
-      "engagement": 0.0,
+      "engagement": null,
       "status": "POSTED"
     },
     {
@@ -1569,20 +1597,6 @@
       "impressions": 133.0,
       "engagement": 0,
       "status": "Posted"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@kimberlymadds",
-      "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
-      "title": "Event & Community — Community moment",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 128.0,
-      "engagement": 1.0,
-      "status": "POSTED"
     },
     {
       "platform": "instagram",
@@ -1652,6 +1666,34 @@
       "is_seeding": true,
       "impressions": 107.0,
       "engagement": 3.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652055553052577038",
+      "title": "Event & Community — Grounding ritual / event detail",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 107.0,
+      "engagement": null,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652057784095165710",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 107.0,
+      "engagement": null,
       "status": "POSTED"
     },
     {
@@ -1848,6 +1890,48 @@
       "is_seeding": true,
       "impressions": 35.0,
       "engagement": 3.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@o_jademusic",
+      "creator": "o_jademusic",
+      "url": "https://www.tiktok.com/@o_jademusic/video/7653245037928549646?_r=1&_t=ZT-97LxiwyAi2n",
+      "title": "Event & Community — Event FOMO / I wish I was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 28.0,
+      "engagement": 2.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@o_jademusic",
+      "creator": "o_jademusic",
+      "url": "https://www.tiktok.com/@o_jademusic/video/7653244236778818830?_r=1&_t=ZT-97LxiVYAVwM",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 23.0,
+      "engagement": 0.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@o_jademusic",
+      "creator": "o_jademusic",
+      "url": "https://www.tiktok.com/@o_jademusic/video/7653244380790164749?_r=1&_t=ZT-97Lxjyp4rnB",
+      "title": "Event & Community — How do I get invited / intentionality",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 19.0,
+      "engagement": 1.0,
       "status": "POSTED"
     },
     {
@@ -3215,5 +3299,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon dominance is masking a profitability problem: 79.6% of revenue ($8,088 NMV) flows through Amazon while paid ads deliver only 0.85 ROAS, meaning we're spending $1.21 to earn $1.00 and need to cut or restructure paid spend immediately.\n\n• Valiset is carrying the brand at 50.2% of total NMV ($5,104), creating dangerous single-SKU dependency that limits growth potential and increases inventory risk.\n\n• Amazon awareness surged 5,804.7% MoM to 277K impressions while Shopify languishes at 17.5% of revenue, signaling either a platform algorithm win we should exploit or a data anomaly requiring verification before budget reallocation.\n\n• TikTok Shop represents a rounding error at 2.9% of NMV ($294) despite 16K brand engagements and 201 new Instagram followers MTD, indicating severe conversion leakage in social-to-purchase funnel that's worth diagnosing before scaling."
+  "exec_summary": "• Amazon is driving 79.6% of revenue ($8,088 NMV) with explosive 5,805% month-over-month awareness growth, but overall ad ROAS of 0.85 signals unsustainable paid spend efficiency that needs immediate optimization.\n\n• Valiset is our revenue anchor at 50.2% of total NMV ($5,104), yet Shopify's $1,778 contribution and TikTok's $294 indicate severe underperformance on owned channels that should be carrying higher-margin volume.\n\n• We've added 201 Instagram followers and grown TYB membership to 1,889, but 3.9% engagement rate (16,157 engagements on 409K impressions) shows our creative content isn't converting awareness into loyalty or repeat intent.\n\n• Paid channels represent 72.8% of revenue mix—dangerously channel-dependent with weak ROAS, requiring immediate shift toward organic, influencer, and community-driven growth to build sustainable unit economics."
 }
