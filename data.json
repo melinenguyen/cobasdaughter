@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-22",
+    "today": "2026-06-23",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 22, 2026",
-    "generated": "2026-06-22 11:34 UTC",
+    "mtd_label": "Jun 1 – Jun 23, 2026",
+    "generated": "2026-06-23 08:58 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -78,9 +78,9 @@
         },
         {
           "platform": "TikTok",
-          "value": 142855,
+          "value": 142828,
           "owned": 2012,
-          "earned": 140843
+          "earned": 140816
         },
         {
           "platform": "Pinterest",
@@ -89,9 +89,9 @@
           "earned": 0
         }
       ],
-      "total": 409307,
+      "total": 409280,
       "owned_total": 263912,
-      "earned_total": 145395
+      "earned_total": 145368
     },
     "engagement": {
       "fed": true,
@@ -110,14 +110,14 @@
         },
         {
           "platform": "TikTok",
-          "value": 1109,
+          "value": 1123,
           "owned": 52,
-          "earned": 1057
+          "earned": 1071
         }
       ],
-      "total": 16157,
+      "total": 16171,
       "owned_total": 15087,
-      "earned_total": 1070
+      "earned_total": 1084
     },
     "reach": {
       "Instagram": 87934
@@ -541,9 +541,9 @@
     "platforms": 2,
     "creators": 0,
     "seeding": 128,
-    "impressions": 409307,
-    "engagement": 16157,
-    "undated": 43
+    "impressions": 409280,
+    "engagement": 16171,
+    "undated": 48
   },
   "byPlatform": [
     {
@@ -875,6 +875,20 @@
         "shared": 0
       },
       "total": 0
+    },
+    {
+      "date": "2026-06-23",
+      "label": "Jun 23",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
     }
   ],
   "platforms": [
@@ -1090,8 +1104,8 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 1017.0,
-      "engagement": 41.0,
+      "impressions": 1022.0,
+      "engagement": 42.0,
       "status": "POSTED"
     },
     {
@@ -1104,7 +1118,7 @@
       "title": "Brand Discovery — Why have I never heard of this / hidden gem",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 811.0,
+      "impressions": 814.0,
       "engagement": 48.0,
       "status": "POSTED"
     },
@@ -1118,7 +1132,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 750.0,
+      "impressions": 751.0,
       "engagement": 35.0,
       "status": "POSTED"
     },
@@ -1272,8 +1286,22 @@
       "title": "Event & Community — Why have I never heard of this / hidden gem",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 290.0,
+      "impressions": 291.0,
       "engagement": 3.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@villamero.samsam",
+      "creator": "villamero.samsam",
+      "url": "https://www.tiktok.com/@villamero.samsam/video/7650198071011216647?_r=1&_t=ZS-97BbApaZgZU",
+      "title": "Brand Discovery — Explore / want to try them",
+      "date": "2026-06-07",
+      "is_seeding": true,
+      "impressions": 274.0,
+      "engagement": 28.0,
       "status": "POSTED"
     },
     {
@@ -1296,25 +1324,11 @@
       "type": "post",
       "handle": "@villamero.samsam",
       "creator": "villamero.samsam",
-      "url": "https://www.tiktok.com/@villamero.samsam/video/7650198071011216647?_r=1&_t=ZS-97BbApaZgZU",
-      "title": "Brand Discovery — Explore / want to try them",
-      "date": "2026-06-07",
-      "is_seeding": true,
-      "impressions": 273.0,
-      "engagement": 28.0,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@villamero.samsam",
-      "creator": "villamero.samsam",
       "url": "https://www.tiktok.com/@villamero.samsam/photo/7650617658248875271?_r=1&_t=ZS-97BbC64gauu",
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 262.0,
+      "impressions": 264.0,
       "engagement": 78.0,
       "status": "POSTED"
     },
@@ -1328,7 +1342,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 253.0,
+      "impressions": 256.0,
       "engagement": 28.0,
       "status": "POSTED"
     },
@@ -1342,8 +1356,8 @@
       "title": "Brand Discovery — Heritage / Cô Ba story curiosity",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 249.0,
-      "engagement": 52.0,
+      "impressions": 251.0,
+      "engagement": 61.0,
       "status": "POSTED"
     },
     {
@@ -1356,7 +1370,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 244.0,
+      "impressions": 245.0,
       "engagement": 9.0,
       "status": "POSTED"
     },
@@ -1384,7 +1398,7 @@
       "title": "Event & Community — Grounding ritual / event detail",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 216.0,
+      "impressions": 217.0,
       "engagement": 12.0,
       "status": "POSTED"
     },
@@ -1413,20 +1427,6 @@
       "date": "2026-06-01",
       "is_seeding": true,
       "impressions": 198.0,
-      "engagement": 0.0,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@kimberlymadds",
-      "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
-      "title": "Event & Community — Event Recap",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 197.0,
       "engagement": 6.0,
       "status": "POSTED"
     },
@@ -1440,7 +1440,7 @@
       "title": "Event & Community — Story-screenshot repost (creator asset)",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 187.0,
+      "impressions": 188.0,
       "engagement": 3.0,
       "status": "POSTED"
     },
@@ -1482,7 +1482,7 @@
       "title": "Event & Community — Not the usual cities (Austin/SF)",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 152.0,
+      "impressions": 155.0,
       "engagement": 21.0,
       "status": "POSTED"
     },
@@ -1510,8 +1510,8 @@
       "title": "Event & Community — Who is this brand / discovery",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 147.0,
-      "engagement": 3.0,
+      "impressions": 148.0,
+      "engagement": 2.0,
       "status": "POSTED"
     },
     {
@@ -1524,7 +1524,7 @@
       "title": "Brand Discovery — Aesthetic / looks like Hermès",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 146.0,
+      "impressions": 148.0,
       "engagement": 3.0,
       "status": "POSTED"
     },
@@ -1538,8 +1538,8 @@
       "title": "Brand Discovery — The Aesop of Vietnam",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 144.0,
-      "engagement": 43.0,
+      "impressions": 146.0,
+      "engagement": 47.0,
       "status": "POSTED"
     },
     {
@@ -1552,8 +1552,22 @@
       "title": "Brand Discovery — Brand as feeling / sells a moment",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 143.0,
+      "impressions": 144.0,
       "engagement": 8.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@villamero.samsam",
+      "creator": "villamero.samsam",
+      "url": "https://www.tiktok.com/@villamero.samsam/video/7650448107964009746?_r=1&_t=ZS-97BbCYLQscy",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-07",
+      "is_seeding": true,
+      "impressions": 137.0,
+      "engagement": 36.0,
       "status": "POSTED"
     },
     {
@@ -1567,21 +1581,7 @@
       "date": "2026-06-01",
       "is_seeding": true,
       "impressions": 135.0,
-      "engagement": null,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@villamero.samsam",
-      "creator": "villamero.samsam",
-      "url": "https://www.tiktok.com/@villamero.samsam/video/7650448107964009746?_r=1&_t=ZS-97BbCYLQscy",
-      "title": "Event & Community — Creator recap / who was there",
-      "date": "2026-06-07",
-      "is_seeding": true,
-      "impressions": 134.0,
-      "engagement": 36.0,
+      "engagement": 0.0,
       "status": "POSTED"
     },
     {
@@ -1597,6 +1597,20 @@
       "impressions": 133.0,
       "engagement": 0,
       "status": "Posted"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
+      "title": "Event & Community — Event Recap",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 130.0,
+      "engagement": 1.0,
+      "status": "POSTED"
     },
     {
       "platform": "instagram",
@@ -1655,6 +1669,20 @@
       "status": "Posted"
     },
     {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652057784095165710",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 108.0,
+      "engagement": 3.0,
+      "status": "POSTED"
+    },
+    {
       "platform": "instagram",
       "channel": "shared",
       "type": "post",
@@ -1679,21 +1707,7 @@
       "date": "2026-06-01",
       "is_seeding": true,
       "impressions": 107.0,
-      "engagement": null,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@kimberlymadds",
-      "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652057784095165710",
-      "title": "Event & Community — Creator recap / who was there",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 107.0,
-      "engagement": null,
+      "engagement": 0.0,
       "status": "POSTED"
     },
     {
@@ -1776,8 +1790,8 @@
       "title": "Event & Community — Story-screenshot repost (creator asset)",
       "date": "2026-06-09",
       "is_seeding": true,
-      "impressions": 73.0,
-      "engagement": 15.0,
+      "impressions": 75.0,
+      "engagement": 13.0,
       "status": "POSTED"
     },
     {
@@ -1818,7 +1832,7 @@
       "title": "Event & Community — Community",
       "date": "2026-06-02",
       "is_seeding": true,
-      "impressions": 57.0,
+      "impressions": 58.0,
       "engagement": 6.0,
       "status": "POSTED"
     },
@@ -1860,7 +1874,7 @@
       "title": "Event & Community — Community moment",
       "date": "2026-06-09",
       "is_seeding": true,
-      "impressions": 44.0,
+      "impressions": 45.0,
       "engagement": 4.0,
       "status": "POSTED"
     },
@@ -1903,7 +1917,7 @@
       "date": "2026-06-01",
       "is_seeding": true,
       "impressions": 28.0,
-      "engagement": 2.0,
+      "engagement": 1.0,
       "status": "POSTED"
     },
     {
@@ -1930,7 +1944,7 @@
       "title": "Event & Community — How do I get invited / intentionality",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 19.0,
+      "impressions": 21.0,
       "engagement": 1.0,
       "status": "POSTED"
     },
@@ -3299,5 +3313,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon is driving 79.6% of revenue ($8,088 NMV) with explosive 5,805% month-over-month awareness growth, but overall ad ROAS of 0.85 signals unsustainable paid spend efficiency that needs immediate optimization.\n\n• Valiset is our revenue anchor at 50.2% of total NMV ($5,104), yet Shopify's $1,778 contribution and TikTok's $294 indicate severe underperformance on owned channels that should be carrying higher-margin volume.\n\n• We've added 201 Instagram followers and grown TYB membership to 1,889, but 3.9% engagement rate (16,157 engagements on 409K impressions) shows our creative content isn't converting awareness into loyalty or repeat intent.\n\n• Paid channels represent 72.8% of revenue mix—dangerously channel-dependent with weak ROAS, requiring immediate shift toward organic, influencer, and community-driven growth to build sustainable unit economics."
+  "exec_summary": "• Amazon is driving 80% of revenue at $8,088 NMV but awareness spiked 5,805% MoM to 277K impressions, signaling massive untapped conversion potential on the channel.\n\n• Paid media efficiency has collapsed to 0.85 ROAS on 72.8% of spend, meaning we're losing $0.15 per dollar invested and need immediate creative or targeting intervention.\n\n• Valiset alone represents 50% of total NMV ($5,104 of $10,160), creating dangerous concentration risk if this hero SKU underperforms or faces supply constraints.\n\n• Brand engagement sits at 3.95% on 409K impressions (16,171 engagements) with 201 Instagram followers gained—solid awareness building but conversion velocity lags behind traffic generation."
 }
