@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-24",
+    "today": "2026-06-25",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 24, 2026",
-    "generated": "2026-06-24 08:52 UTC",
+    "mtd_label": "Jun 1 – Jun 25, 2026",
+    "generated": "2026-06-25 08:46 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -78,9 +78,9 @@
         },
         {
           "platform": "TikTok",
-          "value": 142894,
+          "value": 142920,
           "owned": 2012,
-          "earned": 140882
+          "earned": 140908
         },
         {
           "platform": "Pinterest",
@@ -89,9 +89,9 @@
           "earned": 0
         }
       ],
-      "total": 409346,
+      "total": 409372,
       "owned_total": 263912,
-      "earned_total": 145434
+      "earned_total": 145460
     },
     "engagement": {
       "fed": true,
@@ -541,7 +541,7 @@
     "platforms": 2,
     "creators": 0,
     "seeding": 128,
-    "impressions": 409346,
+    "impressions": 409372,
     "engagement": 16199,
     "undated": 51
   },
@@ -903,6 +903,20 @@
         "shared": 0
       },
       "total": 0
+    },
+    {
+      "date": "2026-06-25",
+      "label": "Jun 25",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
     }
   ],
   "platforms": [
@@ -1118,7 +1132,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 1028.0,
+      "impressions": 1029.0,
       "engagement": 44.0,
       "status": "POSTED"
     },
@@ -1132,7 +1146,7 @@
       "title": "Brand Discovery — Why have I never heard of this / hidden gem",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 816.0,
+      "impressions": 819.0,
       "engagement": 49.0,
       "status": "POSTED"
     },
@@ -1146,7 +1160,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 755.0,
+      "impressions": 757.0,
       "engagement": 36.0,
       "status": "POSTED"
     },
@@ -1314,7 +1328,7 @@
       "title": "Brand Discovery — Explore / want to try them",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 275.0,
+      "impressions": 276.0,
       "engagement": 28.0,
       "status": "POSTED"
     },
@@ -1342,7 +1356,7 @@
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 265.0,
+      "impressions": 267.0,
       "engagement": 94.0,
       "status": "POSTED"
     },
@@ -1356,7 +1370,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 257.0,
+      "impressions": 258.0,
       "engagement": 28.0,
       "status": "POSTED"
     },
@@ -1426,7 +1440,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 205.0,
+      "impressions": 206.0,
       "engagement": 49.0,
       "status": "POSTED"
     },
@@ -1440,7 +1454,7 @@
       "title": "Event & Community — Event Recap",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 199.0,
+      "impressions": 201.0,
       "engagement": 6.0,
       "status": "POSTED"
     },
@@ -1468,7 +1482,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 171.0,
+      "impressions": 173.0,
       "engagement": 3.0,
       "status": "POSTED"
     },
@@ -1496,7 +1510,7 @@
       "title": "Event & Community — Not the usual cities (Austin/SF)",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 160.0,
+      "impressions": 161.0,
       "engagement": 22.0,
       "status": "POSTED"
     },
@@ -1552,7 +1566,7 @@
       "title": "Brand Discovery — The Aesop of Vietnam",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 147.0,
+      "impressions": 148.0,
       "engagement": 47.0,
       "status": "POSTED"
     },
@@ -1566,7 +1580,7 @@
       "title": "Brand Discovery — Brand as feeling / sells a moment",
       "date": "2026-06-10",
       "is_seeding": true,
-      "impressions": 145.0,
+      "impressions": 146.0,
       "engagement": 8.0,
       "status": "POSTED"
     },
@@ -1594,8 +1608,22 @@
       "title": "Brand Discovery — Who is this brand / discovery",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 137.0,
+      "impressions": 138.0,
       "engagement": 0.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
+      "title": "Event & Community — Event Recap",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 134.0,
+      "engagement": 1.0,
       "status": "POSTED"
     },
     {
@@ -1611,20 +1639,6 @@
       "impressions": 133.0,
       "engagement": 0,
       "status": "Posted"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@kimberlymadds",
-      "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7651646487654370574",
-      "title": "Event & Community — Event Recap",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 132.0,
-      "engagement": 1.0,
-      "status": "POSTED"
     },
     {
       "platform": "instagram",
@@ -1655,6 +1669,20 @@
       "status": "POSTED"
     },
     {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@kimberlymadds",
+      "creator": "kimberlymadds",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652057784095165710",
+      "title": "Event & Community — Creator recap / who was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 114.0,
+      "engagement": 3.0,
+      "status": "POSTED"
+    },
+    {
       "platform": "instagram",
       "channel": "shared",
       "type": "post",
@@ -1674,12 +1702,12 @@
       "type": "post",
       "handle": "@kimberlymadds",
       "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652057784095165710",
-      "title": "Event & Community — Creator recap / who was there",
+      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652055553052577038",
+      "title": "Event & Community — Grounding ritual / event detail",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 112.0,
-      "engagement": 3.0,
+      "impressions": 109.0,
+      "engagement": 0.0,
       "status": "POSTED"
     },
     {
@@ -1695,20 +1723,6 @@
       "impressions": 109.0,
       "engagement": 0,
       "status": "Posted"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@kimberlymadds",
-      "creator": "kimberlymadds",
-      "url": "https://www.tiktok.com/@kimberlymadds/photo/7652055553052577038",
-      "title": "Event & Community — Grounding ritual / event detail",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 108.0,
-      "engagement": 0.0,
-      "status": "POSTED"
     },
     {
       "platform": "instagram",
@@ -1888,7 +1902,7 @@
       "title": "Event & Community — Community moment",
       "date": "2026-06-09",
       "is_seeding": true,
-      "impressions": 47.0,
+      "impressions": 48.0,
       "engagement": 4.0,
       "status": "POSTED"
     },
@@ -1944,7 +1958,7 @@
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 27.0,
+      "impressions": 28.0,
       "engagement": 1.0,
       "status": "POSTED"
     },
@@ -3327,5 +3341,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon is carrying us: $8,088 NMV (79.6% of total) with awareness exploding 5,805% MoM to 277K, but our $10,160 total NMV and 0.85 ROAS signal we're overspending to acquire—paid media at 72.8% share is unsustainable at current efficiency.\n\n• Valiset is our cash cow at $5,104 NMV (50% of revenue), yet we're spreading capital across 128 assets; consolidating creative spend behind this winner and pausing underperformers could unlock 15–25% ROAS lift.\n\n• DTC is underperforming: Shopify's $1,778 NMV and TikTok Shop's $294 are dwarfed by Amazon, indicating our owned channels lack conversion velocity or traffic—our 201 IG followers gained suggests brand awareness (409K impressions) isn't converting to owned-channel revenue.\n\n• Organic engagement is thin relative to reach: 16,199 engagements on 409K impressions (3.96% rate) and 1,889 TYB members lag what we'd expect for a premium brand—we need tighter creative targeting and member-exclusive offers to deepen loyalty and reduce reliance on paid Amazon scaling."
+  "exec_summary": "• Amazon dominance is masking a critical profitability problem: 79.5% of revenue ($8,088 of $10,160) flows through the channel, but paid advertising delivers only 0.85x ROAS, meaning we're spending $1.18 to earn $1.00 across all channels.\n\n• Valiset is carrying the entire business—50% of total revenue ($5,104 of $10,160)—which signals dangerous SKU concentration and suggests the remaining 127 products are underperforming or underpromoted.\n\n• Amazon awareness exploded 5,804.7% MoM to 277,345 impressions, but conversion efficiency hasn't kept pace; we need to diagnose whether this traffic is converting at acceptable rates or if we're winning visibility without profit.\n\n• DTC channels are starved: Shopify and TikTok Shop combined represent only 20.5% of revenue ($2,072), despite being higher-margin; reallocating the 72.8% paid budget away from Amazon and toward owned channels could unlock better unit economics."
 }
