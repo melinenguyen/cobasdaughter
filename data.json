@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-25",
+    "today": "2026-06-26",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 25, 2026",
-    "generated": "2026-06-25 08:46 UTC",
+    "mtd_label": "Jun 1 – Jun 26, 2026",
+    "generated": "2026-06-26 08:50 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -45,19 +45,19 @@
     "Total": "#716a56"
   },
   "brand": {
-    "total_assets": 128,
+    "total_assets": 170,
     "source": "June 17",
     "assets_by_channel": [
       {
         "channel": "owned",
         "label": "Owned",
-        "count": 0,
+        "count": 16,
         "color": "#2c332f"
       },
       {
         "channel": "earned",
         "label": "Earned (KOL/UGC)",
-        "count": 0,
+        "count": 26,
         "color": "#c08552"
       },
       {
@@ -537,9 +537,9 @@
     }
   },
   "kpi": {
-    "mentions_total": 128,
+    "mentions_total": 170,
     "platforms": 2,
-    "creators": 0,
+    "creators": 17,
     "seeding": 128,
     "impressions": 409372,
     "engagement": 16199,
@@ -547,19 +547,31 @@
   },
   "byPlatform": [
     {
+      "platform": "instagram",
+      "label": "Instagram",
+      "count": 105,
+      "color": "#b08968"
+    },
+    {
       "platform": "tiktok",
       "label": "TikTok",
       "count": 65,
       "color": "#2c332f"
-    },
-    {
-      "platform": "instagram",
-      "label": "Instagram",
-      "count": 63,
-      "color": "#b08968"
     }
   ],
   "byChannel": [
+    {
+      "channel": "owned",
+      "label": "Owned",
+      "count": 16,
+      "color": "#2c332f"
+    },
+    {
+      "channel": "earned",
+      "label": "Earned (KOL/UGC)",
+      "count": 26,
+      "color": "#c08552"
+    },
     {
       "channel": "shared",
       "label": "Shared (Seeding)",
@@ -572,15 +584,15 @@
       "date": "2026-06-01",
       "label": "Jun 1",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 1,
         "tiktok": 14
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 1,
         "shared": 14
       },
-      "total": 14
+      "total": 15
     },
     {
       "date": "2026-06-02",
@@ -600,57 +612,57 @@
       "date": "2026-06-03",
       "label": "Jun 3",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 1,
         "tiktok": 3
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 1,
         "shared": 3
       },
-      "total": 3
+      "total": 4
     },
     {
       "date": "2026-06-04",
       "label": "Jun 4",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 2,
         "tiktok": 0
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 2,
         "shared": 0
       },
-      "total": 0
+      "total": 2
     },
     {
       "date": "2026-06-05",
       "label": "Jun 5",
       "byPlatform": {
-        "instagram": 4,
+        "instagram": 10,
         "tiktok": 5
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 6,
         "shared": 9
       },
-      "total": 9
+      "total": 15
     },
     {
       "date": "2026-06-06",
       "label": "Jun 6",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 8,
         "tiktok": 0
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 8,
         "shared": 0
       },
-      "total": 0
+      "total": 8
     },
     {
       "date": "2026-06-07",
@@ -698,71 +710,71 @@
       "date": "2026-06-10",
       "label": "Jun 10",
       "byPlatform": {
-        "instagram": 59,
+        "instagram": 67,
         "tiktok": 25
       },
       "byChannel": {
-        "owned": 0,
-        "earned": 0,
+        "owned": 5,
+        "earned": 3,
         "shared": 84
       },
-      "total": 84
+      "total": 92
     },
     {
       "date": "2026-06-11",
       "label": "Jun 11",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 5,
         "tiktok": 0
       },
       "byChannel": {
-        "owned": 0,
-        "earned": 0,
+        "owned": 3,
+        "earned": 2,
         "shared": 0
       },
-      "total": 0
+      "total": 5
     },
     {
       "date": "2026-06-12",
       "label": "Jun 12",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 1,
         "tiktok": 0
       },
       "byChannel": {
-        "owned": 0,
+        "owned": 1,
         "earned": 0,
         "shared": 0
       },
-      "total": 0
+      "total": 1
     },
     {
       "date": "2026-06-13",
       "label": "Jun 13",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 1,
         "tiktok": 0
       },
       "byChannel": {
-        "owned": 0,
+        "owned": 1,
         "earned": 0,
         "shared": 0
       },
-      "total": 0
+      "total": 1
     },
     {
       "date": "2026-06-14",
       "label": "Jun 14",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 3,
         "tiktok": 3
       },
       "byChannel": {
         "owned": 0,
-        "earned": 0,
+        "earned": 3,
         "shared": 3
       },
-      "total": 3
+      "total": 6
     },
     {
       "date": "2026-06-15",
@@ -782,15 +794,15 @@
       "date": "2026-06-16",
       "label": "Jun 16",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 4,
         "tiktok": 0
       },
       "byChannel": {
-        "owned": 0,
+        "owned": 4,
         "earned": 0,
         "shared": 0
       },
-      "total": 0
+      "total": 4
     },
     {
       "date": "2026-06-17",
@@ -824,15 +836,15 @@
       "date": "2026-06-19",
       "label": "Jun 19",
       "byPlatform": {
-        "instagram": 0,
+        "instagram": 2,
         "tiktok": 0
       },
       "byChannel": {
-        "owned": 0,
+        "owned": 2,
         "earned": 0,
         "shared": 0
       },
-      "total": 0
+      "total": 2
     },
     {
       "date": "2026-06-20",
@@ -917,6 +929,20 @@
         "shared": 0
       },
       "total": 0
+    },
+    {
+      "date": "2026-06-26",
+      "label": "Jun 26",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
     }
   ],
   "platforms": [
@@ -929,8 +955,76 @@
     "shared"
   ],
   "highlights": {
-    "owned": [],
-    "earned": [],
+    "owned": [
+      {
+        "creator": "IG Social Boost",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZXDPprB88U/",
+        "views": null,
+        "eng": null,
+        "title": "June 9 - Reel (Austin event - Voiceover)",
+        "date": "2026-06-10",
+        "thumb": null
+      },
+      {
+        "creator": "IG Social Boost",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZQNf3XpSQh/",
+        "views": null,
+        "eng": null,
+        "title": "June 7 - Reel (SF event)",
+        "date": "2026-06-10",
+        "thumb": null
+      },
+      {
+        "creator": "IG Social Boost",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZJB6HVyzPE/",
+        "views": null,
+        "eng": null,
+        "title": "June 4 - Reel (Sao's Intro)",
+        "date": "2026-06-10",
+        "thumb": null
+      }
+    ],
+    "earned": [
+      {
+        "creator": "natureandsoundstudio",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZBQHhspUxC/",
+        "views": null,
+        "eng": null,
+        "title": "Aesthetic",
+        "date": "2026-06-01",
+        "thumb": null
+      },
+      {
+        "creator": "graysonnsmithh",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZI3ANShdLi/",
+        "views": null,
+        "eng": null,
+        "title": "Voiceover + B-Roll",
+        "date": "2026-06-04",
+        "thumb": null
+      },
+      {
+        "creator": "sarah_phan",
+        "handle": "@",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/p/DZJOdYhxlq-/",
+        "views": null,
+        "eng": null,
+        "title": "Voiceover + B-Roll",
+        "date": "2026-06-04",
+        "thumb": null
+      }
+    ],
     "shared": [
       {
         "creator": "callher677",
@@ -2087,6 +2181,594 @@
       "impressions": 3.0,
       "engagement": 0,
       "status": "Posted"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "natureandsoundstudio",
+      "url": "https://www.instagram.com/p/DZBQHhspUxC/",
+      "title": "Aesthetic",
+      "date": "2026-06-01",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "graysonnsmithh",
+      "url": "https://www.instagram.com/p/DZI3ANShdLi/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-04",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "sarah_phan",
+      "url": "https://www.instagram.com/p/DZJOdYhxlq-/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-04",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "itsmervekoc",
+      "url": "https://www.instagram.com/p/DZK35vJhBUK/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "zoegabon",
+      "url": "https://www.instagram.com/p/DZJtuQ0v1Uw/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "bellasoundskoo",
+      "url": "https://www.instagram.com/p/DZPIP4DjuMB/?img_index=1",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "generationchloe",
+      "url": "https://www.instagram.com/p/DZQiAYjSTY2/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "heyitsrubee",
+      "url": "https://www.instagram.com/reel/DZFoBZ4qs4E/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-03",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "madisontnequine",
+      "url": "https://www.instagram.com/p/DZNuInKDw90/?img_index=1",
+      "title": "Aesthetic",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "kassandra.suriano",
+      "url": "https://www.instagram.com/reel/DZTvrMcT4m0/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "kassandra.suriano",
+      "url": "https://www.instagram.com/p/DZToGbWmsI3/?img_index=1",
+      "title": "Aesthetic",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "kassandra.suriano",
+      "url": "https://www.instagram.com/reel/DZKo__gOm4S/",
+      "title": "Unboxing",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "zoegabon",
+      "url": "https://www.instagram.com/reel/DZLje7Zymbs/",
+      "title": "Unboxing",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "jadajunetotten",
+      "url": "https://www.instagram.com/p/DZNleudmnsT/?img_index=2",
+      "title": "Aesthetic",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "cuurlycoco",
+      "url": "https://www.instagram.com/reel/DZIsFh7J2ij/",
+      "title": "Aesthetic",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "sarahsundrop",
+      "url": "https://www.instagram.com/p/DZVQuh2AYMX/",
+      "title": "Aesthetic",
+      "date": "2026-06-06",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "generationchloe",
+      "url": "https://www.instagram.com/p/DZYQ_21Ssv7/",
+      "title": "Unboxing",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "wenbymua",
+      "url": "https://www.instagram.com/reel/DZWe2iKtTYl/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "sarah_phan",
+      "url": "https://www.instagram.com/p/DZYnbdOx03i/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZXDPprB88U/",
+      "title": "June 9 - Reel (Austin event - Voiceover)",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZQNf3XpSQh/",
+      "title": "June 7 - Reel (SF event)",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZJB6HVyzPE/",
+      "title": "June 4 - Reel (Sao's Intro)",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZIoQoTBdS0/",
+      "title": "June 4 - Reel (Austin event - POV Meditation)",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZFsAqRh6TU/",
+      "title": "June 3 - Reel (Austin event - A glimpse into event)",
+      "date": "2026-06-10",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZbQd4elYcZ/",
+      "title": "June 11 - Carousel (Scrub + Duo Lifestyle + promotion)",
+      "date": "2026-06-11",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "bellasoundskoo",
+      "url": "https://www.instagram.com/p/DZWx7_yAyo9/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZd55LMgptc/",
+      "title": "June 11 - Reel (Teasing Refill)",
+      "date": "2026-06-12",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "madame_usnmz",
+      "url": "https://www.instagram.com/p/DZbRjQFBvHV/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-11",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "cobasdaughter",
+      "url": "https://www.instagram.com/p/DZXy36zlPiy/?img_index=1",
+      "title": "Lifestyle",
+      "date": "2026-06-11",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Inhouse"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "cobasdaughter",
+      "url": "https://www.instagram.com/cobasdaughter/p/DZWYt-6lLh0/",
+      "title": "Lifestyle",
+      "date": "2026-06-11",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Inhouse"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "wenbymua",
+      "url": "https://www.instagram.com/p/DZWe2iKtTYl/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-05",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "thedailykara",
+      "url": "https://www.instagram.com/p/DZYHRlxqBLx/",
+      "title": "Voiceover + B-Roll",
+      "date": "2026-06-11",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "madisontnequine",
+      "url": "https://www.instagram.com/p/DZankVVSl9h/",
+      "title": "Lifestyle",
+      "date": "2026-06-14",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "mervekozluu",
+      "url": "https://www.instagram.com/p/DZiWTRUvZYs/",
+      "title": "Lifestyle",
+      "date": "2026-06-14",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "earned",
+      "type": "post",
+      "handle": "@",
+      "creator": "madame_usnmz",
+      "url": "https://www.instagram.com/p/DZjODKLBkY2/",
+      "title": "Unboxing",
+      "date": "2026-06-14",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "KOL/UGC (Collab Ad)"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZjGyYKJV1y/",
+      "title": "June 13 - Reel (Interview SF Event)",
+      "date": "2026-06-13",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZna17zJLtz/",
+      "title": "June 16 - Reel (Refills - Everyone has their own way)",
+      "date": "2026-06-16",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZnjCnVvApz/",
+      "title": "June 16 - Reel (The art of a satisfying refill)",
+      "date": "2026-06-16",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZi9OnApimJ/",
+      "title": "June 16 - Reel (POV: First time joining event)",
+      "date": "2026-06-16",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZqtTJQvdzo/",
+      "title": "June 16 - Reel (The sound of summer)",
+      "date": "2026-06-16",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZv8CtKJiPm/",
+      "title": "June 19 - Reel (POV: You’re joining our Grounding & Graceful event in SF)",
+      "date": "2026-06-19",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
+    },
+    {
+      "platform": "instagram",
+      "channel": "owned",
+      "type": "post",
+      "handle": "@",
+      "creator": "IG Social Boost",
+      "url": "https://www.instagram.com/p/DZv7Du_zYiq/",
+      "title": "Juen 19 - Reel (Refill silhouette teasing)",
+      "date": "2026-06-19",
+      "is_seeding": false,
+      "impressions": null,
+      "engagement": null,
+      "status": "Social Boost"
     },
     {
       "platform": "instagram",
@@ -3312,8 +3994,8 @@
     {
       "name": "tracker1",
       "channel": "owned",
-      "state": "unavailable (HTTP Error 401: Unauthorized)",
-      "ok": false
+      "state": "live",
+      "ok": true
     },
     {
       "name": "tracker3",
@@ -3341,5 +4023,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon dominance is masking a critical profitability problem: 79.5% of revenue ($8,088 of $10,160) flows through the channel, but paid advertising delivers only 0.85x ROAS, meaning we're spending $1.18 to earn $1.00 across all channels.\n\n• Valiset is carrying the entire business—50% of total revenue ($5,104 of $10,160)—which signals dangerous SKU concentration and suggests the remaining 127 products are underperforming or underpromoted.\n\n• Amazon awareness exploded 5,804.7% MoM to 277,345 impressions, but conversion efficiency hasn't kept pace; we need to diagnose whether this traffic is converting at acceptable rates or if we're winning visibility without profit.\n\n• DTC channels are starved: Shopify and TikTok Shop combined represent only 20.5% of revenue ($2,072), despite being higher-margin; reallocating the 72.8% paid budget away from Amazon and toward owned channels could unlock better unit economics."
+  "exec_summary": "• Amazon awareness exploded 5,805% MoM to 277K, yet our $8.1K Amazon revenue (80% of total NMV) leaves significant conversion upside on the table.\n\n• Paid media is dragging at 0.85x ROAS while consuming 73% of spend; immediate optimization required to salvage profitability on $7.4K in paid-driven revenue.\n\n• Valiset is carrying the brand at $5.1K NMV (50% of total), masking weakness in the remaining SKU mix and concentrating risk.\n\n• TikTok Shop is a rounding error at $294 NMV despite viral potential—channel deserves dedicated creative strategy to justify the 409K+ impressions we're generating."
 }
