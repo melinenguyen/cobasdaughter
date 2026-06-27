@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-26",
+    "today": "2026-06-27",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 26, 2026",
-    "generated": "2026-06-26 08:50 UTC",
+    "mtd_label": "Jun 1 – Jun 27, 2026",
+    "generated": "2026-06-27 08:26 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -78,9 +78,9 @@
         },
         {
           "platform": "TikTok",
-          "value": 142920,
+          "value": 142964,
           "owned": 2012,
-          "earned": 140908
+          "earned": 140952
         },
         {
           "platform": "Pinterest",
@@ -89,9 +89,9 @@
           "earned": 0
         }
       ],
-      "total": 409372,
+      "total": 409416,
       "owned_total": 263912,
-      "earned_total": 145460
+      "earned_total": 145504
     },
     "engagement": {
       "fed": true,
@@ -110,14 +110,14 @@
         },
         {
           "platform": "TikTok",
-          "value": 1151,
+          "value": 1153,
           "owned": 52,
-          "earned": 1099
+          "earned": 1101
         }
       ],
-      "total": 16199,
+      "total": 16201,
       "owned_total": 15087,
-      "earned_total": 1112
+      "earned_total": 1114
     },
     "reach": {
       "Instagram": 87934
@@ -541,8 +541,8 @@
     "platforms": 2,
     "creators": 17,
     "seeding": 128,
-    "impressions": 409372,
-    "engagement": 16199,
+    "impressions": 409416,
+    "engagement": 16201,
     "undated": 51
   },
   "byPlatform": [
@@ -943,6 +943,20 @@
         "shared": 0
       },
       "total": 0
+    },
+    {
+      "date": "2026-06-27",
+      "label": "Jun 27",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
     }
   ],
   "platforms": [
@@ -1226,8 +1240,8 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 1029.0,
-      "engagement": 44.0,
+      "impressions": 1032.0,
+      "engagement": 45.0,
       "status": "POSTED"
     },
     {
@@ -1240,7 +1254,7 @@
       "title": "Brand Discovery — Why have I never heard of this / hidden gem",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 819.0,
+      "impressions": 820.0,
       "engagement": 49.0,
       "status": "POSTED"
     },
@@ -1254,7 +1268,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-14",
       "is_seeding": true,
-      "impressions": 757.0,
+      "impressions": 759.0,
       "engagement": 36.0,
       "status": "POSTED"
     },
@@ -1464,7 +1478,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 258.0,
+      "impressions": 260.0,
       "engagement": 28.0,
       "status": "POSTED"
     },
@@ -1478,7 +1492,7 @@
       "title": "Brand Discovery — Heritage / Cô Ba story curiosity",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 256.0,
+      "impressions": 257.0,
       "engagement": 62.0,
       "status": "POSTED"
     },
@@ -1492,7 +1506,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 245.0,
+      "impressions": 246.0,
       "engagement": 9.0,
       "status": "POSTED"
     },
@@ -1576,7 +1590,7 @@
       "title": "Event & Community — Event FOMO / I wish I was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 173.0,
+      "impressions": 176.0,
       "engagement": 3.0,
       "status": "POSTED"
     },
@@ -1660,8 +1674,8 @@
       "title": "Brand Discovery — The Aesop of Vietnam",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 148.0,
-      "engagement": 47.0,
+      "impressions": 149.0,
+      "engagement": 48.0,
       "status": "POSTED"
     },
     {
@@ -1688,7 +1702,7 @@
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-07",
       "is_seeding": true,
-      "impressions": 139.0,
+      "impressions": 140.0,
       "engagement": 36.0,
       "status": "POSTED"
     },
@@ -1702,7 +1716,7 @@
       "title": "Brand Discovery — Who is this brand / discovery",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 138.0,
+      "impressions": 140.0,
       "engagement": 0.0,
       "status": "POSTED"
     },
@@ -1772,7 +1786,7 @@
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 114.0,
+      "impressions": 116.0,
       "engagement": 3.0,
       "status": "POSTED"
     },
@@ -1800,7 +1814,7 @@
       "title": "Event & Community — Grounding ritual / event detail",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 109.0,
+      "impressions": 111.0,
       "engagement": 0.0,
       "status": "POSTED"
     },
@@ -1864,27 +1878,13 @@
       "platform": "tiktok",
       "channel": "shared",
       "type": "post",
-      "handle": "@cozy.cora5978",
-      "creator": "cozy.cora5978",
-      "url": "https://www.tiktok.com/@cozy.cora5978/video/7650114563970436366",
-      "title": "Brand Discovery — Coffee Scrub as ritual object",
-      "date": "2026-06-10",
-      "is_seeding": true,
-      "impressions": 91.0,
-      "engagement": 0,
-      "status": "Posted"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
       "handle": "@courtneylynn.ugc",
       "creator": "courtneylynn.ugc",
       "url": "https://www.tiktok.com/@courtneylynn.ugc/video/7646908789538540831",
       "title": "Event & Community — Event Recap",
       "date": "2026-06-03",
       "is_seeding": true,
-      "impressions": 90.0,
+      "impressions": 93.0,
       "engagement": 5.0,
       "status": "POSTED"
     },
@@ -1898,9 +1898,23 @@
       "title": "Event & Community — Event Recap",
       "date": "2026-06-03",
       "is_seeding": true,
-      "impressions": 86.0,
+      "impressions": 91.0,
       "engagement": 7.0,
       "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@cozy.cora5978",
+      "creator": "cozy.cora5978",
+      "url": "https://www.tiktok.com/@cozy.cora5978/video/7650114563970436366",
+      "title": "Brand Discovery — Coffee Scrub as ritual object",
+      "date": "2026-06-10",
+      "is_seeding": true,
+      "impressions": 91.0,
+      "engagement": 0,
+      "status": "Posted"
     },
     {
       "platform": "tiktok",
@@ -1934,6 +1948,20 @@
       "platform": "tiktok",
       "channel": "shared",
       "type": "post",
+      "handle": "@courtneylynn.ugc",
+      "creator": "courtneylynn.ugc",
+      "url": "https://www.tiktok.com/@courtneylynn.ugc/video/7647495950759496991",
+      "title": "Event & Community — Community",
+      "date": "2026-06-02",
+      "is_seeding": true,
+      "impressions": 62.0,
+      "engagement": 7.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
       "handle": "@rosegold.remi",
       "creator": "rosegold.remi",
       "url": "https://www.tiktok.com/@rosegold.remi/video/7650123195877428493",
@@ -1948,27 +1976,13 @@
       "platform": "tiktok",
       "channel": "shared",
       "type": "post",
-      "handle": "@courtneylynn.ugc",
-      "creator": "courtneylynn.ugc",
-      "url": "https://www.tiktok.com/@courtneylynn.ugc/video/7647495950759496991",
-      "title": "Event & Community — Community",
-      "date": "2026-06-02",
-      "is_seeding": true,
-      "impressions": 59.0,
-      "engagement": 7.0,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
       "handle": "@o_jademusic",
       "creator": "o_jademusic",
       "url": "https://www.tiktok.com/@o_jademusic/video/7651959776103927053?_r=1&_t=ZT-97GJHYKAVjx",
       "title": "Event & Community — Community moment",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 54.0,
+      "impressions": 55.0,
       "engagement": 7.0,
       "status": "POSTED"
     },
@@ -2018,6 +2032,20 @@
       "platform": "tiktok",
       "channel": "shared",
       "type": "post",
+      "handle": "@o_jademusic",
+      "creator": "o_jademusic",
+      "url": "https://www.tiktok.com/@o_jademusic/video/7653245037928549646?_r=1&_t=ZT-97LxiwyAi2n",
+      "title": "Event & Community — Event FOMO / I wish I was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 36.0,
+      "engagement": 1.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
       "handle": "@courtneylynn.ugc",
       "creator": "courtneylynn.ugc",
       "url": "https://www.tiktok.com/@courtneylynn.ugc/video/7646792314542722334",
@@ -2034,25 +2062,11 @@
       "type": "post",
       "handle": "@o_jademusic",
       "creator": "o_jademusic",
-      "url": "https://www.tiktok.com/@o_jademusic/video/7653245037928549646?_r=1&_t=ZT-97LxiwyAi2n",
-      "title": "Event & Community — Event FOMO / I wish I was there",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 32.0,
-      "engagement": 1.0,
-      "status": "POSTED"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@o_jademusic",
-      "creator": "o_jademusic",
       "url": "https://www.tiktok.com/@o_jademusic/video/7653244236778818830?_r=1&_t=ZT-97LxiVYAVwM",
       "title": "Event & Community — Creator recap / who was there",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 28.0,
+      "impressions": 31.0,
       "engagement": 1.0,
       "status": "POSTED"
     },
@@ -2066,7 +2080,7 @@
       "title": "Event & Community — How do I get invited / intentionality",
       "date": "2026-06-01",
       "is_seeding": true,
-      "impressions": 27.0,
+      "impressions": 31.0,
       "engagement": 1.0,
       "status": "POSTED"
     },
@@ -4023,5 +4037,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon awareness exploded 5,805% MoM to 277K, yet our $8.1K Amazon revenue (80% of total NMV) leaves significant conversion upside on the table.\n\n• Paid media is dragging at 0.85x ROAS while consuming 73% of spend; immediate optimization required to salvage profitability on $7.4K in paid-driven revenue.\n\n• Valiset is carrying the brand at $5.1K NMV (50% of total), masking weakness in the remaining SKU mix and concentrating risk.\n\n• TikTok Shop is a rounding error at $294 NMV despite viral potential—channel deserves dedicated creative strategy to justify the 409K+ impressions we're generating."
+  "exec_summary": "• Amazon awareness exploded 5,805% month-over-month to 277K impressions, but overall ROAS of 0.85 signals paid spend is outpacing revenue generation and demands immediate optimization.\n\n• Valiset single-handedly drove 50% of total NMV ($5.1K of $10.2K), concentrating revenue risk on one SKU while the portfolio underperforms—diversification is critical.\n\n• Amazon dominates channel mix at 80% of NMV ($8.1K), making the platform a revenue engine but also a dependency; Shopify and TikTok combined represent only $2.1K.\n\n• Instagram audience growth of 201 followers MTD paired with 409K impressions and 16.2K engagements shows owned-channel momentum, but conversion funnel from follower to TYB member (1,889 total) remains thin."
 }
