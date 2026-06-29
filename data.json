@@ -1,9 +1,9 @@
 {
   "meta": {
-    "today": "2026-06-28",
+    "today": "2026-06-29",
     "month_label": "June 2026",
-    "mtd_label": "Jun 1 – Jun 28, 2026",
-    "generated": "2026-06-28 08:40 UTC",
+    "mtd_label": "Jun 1 – Jun 29, 2026",
+    "generated": "2026-06-29 10:21 UTC",
     "deliver": "Daily 1:00 PM ICT"
   },
   "palette": {
@@ -45,7 +45,7 @@
     "Total": "#716a56"
   },
   "brand": {
-    "total_assets": 170,
+    "total_assets": 171,
     "source": "June 17",
     "assets_by_channel": [
       {
@@ -63,7 +63,7 @@
       {
         "channel": "shared",
         "label": "Shared (Seeding)",
-        "count": 128,
+        "count": 129,
         "color": "#6b7a8f"
       }
     ],
@@ -72,15 +72,15 @@
       "by_platform": [
         {
           "platform": "Instagram",
-          "value": 233361,
+          "value": 233561,
           "owned": 228809,
-          "earned": 4552
+          "earned": 4752
         },
         {
           "platform": "TikTok",
-          "value": 142964,
+          "value": 145996,
           "owned": 2012,
-          "earned": 140952
+          "earned": 143984
         },
         {
           "platform": "Pinterest",
@@ -89,9 +89,9 @@
           "earned": 0
         }
       ],
-      "total": 409416,
+      "total": 412648,
       "owned_total": 263912,
-      "earned_total": 145504
+      "earned_total": 148736
     },
     "engagement": {
       "fed": true,
@@ -110,14 +110,14 @@
         },
         {
           "platform": "TikTok",
-          "value": 1153,
+          "value": 1198,
           "owned": 52,
-          "earned": 1101
+          "earned": 1146
         }
       ],
-      "total": 16201,
+      "total": 16246,
       "owned_total": 15087,
-      "earned_total": 1114
+      "earned_total": 1159
     },
     "reach": {
       "Instagram": 87934
@@ -537,12 +537,12 @@
     }
   },
   "kpi": {
-    "mentions_total": 170,
+    "mentions_total": 171,
     "platforms": 2,
     "creators": 17,
-    "seeding": 128,
-    "impressions": 409416,
-    "engagement": 16201,
+    "seeding": 129,
+    "impressions": 412648,
+    "engagement": 16246,
     "undated": 51
   },
   "byPlatform": [
@@ -555,7 +555,7 @@
     {
       "platform": "tiktok",
       "label": "TikTok",
-      "count": 65,
+      "count": 66,
       "color": "#2c332f"
     }
   ],
@@ -575,7 +575,7 @@
     {
       "channel": "shared",
       "label": "Shared (Seeding)",
-      "count": 128,
+      "count": 129,
       "color": "#6b7a8f"
     }
   ],
@@ -767,14 +767,14 @@
       "label": "Jun 14",
       "byPlatform": {
         "instagram": 3,
-        "tiktok": 3
+        "tiktok": 4
       },
       "byChannel": {
         "owned": 0,
         "earned": 3,
-        "shared": 3
+        "shared": 4
       },
-      "total": 6
+      "total": 7
     },
     {
       "date": "2026-06-15",
@@ -961,6 +961,20 @@
     {
       "date": "2026-06-28",
       "label": "Jun 28",
+      "byPlatform": {
+        "instagram": 0,
+        "tiktok": 0
+      },
+      "byChannel": {
+        "owned": 0,
+        "earned": 0,
+        "shared": 0
+      },
+      "total": 0
+    },
+    {
+      "date": "2026-06-29",
+      "label": "Jun 29",
       "byPlatform": {
         "instagram": 0,
         "tiktok": 0
@@ -1226,8 +1240,36 @@
       "title": "Event & Community — Aesthetic / looks like Hermès",
       "date": "2026-06-05",
       "is_seeding": true,
-      "impressions": 1888.0,
+      "impressions": 2088.0,
       "engagement": 0.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@crazycarolina35",
+      "creator": "crazycarolina35",
+      "url": "https://www.tiktok.com/@crazycarolina35/video/7651011745800031501",
+      "title": "Event & Community — Event FOMO / I wish I was there",
+      "date": "2026-06-01",
+      "is_seeding": true,
+      "impressions": 2032.0,
+      "engagement": 45.0,
+      "status": "POSTED"
+    },
+    {
+      "platform": "tiktok",
+      "channel": "shared",
+      "type": "post",
+      "handle": "@crazycarolina35",
+      "creator": "crazycarolina35",
+      "url": "https://www.tiktok.com/@crazycarolina35/video/76510117458000315012",
+      "title": "Event & Community — Event FOMO / I wish I was there",
+      "date": "2026-06-14",
+      "is_seeding": true,
+      "impressions": 2032.0,
+      "engagement": 45.0,
       "status": "POSTED"
     },
     {
@@ -1243,20 +1285,6 @@
       "impressions": 1451.0,
       "engagement": 3.0,
       "status": "Posted"
-    },
-    {
-      "platform": "tiktok",
-      "channel": "shared",
-      "type": "post",
-      "handle": "@crazycarolina35",
-      "creator": "crazycarolina35",
-      "url": "https://www.tiktok.com/@crazycarolina35/video/7651011745800031501",
-      "title": "Event & Community — Event FOMO / I wish I was there",
-      "date": "2026-06-01",
-      "is_seeding": true,
-      "impressions": 1032.0,
-      "engagement": 45.0,
-      "status": "POSTED"
     },
     {
       "platform": "tiktok",
@@ -4051,5 +4079,5 @@
   "buzz": {
     "explainer": "Brand Buzz blends volume (posts), depth (engagement) and reach (views) into one number per channel. Now live from the trackers' logged metrics. Score = posts×1.0 + (engagement/100)×0.5 + (views/1000)×0.3."
   },
-  "exec_summary": "• Amazon awareness exploded 5,805% month-over-month to 277k impressions, but overall June generated only $10.2k NMV with Amazon driving 80% of revenue—indicating strong visibility that hasn't yet converted to profitable sales velocity.\n\n• Ad efficiency collapsed to 0.85 ROAS on 72.8% paid spend mix, meaning we're losing $0.15 per dollar invested; immediate audit of paid creative and channel allocation required to justify continued media spend.\n\n• Valiset carried the month at $5.1k NMV (50% of total revenue), signaling dangerous SKU concentration—diversification and secondary product push needed to de-risk revenue base.\n\n• Community engagement held steady with 201 new Instagram followers and 1,889 TYB members, but 3.96% engagement rate on 409k impressions reflects weak creative resonance across owned channels relative to audience size."
+  "exec_summary": "• Amazon awareness exploded 5,805% MoM to 277K impressions, validating our Amazon strategy shift and positioning the channel as our primary growth engine despite representing 80% of current revenue.\n\n• Ad efficiency collapsed with 0.85 ROAS on 72.8% paid spend, meaning we're burning $1.18 to make $1.00—immediate action required on creative refresh and audience targeting across DTC.\n\n• Valiset dominated portfolio with $5.1K NMV (50% of total), but Shopify underperformed at $1.8K (18% of channel mix), signaling need to stress-test DTC product-market fit beyond our hero SKU.\n\n• TikTok Shop remains negligible at $294 NMV despite 412K brand impressions, indicating severe conversion leakage that suggests platform algorithm misalignment or audience-product mismatch requiring urgent diagnostic."
 }
