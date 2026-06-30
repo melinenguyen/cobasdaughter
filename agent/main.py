@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from agent.config import Config
 from agent.collectors import google_trends, reddit, twitter, youtube, news, instagram, cultural_calendar, brand_intel
-from agent import analyzer, report_generator, slack_notifier
+from agent import analyzer, report_generator, slack_notifier, email_notifier
 
 logging.basicConfig(
     level=logging.INFO,
@@ -141,6 +141,24 @@ def run_agent(
             logger.warning("Slack digest not sent (check credentials)")
     else:
         logger.info("Dry run — Slack skipped")
+
+    # 6. Send email digest
+    if not dry_run:
+        logger.info("Sending email digest...")
+        email_sent = email_notifier.send(
+            report,
+            sender_email=Config.GMAIL_SENDER,
+            sender_password=Config.GMAIL_APP_PASSWORD,
+            to_email=Config.EMAIL_TO,
+            cc_email=Config.EMAIL_CC,
+            dashboard_url=dashboard_url,
+        )
+        if email_sent:
+            logger.info("Email digest sent successfully")
+        else:
+            logger.warning("Email digest not sent (check GMAIL_SENDER / GMAIL_APP_PASSWORD secrets)")
+    else:
+        logger.info("Dry run — Email skipped")
 
     elapsed = (datetime.utcnow() - start_time).total_seconds()
     logger.info(f"=== Agent complete in {elapsed:.1f}s ===")
