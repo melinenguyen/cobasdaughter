@@ -20,7 +20,10 @@ class Config:
     INSTAGRAM_ACCESS_TOKEN = os.getenv("INSTAGRAM_ACCESS_TOKEN", "")
     INSTAGRAM_BUSINESS_ACCOUNT_ID = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", "")
 
-    FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
+    GMAIL_SENDER = os.getenv("GMAIL_SENDER", "")
+    GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "")
+    EMAIL_TO = os.getenv("EMAIL_TO", "meline.nguyen@lixibox.com")
+    EMAIL_CC = os.getenv("EMAIL_CC", "phuonglt.job@gmail.com")
     DASHBOARD_PORT = int(os.getenv("DASHBOARD_PORT", "5050"))
 
     REPORTS_DIR = os.getenv("REPORTS_DIR", "reports")
