@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Dreamhouse Kingdom 💖 — a Y2K dream world for girlies</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>" />
+<style>
+  :root {
+    --hotpink: #ff2d95;
+    --pink: #ff8fc4;
+    --pink-soft: #ffd9ec;
+    --lilac: #a98bf5;
+    --lilac-soft: #e9dfff;
+    --babyblue: #9fd8ff;
+    --mint: #3ecf8e;
+    --gold: #ffd166;
+    --cream: #fff8f2;
+    --ink: #6b4a63;
+    --card: rgba(255, 255, 255, 0.9);
+    --shadow: 0 10px 30px rgba(190, 120, 170, 0.25);
+    --round: 22px;
+    --chrome: linear-gradient(135deg, #e8e9f3 0%, #c5c8dd 30%, #f4f5ff 50%, #b8bad1 70%, #eceefc 100%);
+    --font: "Trebuchet MS", ui-rounded, "SF Pro Rounded", "Segoe UI", "Comic Sans MS", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; font-family: var(--font); color: var(--ink); }
+  body { background: linear-gradient(#ffd9ec, #e9dfff); }
+  canvas#c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  button { font-family: inherit; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+  .hud-card {
+    background: var(--card); border-radius: 999px; padding: 10px 18px;
+    box-shadow: var(--shadow); font-weight: 700; font-size: 17px;
+    display: flex; gap: 16px; align-items: center; backdrop-filter: blur(6px);
+  }
+  .hud-card .stat { display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+  #hud-right { display: flex; gap: 10px; pointer-events: auto; flex-wrap: wrap; justify-content: flex-end; }
+  .icon-btn {
+    width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--card); box-shadow: var(--shadow); font-size: 21px;
+    display: grid; place-items: center; transition: transform .15s; position: relative;
+  }
+  .icon-btn:hover { transform: scale(1.1); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn.active { outline: 3px solid var(--hotpink); }
+
+  #zone-chips { position: fixed; top: 74px; left: 14px; display: flex; flex-direction: column; gap: 7px; z-index: 9; pointer-events: none; }
+  .chip {
+    background: var(--card); border-radius: 999px; padding: 6px 14px 6px 10px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(190,120,170,.18); display: flex; align-items: center; gap: 7px;
+    opacity: .92; transition: all .3s; border: 2px solid transparent;
+  }
+  .chip.done { border-color: var(--gold); background: #fff6da; }
+  .chip .dots { letter-spacing: 2px; font-size: 11px; }
+  @media (max-width: 700px) {
+    .chip .chip-name { display: none; }
+    .chip { padding: 6px 10px; }
+    .hud-card { font-size: 14px; padding: 8px 14px; gap: 10px; }
+    .icon-btn { width: 42px; height: 42px; font-size: 18px; }
+  }
+
+  /* ---------- interaction prompt ---------- */
+  #prompt {
+    position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%) translateY(10px);
+    background: var(--card); padding: 12px 22px; border-radius: 999px; font-weight: 700;
+    box-shadow: var(--shadow); opacity: 0; transition: all .25s; z-index: 10; pointer-events: none;
+    font-size: 16px; white-space: nowrap;
+  }
+  #prompt.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #prompt kbd {
+    background: var(--hotpink); color: white; border-radius: 8px; padding: 2px 9px; font-family: inherit;
+    font-weight: 800; margin-right: 4px; box-shadow: 0 2px 0 #c22071;
+  }
+
+  #toast {
+    position: fixed; left: 50%; top: 84px; transform: translateX(-50%) scale(.8);
+    background: var(--card); padding: 10px 24px; border-radius: 999px; font-weight: 800; font-size: 17px;
+    box-shadow: var(--shadow); opacity: 0; transition: all .3s cubic-bezier(.34,1.56,.64,1); z-index: 60; pointer-events: none;
+    max-width: min(92vw, 640px); text-align: center; white-space: normal;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+  /* ---------- touch controls ---------- */
+  #joystick {
+    position: fixed; bottom: 26px; left: 26px; width: 128px; height: 128px; border-radius: 50%;
+    background: rgba(255,255,255,.35); border: 2px solid rgba(255,255,255,.65);
+    display: none; z-index: 15; touch-action: none;
+  }
+  #stick {
+    position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,.9); box-shadow: 0 4px 12px rgba(190,120,170,.35);
+    transform: translate(-50%, -50%);
+  }
+  #btn-interact {
+    position: fixed; bottom: 44px; right: 30px; width: 76px; height: 76px; border-radius: 50%;
+    border: none; background: var(--hotpink); color: #fff; font-size: 32px; box-shadow: 0 6px 0 #c22071, var(--shadow);
+    display: none; z-index: 15; cursor: pointer;
+  }
+  #btn-interact:active { transform: translateY(4px); box-shadow: 0 2px 0 #c22071; }
+  body.touch #joystick { display: block; }
+  body.touch #btn-interact.show { display: block; }
+
+  /* ---------- modals ---------- */
+  .modal {
+    position: fixed; inset: 0; display: grid; place-items: center; z-index: 40;
+    background: rgba(120, 70, 110, 0.35); backdrop-filter: blur(5px);
+    opacity: 1; transition: opacity .25s;
+  }
+  .modal.hidden { opacity: 0; pointer-events: none; }
+  .card {
+    background: var(--cream); border-radius: var(--round); box-shadow: var(--shadow);
+    width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow-y: auto;
+    padding: 28px; text-align: center; position: relative;
+    transform: scale(1); transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+    border: 3px solid #ffffff;
+  }
+  .modal.hidden .card { transform: scale(.85); }
+  .card h2 { font-size: 24px; margin-bottom: 4px; }
+  .card .subtitle { font-size: 14px; opacity: .7; font-weight: 700; margin-bottom: 16px; }
+  .close-x {
+    position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%;
+    border: none; background: var(--pink-soft); color: var(--ink); font-size: 17px; font-weight: 800; cursor: pointer; z-index: 5;
+  }
+  .big-btn {
+    border: none; border-radius: 999px; padding: 16px 38px; font-size: 19px; font-weight: 800;
+    background: linear-gradient(45deg, var(--hotpink), var(--lilac)); color: #fff; cursor: pointer;
+    box-shadow: 0 6px 0 #c22071, 0 14px 30px rgba(190,120,170,.4); transition: transform .15s;
+  }
+  .big-btn:hover { transform: translateY(-2px) scale(1.03); }
+  .big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c22071; }
+  .big-btn:disabled { opacity: .5; cursor: default; transform: none; }
+  .ghost-btn {
+    border: none; background: rgba(255,255,255,.8); border-radius: 999px; padding: 12px 24px;
+    font-size: 15px; font-weight: 700; color: var(--ink); cursor: pointer; box-shadow: var(--shadow);
+  }
+
+  /* ---------- quiz ---------- */
+  #quiz-question { font-size: 19px; font-weight: 700; line-height: 1.45; margin: 10px 0 20px; }
+  .answers { display: flex; flex-direction: column; gap: 10px; }
+  .answer-btn {
+    border: none; border-radius: 16px; padding: 14px 18px; font-size: 16px; font-weight: 700;
+    background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 #f3d7e6, 0 6px 16px rgba(190,120,170,.12);
+    transition: transform .12s, background .2s; text-align: left; display: flex; align-items: center; gap: 10px;
+  }
+  .answer-btn:hover:not(:disabled) { transform: translateY(-2px); background: var(--pink-soft); }
+  .answer-btn:disabled { cursor: default; }
+  .answer-btn .letter {
+    background: var(--lilac-soft); border-radius: 10px; min-width: 30px; height: 30px; display: grid; place-items: center;
+    font-weight: 800; flex-shrink: 0;
+  }
+  .answer-btn.correct { background: #d3f7e4; box-shadow: 0 3px 0 #9fdfbe; }
+  .answer-btn.correct .letter { background: var(--mint); color: #fff; }
+  .answer-btn.wrong { background: #ffe0e6; opacity: .65; animation: shake .4s; }
+  .answer-btn.wrong .letter { background: #ff8fa8; color: #fff; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} }
+  #quiz-feedback { min-height: 28px; margin-top: 16px; font-weight: 800; font-size: 17px; }
+  #quiz-progress { font-size: 13px; font-weight: 700; opacity: .65; margin-top: 10px; }
+
+  /* ---------- quote of the day ---------- */
+  #quote-card {
+    background: linear-gradient(160deg, #fff3fb, #f3edff 60%, #eaf6ff);
+    border: 3px solid #fff;
+  }
+  #quote-card .stars-row { font-size: 22px; letter-spacing: 8px; margin-bottom: 10px; }
+  #quote-text {
+    font-size: 24px; line-height: 1.5; font-weight: 700; font-style: italic;
+    margin: 8px 0 18px; color: #7c4a86;
+  }
+  #quote-date { font-size: 13px; font-weight: 700; opacity: .6; margin-bottom: 18px; }
+
+  /* ---------- Style Studio (side panel) ---------- */
+  #styler { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
+  #styler.hidden { display: none; }
+  #styler-panel {
+    position: absolute; top: 12px; bottom: 12px; right: 12px; width: min(400px, calc(100vw - 24px));
+    background: var(--cream); border-radius: var(--round); border: 3px solid #fff;
+    box-shadow: var(--shadow); pointer-events: auto; display: flex; flex-direction: column; overflow: hidden;
+  }
+  #styler-head { padding: 18px 20px 10px; }
+  #styler-head h2 { font-size: 21px; }
+  #styler-head .subtitle { font-size: 13px; font-weight: 700; opacity: .65; }
+  #styler-tabs { display: flex; gap: 6px; padding: 0 14px 10px; flex-wrap: wrap; }
+  .styler-tab {
+    border: none; border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 800;
+    background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 3px 10px rgba(190,120,170,.15);
+  }
+  .styler-tab.active { background: linear-gradient(45deg, var(--hotpink), var(--lilac)); color: #fff; }
+  #styler-body { flex: 1; overflow-y: auto; padding: 6px 20px 20px; text-align: left; }
+  .styler-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; opacity: .6; margin: 16px 0 8px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatch {
+    width: 42px; height: 42px; border-radius: 50%; border: 3px solid #fff; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(190,120,170,.3); transition: transform .15s; position: relative;
+  }
+  .swatch:hover { transform: scale(1.12); }
+  .swatch.selected { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .swatch.none-swatch { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #f3e3ee 6px, #f3e3ee 12px); }
+  .option-cards { display: flex; flex-wrap: wrap; gap: 10px; }
+  .option-card {
+    border: none; border-radius: 14px; padding: 10px 14px; font-size: 14px; font-weight: 700;
+    background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 3px 10px rgba(190,120,170,.15);
+    display: flex; align-items: center; gap: 8px; transition: transform .12s;
+  }
+  .option-card:hover { transform: translateY(-2px); }
+  .option-card.selected { background: linear-gradient(45deg, var(--hotpink), var(--lilac)); color: #fff; }
+  .option-card.locked { opacity: .55; }
+  .option-card .lock { font-size: 12px; }
+  #styler-footer { padding: 12px 20px 16px; display: flex; gap: 10px; justify-content: space-between; align-items: center; border-top: 2px dashed #f3d7e6; }
+  #styler-footer .hint { font-size: 12px; font-weight: 700; opacity: .6; max-width: 180px; text-align: left; }
+
+  /* ---------- Escape room ---------- */
+  #escape .card { width: min(720px, calc(100vw - 24px)); padding: 20px; }
+  #escape-scene {
+    position: relative; border-radius: 16px; overflow: hidden; height: min(400px, 46dvh);
+    background: linear-gradient(180deg, #2b2350 0%, #4a3a78 55%, #6b4a8f 100%);
+    border: 3px solid #cbb2ff; margin-top: 12px;
+  }
+  .esc-floor { position: absolute; left: 0; right: 0; bottom: 0; height: 26%; background: linear-gradient(180deg, #8f6aa8, #7c5895); }
+  .esc-rug { position: absolute; left: 30%; bottom: 3%; width: 40%; height: 14%; border-radius: 50%; background: radial-gradient(ellipse at center, #ff8fc4 0%, #d96bb0 70%, transparent 71%); opacity: .8; }
+  .esc-window { position: absolute; top: 8%; left: 8%; width: 17%; height: 38%; border-radius: 100px 100px 8px 8px; background: linear-gradient(180deg, #1a1440, #33296b); border: 5px solid #cbb2ff; }
+  .esc-moon { position: absolute; top: 16%; left: 13%; width: 34px; height: 34px; border-radius: 50%; background: #fff3c9; box-shadow: 0 0 18px #fff3c9; }
+  .esc-hotspot {
+    position: absolute; border: none; cursor: pointer; border-radius: 14px;
+    background: rgba(255,255,255,.12); color: #fff; font-weight: 800; font-size: 13px;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2px;
+    padding: 6px; transition: transform .15s, background .2s; text-shadow: 0 2px 6px rgba(0,0,0,.4);
+  }
+  .esc-hotspot:hover { transform: scale(1.06); background: rgba(255,255,255,.22); }
+  .esc-hotspot .big { font-size: 34px; filter: drop-shadow(0 3px 5px rgba(0,0,0,.35)); }
+  .esc-hotspot.solved::after { content: '✓'; position: absolute; top: 4px; right: 8px; color: #7fe3b3; font-size: 17px; }
+  #escape-charms { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .charm {
+    background: #fff; border-radius: 999px; padding: 7px 14px; font-weight: 800; font-size: 14px;
+    box-shadow: 0 3px 10px rgba(190,120,170,.2); opacity: .45;
+  }
+  .charm.found { opacity: 1; border: 2px solid var(--gold); background: #fff6da; }
+  #escape-panel { margin-top: 14px; }
+  .esc-puzzle { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(190,120,170,.15); }
+  .esc-puzzle h3 { font-size: 18px; margin-bottom: 6px; }
+  .esc-puzzle p { font-size: 15px; line-height: 1.55; font-weight: 600; }
+  .esc-row { display: flex; gap: 10px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+  .melody-btn {
+    width: 58px; height: 58px; border-radius: 50%; border: 4px solid #fff; cursor: pointer;
+    font-size: 22px; box-shadow: 0 4px 12px rgba(0,0,0,.15); transition: transform .1s, filter .1s;
+  }
+  .melody-btn:active, .melody-btn.lit { transform: scale(1.12); filter: brightness(1.35); }
+  .esc-input {
+    border: 3px solid var(--lilac-soft); border-radius: 12px; padding: 12px 14px; font-family: inherit;
+    font-size: 16px; font-weight: 700; color: var(--ink); width: min(260px, 100%); text-align: center; outline-color: var(--lilac);
+  }
+  .esc-feedback { min-height: 24px; margin-top: 10px; font-weight: 800; font-size: 15px; }
+  .esc-hint { margin-top: 8px; font-size: 13px; font-weight: 700; opacity: .7; }
+  .code-slots { display: flex; gap: 10px; justify-content: center; margin: 14px 0; }
+  .code-slot {
+    width: 56px; height: 66px; border-radius: 12px; background: #fff; border: 3px solid var(--lilac-soft);
+    font-size: 26px; font-weight: 800; text-align: center; font-family: inherit; color: var(--ink); outline-color: var(--lilac);
+  }
+  .arrange-btn { font-size: 26px; padding: 10px 14px; border-radius: 14px; border: 3px solid #fff; background: var(--lilac-soft); cursor: pointer; box-shadow: 0 3px 10px rgba(190,120,170,.2); }
+  .arrange-btn.selected { outline: 3px solid var(--hotpink); }
+
+  /* ---------- Photobooth ---------- */
+  #booth .card { width: min(620px, calc(100vw - 24px)); }
+  .booth-step { display: none; }
+  .booth-step.active { display: block; }
+  .booth-choices { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 18px 0; }
+  .booth-choice {
+    border: none; border-radius: 18px; padding: 18px 16px; width: 150px; cursor: pointer;
+    background: #fff; box-shadow: 0 4px 14px rgba(190,120,170,.18); font-weight: 800; font-size: 15px;
+    color: var(--ink); transition: transform .15s; display: flex; flex-direction: column; gap: 6px; align-items: center;
+  }
+  .booth-choice:hover { transform: translateY(-3px) scale(1.03); }
+  .booth-choice .big { font-size: 36px; }
+  .booth-choice .sub { font-size: 12px; font-weight: 700; opacity: .65; }
+  .booth-choice.selected { outline: 4px solid var(--hotpink); }
+  #booth-video-wrap { position: relative; border-radius: 18px; overflow: hidden; background: #1f1830; margin: 12px 0; }
+  #booth-video { width: 100%; display: block; transform: scaleX(-1); max-height: 46dvh; object-fit: cover; }
+  #booth-countdown {
+    position: absolute; inset: 0; display: grid; place-items: center; font-size: 110px; font-weight: 800;
+    color: #fff; text-shadow: 0 4px 30px rgba(255,45,149,.8); pointer-events: none;
+  }
+  #booth-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity .1s; }
+  #booth-slots { display: flex; gap: 10px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+  .booth-slot {
+    width: 86px; height: 66px; border-radius: 10px; background: var(--lilac-soft); border: 3px dashed #cbb2ff;
+    overflow: hidden; position: relative; cursor: pointer;
+  }
+  .booth-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .booth-slot.filled { border-style: solid; }
+  .booth-slot .redo { position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; background: rgba(0,0,0,.35); opacity: 0; transition: opacity .15s; }
+  .booth-slot.filled:hover .redo { opacity: 1; }
+  #booth-preview-wrap { display: flex; justify-content: center; margin: 12px 0; }
+  #booth-preview { max-height: 52dvh; border-radius: 14px; box-shadow: 0 10px 30px rgba(120,70,110,.35); max-width: 100%; }
+  .booth-caption-row { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+  #booth-note { font-size: 13px; font-weight: 700; opacity: .7; margin-top: 8px; line-height: 1.5; }
+
+  /* ---------- Decorate mode ---------- */
+  #decor-bar {
+    position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+    background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 10px 14px;
+    display: none; z-index: 20; backdrop-filter: blur(6px); max-width: calc(100vw - 28px);
+  }
+  #decor-bar.show { display: block; }
+  #decor-items { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .decor-item {
+    border: none; border-radius: 14px; background: #fff; cursor: pointer; padding: 8px 10px; min-width: 74px;
+    font-size: 12px; font-weight: 800; color: var(--ink); box-shadow: 0 3px 10px rgba(190,120,170,.15);
+    display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0;
+  }
+  .decor-item .big { font-size: 24px; }
+  .decor-item.selected { outline: 3px solid var(--hotpink); }
+  .decor-item:disabled { opacity: .45; cursor: default; }
+  #decor-hint { text-align: center; font-size: 12.5px; font-weight: 700; opacity: .75; margin-top: 6px; }
+
+  /* ---------- title screen ---------- */
+  #title-screen {
+    position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.5), transparent 40%),
+      linear-gradient(160deg, #ffc3e2 0%, #e9dfff 50%, #c9ecff 100%);
+    transition: opacity .6s; overflow: hidden;
+  }
+  #title-screen.hidden { opacity: 0; pointer-events: none; }
+  .float-emoji { position: absolute; font-size: 34px; animation: floaty 6s ease-in-out infinite; opacity: .8; user-select: none; }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-26px) rotate(8deg); } }
+  #title-card { text-align: center; padding: 24px; max-width: 620px; position: relative; z-index: 2; max-height: 100dvh; overflow-y: auto; }
+  #title-card h1 {
+    font-size: clamp(40px, 8vw, 68px); line-height: 1.04; letter-spacing: -1px;
+    background: linear-gradient(45deg, #ff2d95, #a98bf5, #4fc3f7);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 4px 0 rgba(255,255,255,.85));
+  }
+  #title-card .tagline { font-size: 17px; font-weight: 700; margin: 12px 0 18px; opacity: .8; }
+  .title-label { font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; opacity: .6; margin: 14px 0 8px; }
+  #name-input {
+    border: 3px solid #fff; border-radius: 999px; padding: 13px 22px; font-family: inherit; font-size: 17px;
+    font-weight: 700; color: var(--ink); text-align: center; width: min(320px, 80vw); outline-color: var(--hotpink);
+    box-shadow: var(--shadow); background: rgba(255,255,255,.85);
+  }
+  #vibes { display: flex; gap: 12px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .vibe {
+    width: 58px; height: 58px; border-radius: 50%; border: 4px solid #fff; cursor: pointer;
+    box-shadow: var(--shadow); transition: transform .18s; font-size: 22px; display: grid; place-items: center;
+  }
+  .vibe:hover { transform: scale(1.12) rotate(6deg); }
+  .vibe.selected { outline: 4px solid var(--ink); outline-offset: 3px; transform: scale(1.08); }
+  #title-buttons { margin-top: 18px; }
+  #btn-continue { margin-top: 12px; display: none; }
+  #title-controls { margin-top: 18px; font-size: 13px; font-weight: 700; opacity: .65; line-height: 1.8; }
+  #title-features { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+  .feat { background: rgba(255,255,255,.7); border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-weight: 800; box-shadow: 0 3px 10px rgba(190,120,170,.15); }
+
+  /* ---------- win ---------- */
+  #win .card { border: 3px solid var(--gold); background: linear-gradient(180deg, #fff9e8, #fff2f8); }
+  #win h2 { font-size: 32px; }
+  #win .crown { font-size: 70px; display: block; animation: floaty 3s ease-in-out infinite; }
+
+  /* ---------- help ---------- */
+  #help .card { text-align: left; }
+  #help h3 { margin: 14px 0 6px; font-size: 16px; }
+  #help p { font-size: 14.5px; line-height: 1.6; }
+
+  .confetti-bit { position: fixed; width: 10px; height: 10px; z-index: 70; pointer-events: none; }
+  #fps { position: fixed; bottom: 8px; right: 10px; z-index: 20; font: 700 12px monospace; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.5); display: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div class="hud-card">
+    <span class="stat">💗 <span id="stat-hearts">0</span>/<span id="stat-hearts-max">15</span></span>
+    <span class="stat">✨ <span id="stat-stars">0</span></span>
+  </div>
+  <div id="hud-right">
+    <button class="icon-btn" id="btn-styler" title="Style Studio">👗</button>
+    <button class="icon-btn" id="btn-decor" title="Decorate your world">🪄</button>
+    <button class="icon-btn" id="btn-quote" title="Quote of the day">🔮</button>
+    <button class="icon-btn" id="btn-music" title="Music on/off">🎵</button>
+    <button class="icon-btn" id="btn-help" title="How to play">❓</button>
+  </div>
+</div>
+<div id="zone-chips"></div>
+
+<div id="prompt"></div>
+<div id="toast"></div>
+<div id="fps"></div>
+
+<div id="joystick"><div id="stick"></div></div>
+<button id="btn-interact">💬</button>
+
+<!-- Decorate mode bar -->
+<div id="decor-bar">
+  <div id="decor-items"></div>
+  <div id="decor-hint">pick a treasure, then click the ground to place it 🪄 · click a placed one to return it</div>
+</div>
+
+<!-- Quiz modal -->
+<div id="quiz" class="modal hidden">
+  <div class="card">
+    <button class="close-x" id="quiz-close">✕</button>
+    <h2 id="quiz-zone">🧁 Café Coquette</h2>
+    <div class="subtitle" id="quiz-topic">Sweet Treats Trivia</div>
+    <div id="quiz-question">Question…</div>
+    <div class="answers" id="quiz-answers"></div>
+    <div id="quiz-feedback"></div>
+    <div id="quiz-progress"></div>
+  </div>
+</div>
+
+<!-- Quote of the day -->
+<div id="quote-modal" class="modal hidden">
+  <div class="card" id="quote-card">
+    <button class="close-x" id="quote-close">✕</button>
+    <div class="stars-row">✨ 🌙 ✨</div>
+    <h2>Whimsy of the Day</h2>
+    <div id="quote-date"></div>
+    <div id="quote-text">…</div>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+      <button class="ghost-btn" id="quote-copy">Copy 💌</button>
+      <button class="big-btn" id="quote-ok" style="padding:12px 30px; font-size:16px">Slay the day ✨</button>
+    </div>
+  </div>
+</div>
+
+<!-- Style Studio -->
+<div id="styler" class="hidden">
+  <div id="styler-panel">
+    <button class="close-x" id="styler-close">✕</button>
+    <div id="styler-head">
+      <h2>👗 Style Studio</h2>
+      <div class="subtitle">dress up &amp; glam — changes save instantly</div>
+    </div>
+    <div id="styler-tabs"></div>
+    <div id="styler-body"></div>
+    <div id="styler-footer">
+      <div class="hint">🖱️ drag in the world to admire your look from every angle</div>
+      <button class="big-btn" id="styler-done" style="padding:12px 28px; font-size:16px">Done 💖</button>
+    </div>
+  </div>
+</div>
+
+<!-- Escape room -->
+<div id="escape" class="modal hidden">
+  <div class="card">
+    <button class="close-x" id="escape-close">✕</button>
+    <h2>🏰 The Forgotten Tower</h2>
+    <div class="subtitle" id="escape-subtitle">solve every charm puzzle to unlock the door</div>
+    <div id="escape-scene"></div>
+    <div id="escape-charms"></div>
+    <div id="escape-panel"></div>
+  </div>
+</div>
+
+<!-- Photobooth -->
+<div id="booth" class="modal hidden">
+  <div class="card">
+    <button class="close-x" id="booth-close">✕</button>
+    <h2>📸 Sparkle Photobooth</h2>
+    <div class="subtitle" id="booth-subtitle">strike a pose, decorate, share to your story</div>
+    <div id="booth-steps"></div>
+  </div>
+</div>
+
+<!-- Win modal -->
+<div id="win" class="modal hidden">
+  <div class="card">
+    <span class="crown">👑</span>
+    <h2>Queen of Dreamhouse Kingdom!</h2>
+    <p style="margin:14px 0 22px; font-weight:700; line-height:1.6" id="win-text">
+      You answered every single question — the kingdom officially crowns you.<br/>
+      Your crown is now yours to wear forever. ✨
+    </p>
+    <button class="big-btn" id="win-close">Keep exploring 💖</button>
+  </div>
+</div>
+
+<!-- Help modal -->
+<div id="help" class="modal hidden">
+  <div class="card">
+    <button class="close-x" id="help-close">✕</button>
+    <h2 style="text-align:center">How to play 💕</h2>
+    <h3>🚶‍♀️ Explore</h3>
+    <p><b>WASD</b> / <b>arrows</b> to walk, <b>Shift</b> to run, drag to look, scroll to zoom. On phone: joystick + drag.</p>
+    <h3>💎 Trivia crystals</h3>
+    <p>Five pastel zones each have a glowing crystal — press <b>E</b> nearby to answer themed trivia. First-try answers earn bonus sparkles!</p>
+    <h3>🏰 The Forgotten Tower</h3>
+    <p>The castle door hides an escape room: riddles, melodies, logic and word magic. Escaping unlocks the exclusive <b>Midnight Tiara</b>.</p>
+    <h3>👗 Style Studio</h3>
+    <p>Dress up your girl anytime — outfits, hair, makeup. Visit the boutique wardrobe or vanity mirror in the world, or tap 👗.</p>
+    <h3>🪄 Decorate</h3>
+    <p>Spend ✨ sparkles to plant trees, statues and disco balls anywhere. Build <i>your</i> dream kingdom — it saves automatically.</p>
+    <h3>📸 Photobooth</h3>
+    <p>Take real selfies (camera), pick gallery pics, or snap your character — print 2, 3 or 4 photos in a Y2K frame sized for IG stories.</p>
+    <h3>🔮 Daily whimsy</h3>
+    <p>The wishing well shares one whimsical pep-talk quote per day.</p>
+  </div>
+</div>
+
+<!-- Title screen -->
+<div id="title-screen">
+  <span class="float-emoji" style="top:10%; left:10%; animation-delay:0s">🎀</span>
+  <span class="float-emoji" style="top:18%; right:12%; animation-delay:1.2s">💖</span>
+  <span class="float-emoji" style="bottom:22%; left:14%; animation-delay:2s">✨</span>
+  <span class="float-emoji" style="bottom:14%; right:10%; animation-delay:.6s">🦋</span>
+  <span class="float-emoji" style="top:52%; left:5%; animation-delay:1.7s">📼</span>
+  <span class="float-emoji" style="top:58%; right:5%; animation-delay:2.4s">🏰</span>
+  <span class="float-emoji" style="top:34%; left:22%; animation-delay:3s">💿</span>
+  <span class="float-emoji" style="bottom:38%; right:20%; animation-delay:.9s">☎️</span>
+  <div id="title-card">
+    <h1>Dreamhouse<br/>Kingdom</h1>
+    <div class="tagline">old-doll glam · Y2K sparkle · storybook nostalgia 💖</div>
+    <div class="title-label">what's your name, dreamgirl?</div>
+    <input id="name-input" maxlength="18" placeholder="Princess ______" autocomplete="off" />
+    <div class="title-label">pick your starter vibe</div>
+    <div id="vibes">
+      <button class="vibe selected" data-vibe="pink"  style="background:linear-gradient(#ff9dcb,#ff2d95)" title="Hot Pink Doll">🎀</button>
+      <button class="vibe" data-vibe="lilac" style="background:linear-gradient(#c9b3ff,#a98bf5)" title="Lilac Dream">🔮</button>
+      <button class="vibe" data-vibe="blue"  style="background:linear-gradient(#b3e3ff,#4fc3f7)" title="Cyber Blue">💿</button>
+      <button class="vibe" data-vibe="peach" style="background:linear-gradient(#ffd0a8,#ff9f70)" title="Peach Sorbet">🍑</button>
+    </div>
+    <div id="title-buttons">
+      <button class="big-btn" id="btn-start">Enter the kingdom ✨</button>
+      <div><button class="ghost-btn" id="btn-continue">Continue my story 💾</button></div>
+    </div>
+    <div id="title-features">
+      <span class="feat">🏰 escape room</span>
+      <span class="feat">👗 dress up</span>
+      <span class="feat">🪄 build your world</span>
+      <span class="feat">📸 photobooth</span>
+      <span class="feat">💎 trivia</span>
+      <span class="feat">🔮 daily whimsy</span>
+    </div>
+    <div id="title-controls">WASD / arrows to walk · drag to look · E to interact</div>
+  </div>
+</div>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
