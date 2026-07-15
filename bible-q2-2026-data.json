@@ -1,0 +1,160 @@
+{
+ "rows": [
+  {
+   "m": "Amazon \u2014 branded search share",
+   "how": "organic orders from brand vs paid on AMZ",
+   "t12": "15\u201320%",
+   "q2": "<b>10.2%</b>",
+   "chg": "\u25b2172%",
+   "mstat": "scale",
+   "impact": "branded search 26\u2192111/wk (+327% at SB launch) \u00b7 brand purchases +30% QoQ \u00b7 impression share 33\u219246%",
+   "next": "Always-on SB defence on \u201ccoba\u201d + gift terms (we win only 16% of 1,278 \u201ccoba\u201d searches) + hero push on Scrub + Aloe to spawn new branded demand.",
+   "blocker": "SQP is quarterly with lag; \u201corganic orders brand vs paid\u201d mixes SQP + ad-console sources \u2014 pick ONE definition and hold it"
+  },
+  {
+   "m": "DTC \u2014 branded sessions",
+   "how": "organic sessions brand vs paid (Direct, Google etc.)",
+   "t12": "45\u201350%",
+   "q2": "<b>25.2%</b> (6,006 sessions)",
+   "chg": "\u25b231%",
+   "mstat": "needfix",
+   "impact": "6,006 branded sessions (+31%) \u2014 arriving before the conversion layer exists (see DTC CVR)",
+   "next": "Point creator/affiliate links at DTC; refill-launch emails drive branded direct. Equestrian community with Lasso + Project Artemis II for viral moments.",
+   "blocker": "Direct \u2260 branded (bookmarks/apps inflate the share); GA4 hides search terms \u2014 GSC + strict UTM discipline are the fix"
+  },
+  {
+   "m": "Amazon \u2014 Brand CVR",
+   "how": "total orders \u00f7 total brand sessions on AMZ",
+   "t12": "12\u201315% \u00b7 1.2\u20131.5\u00d7",
+   "q2": "<b>39%</b>",
+   "chg": "\u25bc11%",
+   "mstat": "needfix",
+   "impact": "Reddit 392K impressions feed branded search; the \u25bc11% is a definition artifact, not weaker brand pull",
+   "next": "Pinterest direct to Amazon + Reddit seeding for summer sales. Amazon Affiliate Program kicked off.",
+   "blocker": "39% is implausible as a session CVR \u2014 numerator (ALL orders) \u00f7 denominator (brand sessions only) mismatch; use SQP purchases\u00f7clicks (9.6%, ratio 1.4\u00d7) or fix the session join"
+  },
+  {
+   "m": "DTC \u2014 Brand CVR",
+   "how": "total orders \u00f7 total brand sessions on Shopify",
+   "t12": "3% \u00b7 2\u00d7",
+   "q2": "<b>0.97%</b>",
+   "chg": "\u25b2870%",
+   "mstat": "scale",
+   "impact": "+870% off a tiny base \u2014 brand-curious visitors are arriving; the refill launch page is the unlock",
+   "next": "Crack \u201csmooth operator\u201d collaboration with ROAS for Meta Ads. Continue branding controlled activities & Artemis II.",
+   "blocker": "measurement is clean (Shopify) but the base is tiny \u2192 noisy monthly reads; judge on the quarter"
+  },
+  {
+   "m": "Branded hashtag volume",
+   "how": "IG + TikTok + Pinterest total posts",
+   "t12": "800\u20131,200",
+   "q2": "<b>+834</b> in Q2 alone",
+   "chg": "\u25b2298%",
+   "mstat": "ontrack",
+   "impact": "+834 mentions happened WITHOUT the mandate \u2014 the tag would have captured them for free",
+   "next": "Mandate #cobasdaughter in every post (owned + earned) \u2014 the tag rides volume we already pay for, zero extra cost.",
+   "blocker": "platform search undercounts + varies by account; set a monthly saved-search protocol \u00b7 bands mis-set (2025 base 1,500 &gt; target 800\u20131,200) \u2014 restate as posts/quarter"
+  },
+  {
+   "m": "TikTok video mentions",
+   "how": "TikTok search count / month",
+   "t12": "100\u2013200/mo",
+   "q2": "<b>avg. 127/mo</b>",
+   "chg": "\u25b220%",
+   "mstat": "ontrack",
+   "impact": "127/mo (+20%) \u2014 seeding-led; affiliate reactivation lands July",
+   "next": "Scale doublespeed ghost-account seeding + TikTok Affiliate reactivation \u2014 push toward the ceiling.",
+   "blocker": "manual TikTok search varies by account/region/day \u2014 fix a logged-out protocol, same day each month"
+  },
+  {
+   "m": "Engagement rate",
+   "how": "total brand engagement \u00f7 total reach",
+   "t12": "4\u20136%",
+   "q2": "<b>4.8%</b>",
+   "chg": "\u25b2108%",
+   "mstat": "ontrack",
+   "impact": "in-band at 4.8% (+108%) while reach grew \u2014 the quality bet holding under volume",
+   "next": "Protect quality while volume ramps: rich branded assets for trial reels as the 20-reels/day engine scales \u2014 cadence must not dilute brand.",
+   "blocker": "earned/seeded reach needs a crawl \u2014 Apify credit cycle (resets ~Jul 16); budget a proper listening tool for monthly reads"
+  },
+  {
+   "m": "Brand reach growth MoM",
+   "how": "all-channels reach (IG+TT+Pin+Reddit+YT), all tactics",
+   "t12": "+30\u201350% MoM",
+   "q2": "<b>1.71M</b>",
+   "chg": "\u25bc19%",
+   "mstat": "needfix",
+   "impact": "owned IG reach Jun +312% MoM (events + trial reels); total \u221219% vs Q1 = the paid-YOTH comparability gap",
+   "next": "Affiliate Programs (TikTok + Amazon) & Artemis II (CPM model + @thisislasso + trial reels + ghost-account seeding).",
+   "blocker": "the row mixes a LEVEL (1.71M) with a GROWTH target (+30\u201350% MoM) \u2014 split into two metrics: owned-IG reach MoM% + all-channel reach level"
+  },
+  {
+   "m": "Google brand search volume",
+   "how": "Shopify Google-traffic report (GSC not set up)",
+   "t12": "500\u20131,000/mo",
+   "q2": "<b>1,560</b>",
+   "chg": "\u25b2124%",
+   "mstat": "ontrack",
+   "impact": "proxy already 1.5\u20133\u00d7 the band \u2014 organic Google demand exists before we optimise for it",
+   "next": "Already above the band \u2014 stand up Google Search Console for true measurement + SEO/AEO pages to hold &gt;1K.",
+   "blocker": "Shopify \u201cGoogle traffic\u201d = clicks to site, not search volume \u2014 GSC is a 30-minute setup; do it first"
+  },
+  {
+   "m": "Inbound interest signals",
+   "how": "DMs + contact form + email inquiries / mo",
+   "t12": "150\u2013250/mo",
+   "q2": "<b>avg. 150/mo</b>",
+   "chg": "\u25b250%",
+   "mstat": "ontrack",
+   "impact": "June comment audit alone found 11 purchase-intent comments + 1 partnership offer sitting unanswered \u2014 free demand leaking",
+   "next": "Comment-concierge SOP: reply to every new follower with a welcome code (in active); CS's AI project support.",
+   "blocker": "no central log \u2014 150/mo is an estimate; stand up one CS sheet + a what-counts definition before Q3 reads"
+  },
+  {
+   "m": "Reddit / forum mentions",
+   "how": "F5Bot alerts \u2014 cumulative / year (US)",
+   "t12": "15\u201320 / yr",
+   "q2": "<b>45</b> in Q2",
+   "chg": "\u25b218%",
+   "mstat": "ontrack",
+   "impact": "45 in ONE quarter = 2\u20133\u00d7 the annual bar; the May pause (\u221285% impressions) showed what stopping costs",
+   "next": "Hold a steady ~10-post/mo cadence \u2014 problem/solution + skin advice; test safer subreddits.",
+   "blocker": "F5Bot is named but not actually configured (2025 = 0 because untracked; Q2's 45 was a manual count) \u2014 set alerts now; note F5Bot misses comment-level mentions"
+  },
+  {
+   "m": "Total community size",
+   "how": "Email + IG + TikTok + Pinterest + TYB",
+   "t12": "50K",
+   "q2": "<b>~25K</b>",
+   "chg": "\u25b266%",
+   "mstat": "scale",
+   "impact": "+5.5K in Q2 \u2014 but TYB is 4,453 of it (81%); social-follower growth is the slow lane the trial reels must fix",
+   "next": "Trial reels for organic follower boost \u00b7 round-up content \u00b7 Mass Affiliate on Amazon & TikTok \u00b7 equestrian community hype.",
+   "blocker": "cross-platform double-count (email \u2229 IG \u2229 TYB same people); TikTok + email totals never snapshotted \u2014 monthly deduped sheet"
+  },
+  {
+   "m": "Pinterest monthly viewers",
+   "how": "Pinterest Analytics monthly reach",
+   "t12": "10\u201325K/mo",
+   "q2": "<b>~61K/mo</b> (Jun 61.8K)",
+   "chg": "\u25b235%",
+   "mstat": "ontrack",
+   "impact": "61K/mo (+127% vs 2025) \u2014 the reach is won; the revenue wiring isn't (UTM with Irene)",
+   "next": "Monetize every asset with an Amazon UTM link. Focus the Aloe + Scrub summer-ritual hot topic.",
+   "blocker": "none \u2014 native analytics are clean; the issue is the target (already 2.4\u20136\u00d7 above it) \u2014 raise to the premium band 25\u201375K"
+  },
+  {
+   "m": "Amazon ranking \u2014 hero products",
+   "how": "Category Rank on Amazon",
+   "t12": "Top 30",
+   "q2": "<b>Top 42</b> (Mother's Day)",
+   "chg": "can't find info",
+   "mstat": "scale",
+   "impact": "Top 42 at the Mother's-Day peak \u2014 post-occasion rank unknown, which is exactly the problem",
+   "next": "Summer Sales of Aloe & Scrub on Amazon (10% OFF), supported with Amazon Affiliate seeding.",
+   "blocker": "rank IS findable \u2014 BSR is on the product page + Keepa tracks history free; a weekly Eva snapshot ends \u201ccan't find info\u201d"
+  }
+ ],
+ "rubric": "ON TRACK = in/above the 12-mo band \u00b7 SCALE = below band but pace reaches it inside 12 months \u00b7 BELOW = below band, pace insufficient \u00b7 NEED FIX = the tracked number itself is unreliable (definition/log broken) \u2014 fix measurement before judging",
+ "updated": "July 7, 2026"
+}
