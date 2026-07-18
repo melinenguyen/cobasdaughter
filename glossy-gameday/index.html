@@ -33,7 +33,7 @@
   .dark .kicker{ color:var(--taupe); }
   h1,h2{ font-weight:800; letter-spacing:-.01em; line-height:.95; margin:0 0 16px; text-wrap:balance; }
   h1{ font-size:clamp(38px,6.6vw,72px); }
-  h2{ font-size:clamp(27px,4vw,42px); }
+  h2{ font-size:clamp(26px,3.9vw,41px); }
   .hero-em{ font-family:'Playfair Display', serif; font-style:italic; font-weight:500; letter-spacing:0; line-height:1.08; }
   .sub{ font-size:clamp(15px,1.9vw,18px); line-height:1.3; max-width:58ch; margin:0 0 8px; }
   .body{ font-size:14.5px; line-height:1.3; max-width:64ch; }
@@ -45,14 +45,12 @@
   .tiles.c2{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
   .tile{ border-top:2px solid var(--black); padding-top:12px; }
   .dark .tile{ border-top-color:var(--taupe); }
-  .tile .big{ font-size:clamp(19px,2.4vw,26px); font-weight:800; line-height:.95; margin-bottom:7px; }
+  .tile .big{ font-size:clamp(18px,2.3vw,24px); font-weight:800; line-height:1.0; margin-bottom:7px; }
   .tile .lab{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--amber); margin-bottom:7px; }
   .dark .tile .lab{ color:var(--taupe); }
   .tile p{ font-size:13px; line-height:1.3; margin:0; opacity:.85; }
-  .tile ul{ margin:0; padding-left:16px; font-size:13px; opacity:.85; }
-  .tile li{ margin-bottom:4px; }
 
-  .steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:13px; margin-top:32px; counter-reset:st; }
+  .steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:13px; margin-top:30px; counter-reset:st; }
   .step{ border-top:2px solid var(--black); padding-top:14px; counter-increment:st; }
   .dark .step{ border-top-color:var(--taupe); }
   .step::before{
@@ -64,16 +62,27 @@
   .step b{ display:block; font-size:15px; font-weight:800; letter-spacing:.06em; margin-bottom:5px; }
   .step p{ font-size:12.5px; line-height:1.3; margin:0; opacity:.85; }
 
-  /* plan A/B gate */
   .plans{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:30px; }
   .plan{ border:1.5px solid var(--black); padding:18px; }
+  .dark .plan{ border-color:var(--taupe); }
   .plan .pt{ display:inline-block; background:var(--amber); color:var(--beige); font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; padding:3px 9px; margin-bottom:10px; }
   .plan.b .pt{ background:var(--black); }
-  .plan b{ font-size:16px; font-weight:800; display:block; margin-bottom:6px; }
+  .dark .plan.b .pt{ background:var(--black); color:var(--beige); }
+  .dark .plan .pt{ background:var(--taupe); color:var(--brown); }
+  .plan b.t{ font-size:16px; font-weight:800; display:block; margin-bottom:6px; }
   .plan p{ font-size:13px; margin:0 0 6px; opacity:.8; line-height:1.3; }
   .plan .gate{ font-size:11.5px; font-weight:700; color:var(--amber); }
+  .dark .plan .gate{ color:var(--taupe); }
 
-  /* ticket-style fortune */
+  .callout{
+    border-left:3px solid var(--amber); background:rgba(255,255,255,.55);
+    padding:16px 20px; margin:26px 0 0; max-width:66ch;
+  }
+  .dark .callout{ background:rgba(255,248,232,.06); border-left-color:var(--taupe); }
+  .callout .lbl{ display:block; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--amber); font-weight:700; margin-bottom:6px; }
+  .dark .callout .lbl{ color:var(--taupe); }
+  .callout p{ margin:0; font-size:14.5px; line-height:1.35; }
+
   .tickets{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:30px; }
   .ticket{ background:var(--black); color:var(--beige); padding:16px 18px 14px; position:relative; }
   .ticket::before{ content:""; position:absolute; inset:6px; border:1.5px dashed rgba(255,248,232,.35); pointer-events:none; }
@@ -83,7 +92,7 @@
   .ticket .row div{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--taupe); font-weight:700; }
   .ticket .row b{ display:block; font-size:15px; color:var(--beige); letter-spacing:.04em; }
 
-  .tblwrap{ overflow-x:auto; margin-top:28px; }
+  .tblwrap{ overflow-x:auto; margin-top:26px; }
   table{ border-collapse:collapse; width:100%; min-width:540px; font-size:14px; }
   th{ text-align:left; font-size:10px; letter-spacing:.22em; text-transform:uppercase; font-weight:700;
       color:var(--amber); padding:0 16px 9px 0; border-bottom:2px solid var(--black); }
@@ -92,8 +101,7 @@
   td:first-child{ font-weight:800; white-space:nowrap; }
   td.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:800; }
 
-  /* budget bars */
-  .bud{ margin-top:30px; display:flex; flex-direction:column; gap:9px; }
+  .bud{ margin-top:28px; display:flex; flex-direction:column; gap:9px; }
   .brow{ display:grid; grid-template-columns:150px 1fr 74px; gap:12px; align-items:center; }
   .brow .bl{ font-size:12.5px; font-weight:700; }
   .brow .bt{ height:20px; background:rgba(14,14,14,.08); position:relative; }
@@ -185,9 +193,9 @@
 <section class="slide dark" id="s1">
   <div class="wrap">
     <div style="width:74px; margin-bottom:30px; color:var(--taupe)"><svg viewBox="0 0 120 46" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M8 40 L60 6 L112 40"/><path d="M22 40 H98"/></svg></div>
-    <p class="kicker">CôBa's Daughter × Glossy &nbsp;·&nbsp; Board Proposal · September 2026</p>
+    <p class="kicker">CôBa's Daughter × Glossy &nbsp;·&nbsp; Board Proposal v5 · September 2026</p>
     <h1 class="hero-em">Two Rituals,<br>One September.</h1>
-    <p class="sub" style="margin-top:24px"><strong>Sep 11</strong> — Glossy Pop NYC gift bags (FIT, Manhattan)<br><strong>Sep 12</strong> — Game Day booth, Texas vs Ohio State (UT Austin)<br><span class="muted">Total envelope $4,000 · products from our own Amazon warehouse · zero booth production</span></p>
+    <p class="sub" style="margin-top:24px"><strong>Sep 11</strong> — Glossy Pop NYC gift bags · FIT, Manhattan<br><strong>Sep 12</strong> — Game Day beauty experience · UT Austin <span class="muted">(recommended; Sep 19 open — Glossy to confirm)</span><br><span class="muted">Total envelope $4,000 · products from our own Amazon warehouse · zero booth production</span></p>
   </div>
 </section>
 
@@ -195,18 +203,18 @@
 <section class="slide" id="s2">
   <div class="wrap">
     <p class="kicker">01 · The September Moment</p>
-    <div class="ph ph-side" data-ph="moment" data-cap="Image — DKR stadium / GameDay crowd"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
+    <div class="ph ph-side" data-ph="moment" data-cap="Image — AI mock: pop-up at dusk"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
     <h2>One weekend, two coasts — one ships, one shows up</h2>
     <div class="tiles c4" style="margin-top:26px">
       <div class="tile"><div class="lab">Sep 11 · NYC</div><div class="big">In the bag</div><p>Glossy Pop at FIT — our products inside a "$500+ value" gift bag next to Fenty-tier brands. No staffing: assembled and delivered ahead.</p></div>
-      <div class="tile"><div class="lab">Sep 12 · Austin</div><div class="big">At the booth</div><p>Biggest home game of the season — 100K+ stadium, ESPN College GameDay all morning, 6:30 PM dusk kickoff.</p></div>
-      <div class="tile"><div class="lab">The team</div><div class="big">Austin</div><p>Sao &amp; Eva fly in (handcarry small premium items); Emma runs Austin prep; a hired NYC helper assembles the bags.</p></div>
+      <div class="tile"><div class="lab">Sep 12 · Austin</div><div class="big">The experience</div><p>Glossy proposed a game-day beauty experience with curated UT creators. Our concept answers it: a get-ready ritual with luck at the center.</p></div>
+      <div class="tile"><div class="lab">The gate</div><div class="big">Sep 12 vs 19</div><p>We recommend Sep 12 (vs Ohio State — GameDay stage, team already stateside). Sep 19 (UTSA) stays open; Dylan returns a formal package once we confirm.</p></div>
       <div class="tile"><div class="lab">Sep 15</div><div class="big">Finale</div><p>Endless Summer closes 3 days after game day — both events feed its last push and Q4 gifting.</p></div>
     </div>
   </div>
 </section>
 
-<!-- 03 · NYC PLAN -->
+<!-- 03 · NYC PLANS -->
 <section class="slide" id="s3">
   <div class="wrap">
     <p class="kicker">02 · Event 1 — Glossy Pop NYC · gift bag sponsorship</p>
@@ -214,13 +222,13 @@
     <div class="plans">
       <div class="plan">
         <span class="pt">Plan A · preferred</span>
-        <b>New miniset — mini aloe · mini coffee scrub · new loofah scrub</b>
+        <b class="t">New miniset — mini aloe · mini coffee scrub · new loofah scrub</b>
         <p>The refreshed trio as the discovery gift.</p>
         <p class="gate">GATE: Buyer lead-time answer by Jul 24 — must land in NYC by Sep 4, or we fall to Plan B.</p>
       </div>
       <div class="plan b">
         <span class="pt">Plan B · ready now</span>
-        <b>Current miniset + full-size Aloe Gel</b>
+        <b class="t">Current miniset + full-size Aloe Gel</b>
         <p>Both pulled from our Amazon AWD warehouse — zero production, US-only shipping, no lead-time risk.</p>
         <p class="gate">Default if the gate fails. Same bag, same story.</p>
       </div>
@@ -238,7 +246,7 @@
       <div class="ph" data-ph="bag" data-cap="Image — drawstring bag mock" style="aspect-ratio:1/1"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
       <div class="ph" data-ph="miniset" data-cap="Image — miniset" style="aspect-ratio:1/1"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
       <div class="ph" data-ph="aloeprod" data-cap="Image — Aloe Gel" style="aspect-ratio:1/1"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
-      <div class="ph" data-ph="books" data-cap="Image — voucher booklet + brand book" style="aspect-ratio:1/1"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
+      <div class="ph" data-ph="books" data-cap="Image — voucher + brand book" style="aspect-ratio:1/1"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
     </div>
     <div class="tiles c4" style="margin-top:26px">
       <div class="tile"><div class="big">~$3</div><p>printed canvas drawstring bag — reusable, not landfill packaging</p></div>
@@ -249,50 +257,104 @@
   </div>
 </section>
 
-<!-- 05 · GAME DAY SIMPLIFIED -->
+<!-- 05 · GAME DAY — THE CONCEPT -->
 <section class="slide dark" id="s5">
   <div class="wrap">
-    <p class="kicker">04 · Event 2 — Game Day booth, simplified</p>
-    <h2>Everything printed, one gift: <span class="hero-em" style="font-weight:500">aloe</span></h2>
-    <p class="sub muted">Xin xăm stays — the scheme is unchanged. All prep is a print run: paper fortune cards + numbered wooden sticks. The only product on the table is Aloe Gel from our Amazon warehouse — the gift the Texas heat asks for.</p>
+    <p class="kicker">04 · Event 2 — the concept</p>
+    <h2 class="hero-em" style="font-weight:500">Game day is already a ritual.<br>We own the getting-ready.</h2>
+    <div class="tiles c3" style="margin-top:28px">
+      <div class="tile"><div class="lab">The day</div><p>America's most ritual-dense day — lucky jerseys, tailgate traditions, superstitions nobody will break. Fans practice ritual every Saturday; they just don't call it that.</p></div>
+      <div class="tile"><div class="lab">The format</div><p>Getting ready is the ritual beauty already owns — GRWM is the defining Gen Z format, and game day has its own genre. Glossy's "get-ready experience" ask is our native language.</p></div>
+      <div class="tile"><div class="lab">The centerpiece</div><p>Xin xăm — draw your fortune before the big game. Authentic to our heritage, instantly legible to any fan who wants luck tonight, and a built-in story beat for every GRWM video.</p></div>
+    </div>
+    <div class="callout"><span class="lbl">The point, for the board</span>
+      <p>Glossy asked for a "game-day beauty experience." This is that — but with a centerpiece only we can bring. <strong>The intersection isn't a stretch; it's a translation.</strong> Full external concept shared with Dylan: <em>/glossy-gameday/concept.html</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · GET READY GET LUCKY -->
+<section class="slide" id="s6">
+  <div class="wrap">
+    <p class="kicker">05 · The experience — one ritual, two formats</p>
+    <h2>Get ready. Get lucky.</h2>
     <div class="steps">
-      <div class="step"><b>SHAKE</b><p>the cup of numbered sticks</p></div>
-      <div class="step"><b>DRAW &amp; KEEP</b><p>your number matches a printed fortune ticket — yours to take</p></div>
-      <div class="step"><b>SNAP &amp; TAG</b><p>photo with your ticket at the lantern corner → post IG, tag @cobasdaughter</p></div>
-      <div class="step"><b>RECEIVE ALOE</b><p>show the post, take home Aloe Gel — capped per day</p></div>
+      <div class="step"><b>COOL</b><p>chilled Aloe Gel on wrists and neck — functional beauty in 93°F heat, the hero product doing its actual job</p></div>
+      <div class="step"><b>STYLE</b><p>silk-scarf braid bar — game-day hair in terracotta silk that reads burnt orange</p></div>
+      <div class="step"><b>DRAW</b><p>the xin xăm moment — shake the cup, draw your stick, receive your lucky ticket</p></div>
+      <div class="step"><b>KEEP</b><p>the ticket travels into the stadium; posts tagged @cobasdaughter earn the Aloe Gel gift</p></div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <span class="pt">Format A · get-ready salon</span>
+        <b class="t">Curated UT creators, founder-hosted</b>
+        <p>Glossy's model: an intimate pre-game get-ready with the creator guest list from their Campus roster — ritual display, braid bar, fortunes as the finale, kits to take home. Sao hosts.</p>
+      </div>
+      <div class="plan b">
+        <span class="pt">Format B · public booth</span>
+        <b class="t">The same ritual, opened to the crowd</b>
+        <p>Draw a fortune, keep the ticket, post it, take home aloe. Built for volume and dusk light. The formats stack: salon in the morning, booth through the afternoon.</p>
+      </div>
+    </div>
+    <div class="callout"><span class="lbl">Styling rule — western polish, modern touch</span>
+      <p><strong>Heritage lives in the objects — rattan, silk, amber glass, wooden sticks. Modernity lives in the scene.</strong> No temple staging, no costume: it reads as a high-end body-care pop-up that happens to tell fortunes. AI mood boards: <em>creative assets/gameday-ai-mockup-prompts.md</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 · THE LUCKY TICKET -->
+<section class="slide" id="s7">
+  <div class="wrap">
+    <p class="kicker">06 · The fortune, curated American</p>
+    <h2>Not a temple prop — <span class="hero-em" style="font-weight:500">a lucky ticket</span></h2>
+    <p class="sub muted">The <i class="vn">quẻ</i> styled as a vintage stadium ticket — section, row and seat become lucky numbers, written in our voice, numbered by Vietnamese numerology. All production: one print run + numbered sticks.</p>
+    <div class="tickets">
+      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Victory favors the rested. The Horns take the fourth quarter — you take the morning after.</div><div class="row"><div>Sec<b>07</b></div><div>Row<b>UN</b></div><div>Seat<b>68</b></div></div></div>
+      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Stay cool while 100,000 lose their minds, and fortune will find you in the noise.</div><div class="row"><div>Sec<b>39</b></div><div>Row<b>RE</b></div><div>Seat<b>86</b></div></div></div>
+      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Double luck: your team wins the night, your skin wins the weekend.</div><div class="row"><div>Sec<b>88</b></div><div>Row<b>CO</b></div><div>Seat<b>79</b></div></div></div>
     </div>
     <div class="refs" aria-label="Ritual reference photos">
       <div class="refimg r1" data-cap="Xin xăm shrine · Chùa Giác Lâm, Saigon" role="img" aria-label="Xin xam shrine at Chua Giac Lam temple"></div>
       <div class="refimg r2" data-cap="The cup of numbered sticks" role="img" aria-label="Cylinder of numbered fortune sticks"></div>
       <div class="refimg r3" data-cap="Numbered fortunes, matched to your stick" role="img" aria-label="Numbered fortune papers on a temple wall"></div>
     </div>
-    <p class="body" style="margin-top:20px; opacity:.75">Cut for budget: coconut hydration station (−$1K) · paid creator fees (creators come via the Glossy Campus package + gifting kits from existing merch). Booth styling — panels, rattan, lanterns, full soap→scrub→aloe ritual display — is all existing stock. <span style="opacity:.6">Reference photos: Wikimedia Commons · public domain / CC BY-SA.</span></p>
+    <p class="body" style="margin-top:14px; opacity:.5; font-size:10px">Origin references (the real ritual) — the event styling itself is modern-western per the rule on the previous slide. Photos: Wikimedia Commons, PD / CC BY-SA.</p>
   </div>
 </section>
 
-<!-- 06 · WESTERN CURATION -->
-<section class="slide" id="s6">
+<!-- 08 · THE DAY, ORGANIZED -->
+<section class="slide" id="s8">
   <div class="wrap">
-    <p class="kicker">05 · The fortune, curated American</p>
-    <h2>Not a temple prop — <span class="hero-em" style="font-weight:500">a lucky ticket</span></h2>
-    <p class="sub muted">Game-day America already believes in luck. We style the <i class="vn">quẻ</i> as a vintage stadium ticket — section, row and seat become your lucky numbers — written in our voice, numbered by Vietnamese numerology.</p>
-    <div class="tickets">
-      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Victory favors the rested. The Horns take the fourth quarter — you take the morning after.</div><div class="row"><div>Sec<b>07</b></div><div>Row<b>UN</b></div><div>Seat<b>68</b></div></div></div>
-      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Stay cool while 100,000 lose their minds, and fortune will find you in the noise.</div><div class="row"><div>Sec<b>39</b></div><div>Row<b>RE</b></div><div>Seat<b>86</b></div></div></div>
-      <div class="ticket"><div class="th"><span>Cô Ba's Fortunes</span><span>Admit Luck</span></div><div class="fx">Double luck: your team wins the night, your skin wins the weekend.</div><div class="row"><div>Sec<b>88</b></div><div>Row<b>CO</b></div><div>Seat<b>79</b></div></div></div>
+    <p class="kicker">07 · The day, organized</p>
+    <h2>Salon in the morning, booth till kickoff</h2>
+    <div class="tiles c4">
+      <div class="tile"><div class="lab">10:00–13:00</div><div class="big">Get-ready salon</div><p>Curated creators arrive in waves · COOL → STYLE → DRAW → KEEP · Sao hosts, kits gifted, content shot in the frame we set</p></div>
+      <div class="tile"><div class="lab">13:00–17:00</div><div class="big">Booth opens</div><p>Public fortune draws + aloe station through peak heat · GameDay crowd all afternoon</p></div>
+      <div class="tile"><div class="lab">17:00–18:30</div><div class="big">Golden hour</div><p>Pendant lights on, best light of the day · hourly scarf draw holds the crowd · founder reel closes</p></div>
+      <div class="tile"><div class="lab">18:30</div><div class="big">Kickoff</div><p>Last draws + tagged-post aloe gifts · teardown or stay per Dylan's schedule</p></div>
     </div>
-    <p class="body muted" style="margin-top:22px">~30 fortunes in the set · voucher QR on the back of every ticket (email signup → 15–20% code, Sep 12–30) · lucky numbers follow Vietnamese numerology — 68 <i class="vn">lộc phát</i>, 88 double luck.</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Who</th><th>Runs what</th></tr></thead>
+        <tbody>
+          <tr><td>Sao</td><td>Salon host + founder content — the face of the get-ready</td></tr>
+          <tr><td>Eva</td><td>Aloe station + styling support, salon and booth</td></tr>
+          <tr><td>Emma (Austin)</td><td>Fortune table + prep, print pickups, load-in/out, stock counts</td></tr>
+          <tr><td>Dylan · Glossy</td><td>Space/footprint, creator guest list, load-in windows — his package defines Format A's room</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
-<!-- 07 · CHECKLIST -->
-<section class="slide" id="s7">
+<!-- 09 · CHECKLIST -->
+<section class="slide" id="s9">
   <div class="wrap">
-    <p class="kicker">06 · One list runs both events</p>
+    <p class="kicker">08 · One list runs both events</p>
     <h2>The master checklist is live, not a slide</h2>
     <div class="tiles c2">
-      <div class="tile"><div class="lab">Live checklist · edit in browser</div><div class="big">/glossy-gameday/checklist</div><p>Every line item with qty × cost, owner, vendor, delivery route and due date. Click any cell to edit, add rows, check off, export CSV. Totals track the $4K envelope live.</p></div>
-      <div class="tile"><div class="lab">Workbook · for finance</div><div class="big">glossy-september-ops.xlsx</div><p>Same checklist with formulas + budget allocation + prep timeline + game-day run-of-show + marketing capture plan. Import to Google Sheets as-is.</p></div>
+      <div class="tile"><div class="lab">Live checklist · edit in browser</div><div class="big">…/glossy-gameday/checklist.html</div><p>Every line with qty × cost, owner, vendor, delivery route and due date. Click any cell to edit, add rows, check off, export CSV. Totals track the $4K envelope live.</p></div>
+      <div class="tile"><div class="lab">Workbook · for finance</div><div class="big">glossy-september-ops.xlsx</div><p>Same checklist with formulas + budget allocation + prep timeline + run-of-show + marketing capture plan. Imports to Google Sheets as-is.</p></div>
     </div>
     <div class="tblwrap">
       <table>
@@ -307,10 +369,10 @@
   </div>
 </section>
 
-<!-- 08 · BUDGET -->
-<section class="slide" id="s8">
+<!-- 10 · BUDGET -->
+<section class="slide" id="s10">
   <div class="wrap">
-    <p class="kicker">07 · The $4,000, allocated</p>
+    <p class="kicker">09 · The $4,000, allocated</p>
     <h2>Half product, half execution — $2.0K cash out of pocket</h2>
     <div class="bud">
       <div class="brow"><div class="bl">Product (AWD stock)</div><div class="bt"><i style="width:49%"></i></div><div class="bv">$1,975</div></div>
@@ -323,61 +385,61 @@
       <div class="brow cut"><div class="bl">Coconut station</div><div class="bt"><i style="width:25%"></i></div><div class="bv">−$1,000</div></div>
       <div class="brow cut"><div class="bl">Paid creator fees</div><div class="bt"><i style="width:13%"></i></div><div class="bv">−$500</div></div>
     </div>
-    <p class="body muted" style="margin-top:24px">Total $4,000 · product unit costs are placeholder COGS pending Finance — if the board treats warehouse stock as inventory rather than event cash, the <strong>cash ask is ~$2,025</strong>. Struck lines show what was cut to fit the envelope.</p>
+    <p class="body muted" style="margin-top:20px">Total $4,000 · product unit costs are placeholder COGS pending Finance — cash-only view ≈ <strong>$2,025</strong>. Struck lines = cut to fit. <strong>Not included: Glossy's sponsorship package fee</strong> — Dylan's formal package (salon space, creator roster, production support) arrives after we confirm dates and will come to the board as its own line.</p>
   </div>
 </section>
 
-<!-- 09 · OPS & PEOPLE -->
-<section class="slide" id="s9">
+<!-- 11 · PEOPLE & RUNWAY -->
+<section class="slide" id="s11">
   <div class="wrap">
-    <p class="kicker">08 · People &amp; runway</p>
-    <h2>Five people, eight weeks, no wasted motion</h2>
+    <p class="kicker">10 · People &amp; runway</p>
+    <h2>Five people, eight weeks, one date to lock</h2>
     <div class="tblwrap">
       <table>
         <thead><tr><th>Who</th><th>Role</th></tr></thead>
         <tbody>
-          <tr><td>Sao &amp; Eva</td><td>Fly to Austin · handcarry small premium items · founder content + aloe station on game day</td></tr>
+          <tr><td>Sao &amp; Eva</td><td>Fly to Austin · handcarry small premium items · salon hosting + aloe station on game day</td></tr>
           <tr><td>Emma (Austin)</td><td>Rehired — print pickups, sticks, kit assembly, fortune table, load-in</td></tr>
           <tr><td>NYC helper</td><td>New hire by Aug 15 — bag assembly Sep 9–10, FIT delivery, photo proof</td></tr>
-          <tr><td>Dylan (Glossy)</td><td>Booth specs + load-in + Campus creator roster · NYC bag count + FIT delivery window</td></tr>
+          <tr><td>Dylan (Glossy)</td><td>Formal concept + package after date confirmation · creator guest list · space + load-in</td></tr>
           <tr><td>Buyer team</td><td>THE gate: new-miniset lead time by Jul 24 · scarf qty by Jul 24</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="tiles c4" style="margin-top:28px">
-      <div class="tile"><div class="lab">Jul</div><p>Buyer gate · Glossy counts · fortune texts · orders placed</p></div>
-      <div class="tile"><div class="lab">Aug</div><p>NYC hire · AWD removals (Aug 17) · everything lands by Aug 28</p></div>
-      <div class="tile"><div class="lab">Sep 9–11</div><p>Bags assembled + delivered NYC · Austin load-in prep</p></div>
-      <div class="tile"><div class="lab">Sep 12</div><p>Game day, GameDay morning → dusk kickoff</p></div>
+    <div class="tiles c4" style="margin-top:26px">
+      <div class="tile"><div class="lab">Jul</div><p>Confirm Sep 12 with Dylan + share concept · Buyer gate · fortune texts · orders placed</p></div>
+      <div class="tile"><div class="lab">Aug</div><p>Dylan's package + creator list locked · NYC hire · AWD removals (Aug 17) · all lands by Aug 28</p></div>
+      <div class="tile"><div class="lab">Sep 9–11</div><p>Bags assembled + delivered NYC · Austin prep, salon walkthrough, Emma brief</p></div>
+      <div class="tile"><div class="lab">Sep 12</div><p>Salon 10:00 → booth → dusk kickoff</p></div>
     </div>
   </div>
 </section>
 
-<!-- 10 · THE RETURN -->
-<section class="slide" id="s10">
+<!-- 12 · THE RETURN -->
+<section class="slide" id="s12">
   <div class="wrap">
-    <p class="kicker">09 · The Return</p>
-    <div class="ph ph-side" data-ph="event" data-cap="Image — May US-event photo"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
+    <p class="kicker">11 · The Return</p>
+    <div class="ph ph-side" data-ph="event" data-cap="Image — May US-event photo / AI mock"><span class="phx">+</span><button class="rm" aria-label="Remove image">×</button></div>
     <h2>Two events, one content engine</h2>
-    <p class="body"><strong>NYC:</strong> 100 beauty-obsessed households open our ritual next to Fenty — every voucher booklet is coded, so redemptions trace back to the bag. <strong>Austin:</strong> every gifted aloe is a tagged IG post we didn't brief, shot in a frame we art-directed — plus the founder reel format that did <strong>150.7K views</strong> in June, and UT creators from the Glossy Campus roster at no fee. May precedent: brand mentions <strong>12.5×</strong> in a month.</p>
-    <div class="tiles c4" style="margin-top:28px">
-      <div class="tile"><div class="big">100+</div><p>tagged IG posts &amp; stories (Austin)</p></div>
-      <div class="tile"><div class="big">250–400</div><p>emails via fortune QR</p></div>
-      <div class="tile"><div class="big">2 codes</div><p>glossypop · gameday — trackable to Sep 30</p></div>
+    <p class="body"><strong>NYC:</strong> 100 beauty-obsessed households open our ritual next to Fenty — coded voucher booklets trace redemptions to the bag. <strong>Austin:</strong> the salon manufactures creator GRWM content with a story beat no other brand has (the fortune), the booth turns every gifted aloe into a tagged post, and the founder reel format did <strong>150.7K views</strong> in June. May precedent: brand mentions <strong>12.5×</strong> in a month.</p>
+    <div class="tiles c4" style="margin-top:26px">
+      <div class="tile"><div class="big">5–8</div><p>creator GRWM sets from the salon (Glossy roster)</p></div>
+      <div class="tile"><div class="big">100+</div><p>tagged IG posts &amp; stories from the booth</p></div>
+      <div class="tile"><div class="big">250–400</div><p>emails via fortune QR · 2 trackable codes to Sep 30</p></div>
       <div class="tile"><div class="big">40–60</div><p>raw clips → ads + organic + Q3 report</p></div>
     </div>
   </div>
 </section>
 
-<!-- 11 · NEXT -->
-<section class="slide dark" id="s11">
+<!-- 13 · NEXT -->
+<section class="slide dark" id="s13">
   <div class="wrap">
-    <p class="kicker">10 · Decisions &amp; next steps</p>
-    <h2>Four answers unlock everything</h2>
+    <p class="kicker">12 · Decisions &amp; next steps</p>
+    <h2>Five answers unlock everything</h2>
     <div class="asks">
+      <div class="ask"><div class="who">Us → Dylan</div><b>Confirm Sep 12 + share the concept</b><p>this week — unlocks his formal package</p></div>
       <div class="ask"><div class="who">Buyer team</div><b>New miniset + loofah lead time</b><p>by Jul 24 — Plan A/B gate</p></div>
-      <div class="ask"><div class="who">Glossy</div><b>NYC bag count + FIT load-in window</b><p>by Jul 31 — drives product qty</p></div>
-      <div class="ask"><div class="who">Dylan · Glossy</div><b>Booth specs + Campus creator roster</b><p>by Jul 31</p></div>
+      <div class="ask"><div class="who">Glossy</div><b>NYC bag count + FIT load-in · salon package &amp; fee</b><p>by Jul 31</p></div>
       <div class="ask"><div class="who">Brand team</div><b>Approve $4K split · hire NYC helper · confirm Emma</b><p>by Aug 15</p></div>
     </div>
     <p class="footline hero-em">Rooted in Heritage. Empowered for Modernity.</p>
@@ -385,7 +447,7 @@
 </section>
 
 <nav class="dots" aria-label="Slides"></nav>
-<div class="pageno">01 / 11</div>
+<div class="pageno">01 / 13</div>
 <div class="statepill" id="statepill"></div>
 <div class="bar" role="toolbar" aria-label="Presenter tools">
   <button id="bEdit" title="Toggle live text editing">✎ Edit</button>
@@ -399,7 +461,7 @@
 <script>
 (function(){
   var LS = null; try { LS = window.localStorage; } catch(e) {}
-  var K = function(s){ return 'ggd4.' + s; };
+  var K = function(s){ return 'ggd5.' + s; };
   var slides = [].slice.call(document.querySelectorAll('.slide'));
   var cur = 0;
 
