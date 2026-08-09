@@ -160,13 +160,16 @@ def post_to_slack(brief_text: str, today: str):
 
     client = WebClient(token=token)
 
+    dm = client.conversations_open(users=[SLACK_USER_ID])
+    channel_id = dm["channel"]["id"]
+
     header = f"*📬 CoBa's Daughter — Daily Conversion Brief*\n_{today} · 9:00 AM GMT+7 · Auto-generated_\n\n"
     footer = "\n\n_────────────────────_\n_Full plan: `reports/email_plan_2026-05-25_conversion.html`_"
 
     full_message = header + brief_text + footer
 
     response = client.chat_postMessage(
-        channel=SLACK_USER_ID,
+        channel=channel_id,
         text=full_message,
         mrkdwn=True
     )

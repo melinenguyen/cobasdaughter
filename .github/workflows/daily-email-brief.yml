@@ -49,8 +49,10 @@ jobs:
           import os
           from slack_sdk import WebClient
           client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
+          dm = client.conversations_open(users=[os.environ["SLACK_USER_ID"]])
+          channel_id = dm["channel"]["id"]
           client.chat_postMessage(
-            channel=os.environ["SLACK_USER_ID"],
+            channel=channel_id,
             text="⚠️ *CoBa's Daily Brief failed today.* Check GitHub Actions for details."
           )
           EOF
