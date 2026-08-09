@@ -7,7 +7,7 @@ import sys
 import threading
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, redirect, render_template, url_for
+from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
 
 # Allow importing from project root
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -32,10 +32,18 @@ def index():
 
 @app.route("/report/<date_str>")
 def view_report(date_str: str):
-    report = report_generator.load_report(date_str, REPORTS_DIR)
-    if report is None:
+    # ?slot=am|pm picks one half of the day; absent means newest for that date.
+    slot = request.args.get("slot")
+    report = report_generator.load_report(date_str, REPORTS_DIR, slot=slot)
+    if report is not None:
+        return render_template("report.html", report=report)
+
+    # 2026-05-27 to 2026-08-09 was archived as HTML only — serve the page as it
+    # was rendered on the day rather than 404ing.
+    html = report_generator.load_report_html(date_str, REPORTS_DIR, slot=slot)
+    if html is None:
         abort(404)
-    return render_template("report.html", report=report)
+    return html
 
 
 @app.route("/report/latest")
@@ -43,12 +51,17 @@ def latest_report():
     reports = report_generator.list_reports(REPORTS_DIR)
     if not reports:
         return redirect(url_for("index"))
-    return redirect(url_for("view_report", date_str=reports[0]["date"]))
+    newest = reports[0]
+    return redirect(
+        url_for("view_report", date_str=newest["date"], slot=newest["slot"] or None)
+    )
 
 
 @app.route("/report/<date_str>/json")
 def download_report_json(date_str: str):
-    report = report_generator.load_report(date_str, REPORTS_DIR)
+    report = report_generator.load_report(
+        date_str, REPORTS_DIR, slot=request.args.get("slot")
+    )
     if report is None:
         abort(404)
     return jsonify(report)

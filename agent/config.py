@@ -1,4 +1,6 @@
 import os
+import secrets
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,6 +27,9 @@ class Config:
     EMAIL_TO = os.getenv("EMAIL_TO", "meline.nguyen@lixibox.com")
     EMAIL_CC = os.getenv("EMAIL_CC", "phuonglt.job@gmail.com")
     DASHBOARD_PORT = int(os.getenv("DASHBOARD_PORT", "5050"))
+    # dashboard/app.py needs this to start. Nothing uses Flask sessions, so an
+    # ephemeral per-process key is fine when it is not set explicitly.
+    FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY") or secrets.token_hex(32)
 
     REPORTS_DIR = os.getenv("REPORTS_DIR", "reports")
     SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "America/New_York")

@@ -144,51 +144,185 @@ def get_canva_page_images(page_nums: list) -> dict:
         print(f"[daily_brief] Canva API failed: {e}")
         return {}
 
-# Five-email baseline — Claude updates this daily with live intel
+# ─── CAMPAIGN CALENDAR (self-updating) ────────────────────────────────────────
+# Everything below is computed against the run date, so the brief never plans
+# against a dead calendar. Before this existed the prompt was frozen at
+# "Father's Day = June 15 · Summer peak = June-July" and kept saying so in August.
+
+# Dated campaigns. Each auto-drops from the prompt once `end` passes — when the
+# list empties the brief says so out loud rather than quietly planning on nothing.
+ACTIVE_CAMPAIGNS = [
+    {
+        "name":  "CoBa's Endless Summer",
+        "start": (2026, 6, 25),
+        "end":   (2026, 9, 15),
+        "hook":  "Keep your summer skin endlessly glowing",
+        "focus": "Refillable ritual — Aloe Gel refill is the first-ever and the hero novelty. "
+                 "Goal is repeat-refill behaviour for LTV plus clearing jar stock before Q4.",
+        "skus":  "Coffee Set $88 · Aloe Set $69 · Coffee Refill 20oz $59 · Aloe Refill 20oz $46",
+    },
+]
+
+# The strategic frame by month — never expires, so there is always an anchor even
+# when no dated campaign is live. Keyed by month number.
+SEASONAL_FRAME = {
+    1: "New year reset · post-holiday skin recovery",
+    2: "Valentine's gifting · self-ritual angle",
+    3: "Spring renewal · brand anniversary (launched March 2026)",
+    4: "Spring skin prep · Mother's Day warm-up",
+    5: "Mother's Day peak · gifting sets",
+    6: "Summer peak begins · Aloe hero · refill launch",
+    7: "Summer peak · refill behaviour · travel sizes",
+    8: "Late summer · after-sun recovery · refill repeat",
+    9: "After-summer / back-to-school · transition to gifting",
+    10: "Q4 gifting runway opens · bundle building",
+    11: "Black Friday / Cyber Monday · biggest revenue window",
+    12: "Thoughtful gifting · holiday close · new-year teaser",
+}
+
+
+def _nth_weekday(year: int, month: int, weekday: int, n: int) -> datetime.date:
+    """Date of the nth `weekday` (Mon=0) in a month. Used for floating holidays."""
+    d = datetime.date(year, month, 1)
+    offset = (weekday - d.weekday()) % 7
+    return d + datetime.timedelta(days=offset + 7 * (n - 1))
+
+
+def _holidays_for(year: int) -> list:
+    """(date, label) for the retail dates worth planning email around."""
+    thanksgiving = _nth_weekday(year, 11, 3, 4)  # 4th Thursday
+    return [
+        (datetime.date(year, 2, 14),      "Valentine's Day"),
+        (_nth_weekday(year, 5, 6, 2),     "Mother's Day"),
+        (_nth_weekday(year, 6, 6, 3),     "Father's Day"),
+        (datetime.date(year, 7, 4),       "July 4th"),
+        (datetime.date(year, 9, 1),       "Back-to-school window opens"),
+        (thanksgiving,                    "Thanksgiving"),
+        (thanksgiving + datetime.timedelta(days=1), "Black Friday"),
+        (thanksgiving + datetime.timedelta(days=4), "Cyber Monday"),
+        (datetime.date(year, 12, 25),     "Christmas"),
+    ]
+
+
+def build_calendar_context(today_date: datetime.date) -> str:
+    """The CALENDAR block of the prompt, computed fresh every run."""
+    lines = [f"Today = {today_date:%A, %B %-d, %Y} (GMT+7)",
+             f"Season = {SEASONAL_FRAME[today_date.month]}"]
+
+    live = []
+    for c in ACTIVE_CAMPAIGNS:
+        start = datetime.date(*c["start"])
+        end   = datetime.date(*c["end"])
+        if start <= today_date <= end:
+            elapsed = (today_date - start).days
+            total   = (end - start).days
+            live.append(
+                f"LIVE CAMPAIGN: {c['name']} — \"{c['hook']}\"\n"
+                f"  Day {elapsed} of {total} · {(end - today_date).days} days left (ends {end:%b %-d})\n"
+                f"  {c['focus']}\n"
+                f"  SKUs: {c['skus']}"
+            )
+        elif today_date < start:
+            live.append(
+                f"UPCOMING CAMPAIGN: {c['name']} starts {start:%b %-d} "
+                f"({(start - today_date).days} days out) — \"{c['hook']}\""
+            )
+    if live:
+        lines += live
+    else:
+        lines.append(
+            "NO DATED CAMPAIGN IS LIVE — plan against the seasonal frame above and say "
+            "plainly in the brief that the campaign calendar needs the next window added."
+        )
+
+    # Next four retail dates, rolling into next year near the boundary
+    upcoming = [(d, n) for d, n in _holidays_for(today_date.year) if d >= today_date]
+    upcoming += [(d, n) for d, n in _holidays_for(today_date.year + 1)]
+    nxt = sorted(upcoming)[:4]
+    lines.append("Upcoming: " + " · ".join(
+        f"{n} {d:%b %-d} ({(d - today_date).days}d)" for d, n in nxt
+    ))
+    return "\n".join(lines)
+
+
+def build_send_schedule(today_date: datetime.date, count: int = 5) -> list:
+    """Next `count` send slots — every 3rd day starting tomorrow, 10 AM GMT+7."""
+    return [
+        f"{today_date + datetime.timedelta(days=1 + 3 * i):%a %b %-d} · 10 AM GMT+7"
+        for i in range(count)
+    ]
+
+
+# Five-email baseline — themes and personas only. Send dates are computed at run
+# time by build_send_schedule(); they used to be hardcoded to May/June 2026.
 FIVE_EMAIL_BASELINE = [
     {
-        "num": 1, "send_date": "Tue May 26 · 10 AM GMT+7",
-        "type": "Post-Sale Loyalty",
-        "subject": "You got it. Here's how to use it.",
-        "preview": "The ritual for everything you just ordered.",
+        "num": 1,
+        "type": "Refill Education — the first-ever Aloe refill",
+        "subject": "the jar stays. the ritual refills.",
+        "preview": "Your Aloe Gel now comes in a refill.",
         "from_email": "ritual@cobasdaughter.com",
-        "canva_page": "lifestyle",
+        "canva_page": "aloe_duo",
     },
     {
-        "num": 2, "send_date": "Thu May 28 · 10 AM GMT+7",
-        "type": "Re-Engage Non-Buyers",
-        "subject": "the sale is gone. the skin glow isn't.",
-        "preview": "You don't need a discount to start your ritual.",
+        "num": 2,
+        "type": "Replenishment — repeat-refill behaviour",
+        "subject": "running low?",
+        "preview": "About six weeks in, the jar starts to echo.",
         "from_email": "ritual@cobasdaughter.com",
-        "canva_page": "scrub_duo",
+        "canva_page": "ritual",
     },
     {
-        "num": 3, "send_date": "Sun Jun 1 · 10 AM GMT+7",
-        "type": "Aloe Duo Education",
+        "num": 3,
+        "type": "Aloe Education — after-sun recovery",
         "subject": "what aloe vera does at 2am",
         "preview": "(while you sleep, it's working.)",
         "from_email": "ritual@cobasdaughter.com",
         "canva_page": "aloe_duo",
     },
     {
-        "num": 4, "send_date": "Thu Jun 5 · 10 AM GMT+7",
-        "type": "Father's Day Gift Push",
-        "subject": "the gift for the man who says he doesn't want anything",
-        "preview": "He does. You know he does.",
-        "from_email": "hi@cobasdaughter.com",
-        "canva_page": "gift_bundle",
-    },
-    {
-        "num": 5, "send_date": "Tue Jun 10 · 10 AM GMT+7",
-        "type": "Summer Body Prep",
-        "subject": "summer bodies are made in June",
-        "preview": "The 5-minute ritual. No gym required.",
+        "num": 4,
+        "type": "Scrub Duo conversion — the anchor SKU",
+        "subject": "the only coffee scrub that smells like green tea",
+        "preview": "Five minutes. Then the rest of your day.",
         "from_email": "ritual@cobasdaughter.com",
         "canva_page": "scrub_duo",
+    },
+    {
+        "num": 5,
+        "type": "Re-Engage Non-Buyers",
+        "subject": "the sale is gone. the skin glow isn't.",
+        "preview": "You don't need a discount to start your ritual.",
+        "from_email": "hi@cobasdaughter.com",
+        "canva_page": "lifestyle",
     },
 ]
 
 # ─── KLAVIYO CONTEXT ─────────────────────────────────────────────────────────
+
+# The Klaviyo key must point at CoBa's Daughter. Lixibox runs several brands in
+# separate Klaviyo accounts (Halio Sonic among them), and a key for the wrong one
+# still returns 200 — it just feeds another brand's campaign history into the
+# brief. Checked on every run rather than trusted.
+KLAVIYO_EXPECTED_ORG = "coba"
+
+
+def _klaviyo_account_name(headers: dict) -> str:
+    """Organization name on the account the API key belongs to ('' if unavailable)."""
+    import requests
+    try:
+        r = requests.get("https://a.klaviyo.com/api/accounts/", headers=headers, timeout=15)
+        r.raise_for_status()
+        data = r.json().get("data", [])
+        if not data:
+            return ""
+        return (data[0].get("attributes", {})
+                       .get("contact_information", {})
+                       .get("organization_name", ""))
+    except Exception as e:
+        print(f"[daily_brief] Klaviyo account lookup failed: {e}")
+        return ""
+
 
 def get_klaviyo_context() -> str:
     api_key = os.environ.get("KLAVIYO_PRIVATE_API_KEY")
@@ -197,6 +331,17 @@ def get_klaviyo_context() -> str:
     import requests
     try:
         h = {"Authorization": f"Klaviyo-API-Key {api_key}", "revision": "2024-02-15"}
+
+        org = _klaviyo_account_name(h)
+        print(f"[daily_brief] Klaviyo account: {org or 'unknown'}")
+        header = f"Klaviyo account: {org}\n" if org else ""
+        if org and KLAVIYO_EXPECTED_ORG not in org.lower():
+            header = (
+                f"⚠️ WRONG KLAVIYO ACCOUNT — this key belongs to \"{org}\", not CoBa's Daughter. "
+                f"The campaign history below is another brand's. Ignore it when planning, and "
+                f"say so at the top of the brief.\n"
+            )
+
         r = requests.get(
             "https://a.klaviyo.com/api/campaigns/",
             headers=h,
@@ -225,7 +370,9 @@ def get_klaviyo_context() -> str:
             subj = subjects[0] if subjects else "(no subject)"
             dt   = (a.get("send_time") or a.get("scheduled_at") or "")[:10]
             lines.append(f"  [{a.get('status','?')}] {dt} — \"{subj}\" ({a.get('name','?')})")
-        return "Recent Klaviyo campaigns:\n" + "\n".join(lines) if lines else "No campaigns found."
+        if not lines:
+            return header + "No campaigns found."
+        return header + "Recent campaigns (most recent first):\n" + "\n".join(lines)
     except Exception as e:
         return f"Klaviyo fetch failed: {e}"
 
@@ -359,7 +506,8 @@ def get_all_promo_senders(mail, days_back: int = 5) -> list:
 
 # ─── BRIEF GENERATOR ─────────────────────────────────────────────────────────
 
-def generate_brief(brand_emails: dict, klaviyo_context: str, today: str, all_promos: list = None) -> str:
+def generate_brief(brand_emails: dict, klaviyo_context: str, today: str,
+                   all_promos: list = None, today_date: datetime.date = None) -> str:
     from anthropic import Anthropic
     client = Anthropic()
 
@@ -383,18 +531,24 @@ def generate_brief(brand_emails: dict, klaviyo_context: str, today: str, all_pro
         other_promos_text = "  No additional promotional emails found.\n"
 
     baseline_text = ""
-    for em in FIVE_EMAIL_BASELINE:
-        baseline_text += f"  Email {em['num']}: {em['send_date']} — \"{em['subject']}\" ({em['type']})\n"
+    if today_date is None:
+        today_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))).date()
+    calendar_context = build_calendar_context(today_date)
+
+    schedule = build_send_schedule(today_date)
+    for em, slot in zip(FIVE_EMAIL_BASELINE, schedule):
+        baseline_text += f"  Email {em['num']}: {slot} — \"{em['subject']}\" ({em['type']})\n"
 
     prompt = f"""You are the email war room strategist for CoBa's Daughter — a Vietnamese DTC body care brand.
 
 BRAND SNAPSHOT:
-- Launched March 2026 · ~2,500 email subscribers · low open/click rates
-- Products: Coffee Body Exfoliator (Scrub Duo) · Aloe Soothing Gel (Aloe Duo) · 3-in-1 Artisan Soap · Gift Bundle Sets
-- Last campaign May 25: "Up to 27% OFF Sets & Bundles" · free shipping $50+
+- Launched March 2026 · low open rate (~13%) is the standing problem to beat
+- Positioning: "Low-maintenance luxury body care for the Disciplined Woman" · ritual = UNWIND · RESET · RECOVER
+- Products: Coffee Body Exfoliator (Scrub Duo — the anchor SKU) · Aloe Soothing Gel (Aloe Duo) · 3-in-1 Artisan Soap · Gift Bundles · refills (Coffee 20oz, Aloe 20oz)
 - Sender personas: ritual@cobasdaughter.com (founder/intimate) · hi@cobasdaughter.com (commercial)
 - Voice: intimate · sensory · Vietnamese heritage · "low maintenance luxury"
 - Hero copy: "The only coffee scrub with a green tea scent" · "99% pure aloe vera" · "3-in-1: hand wash / body wash / bubble bath"
+- Origin audience: the equestrian circuit — they found the Coffee Scrub post-competition
 
 KLAVIYO HISTORY:
 {klaviyo_context}
@@ -405,10 +559,11 @@ REFERENCE BRAND INBOX (last 5 days — rolling window):
 FULL PROMOTIONAL INBOX SCAN (last 5 days — every other brand that emailed):
 {other_promos_text}
 
-BASELINE 5-EMAIL PLAN:
+BASELINE 5-EMAIL PLAN (themes to adapt — the send slots are already correct, use them as given):
 {baseline_text}
 
-CALENDAR: Today = {today} GMT+7 · Father's Day = June 15 · Summer peak = June-July
+CALENDAR:
+{calendar_context}
 
 INSTRUCTIONS: Write a full Email War Room brief. Your response has exactly 6 parts.
 - Part 1 is a Slack message. Parts 2-6 are email templates.
@@ -910,8 +1065,10 @@ def send_email_brief(brief_text: str, today: str) -> None:
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 def main():
-    vn_tz = datetime.timezone(datetime.timedelta(hours=7))
-    today = datetime.datetime.now(vn_tz).strftime("%A, %B %-d, %Y")
+    vn_tz      = datetime.timezone(datetime.timedelta(hours=7))
+    now_vn     = datetime.datetime.now(vn_tz)
+    today      = now_vn.strftime("%A, %B %-d, %Y")
+    today_date = now_vn.date()
     print(f"[daily_brief] Starting for {today}")
 
     # Every step below is caught so one broken integration can't stop the rest of the
@@ -953,7 +1110,7 @@ def main():
     # 3. Generate brief + 5 email templates
     print("[daily_brief] Generating War Room brief + 5 email templates…")
     try:
-        brief = generate_brief(brand_emails, klaviyo_context, today, all_promos)
+        brief = generate_brief(brand_emails, klaviyo_context, today, all_promos, today_date)
         if gmail_warning:
             # Prepend warning to Slack section (before first ===EMAIL===)
             brief = gmail_warning.strip() + "\n\n" + brief

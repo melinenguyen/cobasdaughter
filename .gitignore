@@ -21,3 +21,8 @@ reports/latest.html
 scripts/client_secret.json
 scripts/gmail_token.json
 *.json
+
+# ...but the archived trend reports must be committed: the daily workflow runs
+# `git add reports/`, and the blanket *.json above was silently dropping every
+# report JSON (only the HTML got committed) from 2026-05-27 onward.
+!reports/trend_report_*.json

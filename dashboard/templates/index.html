@@ -52,6 +52,9 @@
       font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 20px;
       background: rgba(124,92,252,0.1); color: var(--accent);
     }
+    .chip-slot { background: rgba(224,64,251,0.12); color: var(--accent2); letter-spacing: 1px; }
+    .btn-json-none { color: var(--text3); border-style: dashed; cursor: default; }
+    .date-slot { font-size: 11px; font-weight: 700; color: var(--accent2); letter-spacing: 1px; }
     .report-actions { display: flex; flex-direction: column; gap: 8px; }
     .btn-view {
       background: var(--accent); color: #fff; border: none;
@@ -96,17 +99,23 @@
               {{ date_parts[0] }}
             {% endif %}
           </div>
+          {% if r.slot %}<div class="date-slot">{{ r.slot|upper }}</div>{% endif %}
         </div>
         <div class="report-info">
-          <h3>US Trend Report — {{ r.date }}</h3>
+          <h3>US Trend Report — {{ r.date }}{% if r.slot %} · {{ r.slot|upper }}{% endif %}</h3>
           <p class="report-summary">{{ r.executive_summary }}...</p>
           <div class="meta-chips">
+            {% if r.slot %}<span class="chip chip-slot">{{ r.slot|upper }}</span>{% endif %}
             <span class="chip">{{ r.trend_count }} Trends</span>
           </div>
         </div>
         <div class="report-actions">
-          <a href="/report/{{ r.date }}" class="btn-view">View Report</a>
-          <a href="/report/{{ r.date }}/json" class="btn-json">Download JSON</a>
+          <a href="{{ url_for('view_report', date_str=r.date, slot=r.slot or None) }}" class="btn-view">View Report</a>
+          {% if r.has_json %}
+          <a href="{{ url_for('download_report_json', date_str=r.date, slot=r.slot or None) }}" class="btn-json">Download JSON</a>
+          {% else %}
+          <span class="btn-json btn-json-none" title="Archived as HTML only — the source JSON was not committed">HTML only</span>
+          {% endif %}
         </div>
       </div>
       {% endfor %}

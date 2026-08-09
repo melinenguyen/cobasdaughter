@@ -23,10 +23,34 @@ parts 1–5 are parsed by regex in `_parse_email_template()` and rendered as HTM
 **If you change the prompt's output format, update the regexes in `_parse_email_template()` too** —
 they silently produce empty cards on mismatch.
 
+## The campaign calendar is computed, not written down
+
+`build_calendar_context()` and `build_send_schedule()` derive everything from the run date, because
+the prompt used to be hardcoded and spent ten weeks telling Claude that Father's Day was coming while
+it was August. Three moving parts:
+
+- **`ACTIVE_CAMPAIGNS`** — dated windows with `start`/`end`. A campaign shows day-N-of-M and a
+  countdown while live, and **drops itself** once `end` passes. When the list empties the prompt says
+  so and instructs the brief to flag it. **This is the one thing you still have to maintain** — add
+  the next window before the current one expires.
+- **`SEASONAL_FRAME`** — a line per month. Never expires, so there's always an anchor even with no
+  dated campaign live.
+- **`_holidays_for()`** — floating holidays computed per year (Mother's/Father's Day by nth weekday,
+  BFCM off Thanksgiving). Rolls into next year automatically near the boundary.
+
+Send slots are every 3rd day starting tomorrow. The baseline in `FIVE_EMAIL_BASELINE` holds themes
+and personas only — no dates.
+
 ## Credentials
 
 `GMAIL_APP_PASSWORD` does double duty: IMAP inbox scan *and* SMTP send. One bad password kills both
 halves of the job. It is also shared with `daily_trend_report.yml`, so a rotation breaks two jobs.
+
+`KLAVIYO_PRIVATE_API_KEY` must point at the **CoBa's Daughter** account. Lixibox runs several brands
+in separate Klaviyo accounts — the MCP connection in Claude, for instance, is **Halio Sonic**
+(halio-sonic.com). A key for the wrong brand still returns 200 and quietly feeds another brand's
+campaign history into the brief, so `get_klaviyo_context()` now reads the account's org name, logs it
+as `Klaviyo account: …`, and prepends a loud warning to the prompt if it isn't CoBa.
 
 Secrets live in repo Settings → Secrets → Actions (write-only; can't be read back).
 Referenced but **not currently configured**: `GMAIL_TOKEN_JSON`, `CANVA_*` — these resolve to empty
