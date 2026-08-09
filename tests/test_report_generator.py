@@ -21,6 +21,17 @@ def write_report(reports_dir, filename, **extra):
     return data
 
 
+def write_html(reports_dir, filename, summary="rendered summary", trend_count=6):
+    """Drop a rendered report page, matching the markers report.html emits."""
+    (reports_dir / filename).write_text(
+        "<html><body>"
+        f'<p class="hero-text">{summary}</p>'
+        f'<span class="count-badge">{trend_count}</span>'
+        "</body></html>",
+        encoding="utf-8",
+    )
+
+
 @pytest.fixture
 def reports_dir(tmp_path):
     d = tmp_path / "reports"
@@ -130,6 +141,16 @@ def test_list_reports_exposes_slot_newest_first(reports_dir):
     ]
 
 
+def test_list_reports_does_not_duplicate_a_day_with_both_formats(reports_dir):
+    write_report(reports_dir, "trend_report_2026-08-09_pm.json")
+    write_html(reports_dir, "trend_report_2026-08-09_pm.html")
+
+    listed = report_generator.list_reports(str(reports_dir))
+
+    assert len(listed) == 1
+    assert listed[0]["has_json"] is True
+
+
 def test_listed_reports_are_all_loadable(reports_dir):
     """Every index entry must resolve — that link is what was 404ing."""
     write_report(reports_dir, "trend_report_2026-05-10.json")
@@ -150,6 +171,56 @@ def test_list_reports_skips_corrupt_json(reports_dir):
     assert [r["filename"] for r in report_generator.list_reports(str(reports_dir))] == [
         "trend_report_2026-08-09_pm.json"
     ]
+
+
+# --- HTML-only days (the 2026-05-27 to 2026-08-09 archive gap) --------------------
+
+def test_html_only_day_is_listed_with_recovered_metadata(reports_dir):
+    write_html(reports_dir, "trend_report_2026-06-15_pm.html", summary="Equestrian day", trend_count=7)
+
+    listed = report_generator.list_reports(str(reports_dir))
+
+    assert len(listed) == 1
+    assert listed[0]["date"] == "2026-06-15"
+    assert listed[0]["slot"] == "pm"
+    assert listed[0]["executive_summary"] == "Equestrian day"
+    assert listed[0]["trend_count"] == 7
+    assert listed[0]["has_json"] is False
+
+
+def test_html_metadata_unescapes_and_collapses_whitespace(reports_dir):
+    write_html(reports_dir, "trend_report_2026-06-15_pm.html", summary="CoBa&#39;s\n  Daughter  wins")
+
+    listed = report_generator.list_reports(str(reports_dir))
+
+    assert listed[0]["executive_summary"] == "CoBa's Daughter wins"
+
+
+def test_html_without_expected_markers_degrades_quietly(reports_dir):
+    (reports_dir / "trend_report_2026-06-15_pm.html").write_text("<html>rewritten</html>", encoding="utf-8")
+
+    listed = report_generator.list_reports(str(reports_dir))
+
+    assert listed[0]["executive_summary"] == ""
+    assert listed[0]["trend_count"] == 0
+
+
+def test_load_report_html_respects_slot(reports_dir):
+    write_html(reports_dir, "trend_report_2026-06-15_am.html", summary="morning")
+    write_html(reports_dir, "trend_report_2026-06-15_pm.html", summary="evening")
+
+    assert "evening" in report_generator.load_report_html("2026-06-15", str(reports_dir))
+    assert "morning" in report_generator.load_report_html("2026-06-15", str(reports_dir), slot="am")
+    assert report_generator.load_report_html("2026-06-15", str(reports_dir), slot="bad") is None
+    assert report_generator.load_report_html("nope", str(reports_dir)) is None
+
+
+def test_html_fallback_never_shadows_real_json(reports_dir):
+    """A day with JSON must still load as JSON, not as the rendered page."""
+    write_report(reports_dir, "trend_report_2026-08-09_pm.json", marker="json")
+    write_html(reports_dir, "trend_report_2026-08-09_pm.html")
+
+    assert report_generator.load_report("2026-08-09", str(reports_dir))["marker"] == "json"
 
 
 # --- save() round-trip ------------------------------------------------------------
