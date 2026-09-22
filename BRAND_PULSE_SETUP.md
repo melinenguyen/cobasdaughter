@@ -1,6 +1,6 @@
 # CoBa's Daughter Brand Pulse — development setup
 
-Status: backend foundation, not yet deployed or connected. The earlier café/Melbourne examples were incorrect; this repository describes the beauty and lifestyle brand. Confirm the official website and target market before configuring sources.
+Status: backend foundation, not yet deployed or connected. Official website confirmed by the owner: https://cobasdaughter.com/. The website describes Vietnamese heritage body care. Earlier café/Melbourne examples were incorrect. Target geography remains unfiltered until confirmed.
 
 The Brand Pulse page requires `BRAND_PULSE_PASSWORD` on its server and uses username `coba`. Serve it over HTTPS. The existing report archive and `/run` routes have their original access behavior: do not expose the entire existing Flask app publicly without a separate access-control layer.
 
@@ -45,7 +45,7 @@ Create these two variables:
 | Name | Value |
 | --- | --- |
 | `BRAND_PULSE_TERMS` | `CoBa's Daughter,Coba's Daughter,Co Ba's Daughter,#cobasdaughter` |
-| `BRAND_PULSE_GEOGRAPHY` | Your main market, for example `Australia` |
+| `BRAND_PULSE_GEOGRAPHY` | `global` (currently a label; does not filter source data) |
 
 ## Step 3 — connect Google Search Console
 
@@ -55,7 +55,7 @@ This measures Google searches that lead to CoBa's Daughter's own website. It doe
 2. Download its JSON key. Do not upload that file to GitHub.
 3. Open the key file in a text editor and copy the entire contents, including the `{` and `}`.
 4. In GitHub → **Settings** → **Secrets and variables** → **Actions**, create secret `GSC_SERVICE_ACCOUNT_JSON` and paste it.
-5. In GitHub → **Variables**, create `GSC_SITE_URL` with the exact verified Search Console property, for example `https://www.cobasdaughter.com/`.
+5. In GitHub → **Variables**, create `GSC_SITE_URL` with the exact verified Search Console property. For the confirmed website, the URL-prefix property is `https://cobasdaughter.com/`. If Search Console uses a Domain property instead, use `sc-domain:cobasdaughter.com`. Do not add `www` unless that is the property actually verified.
 6. In Search Console → **Settings** → **Users and permissions**, add the service-account email address as a **Read** user.
 
 ## Step 4 — connect Instagram and Reddit
