@@ -1,0 +1,53 @@
+name: CoBa's Daughter Brand Pulse
+
+on:
+  schedule:
+    # 06:00 Ho Chi Minh City time (GMT+7) = 23:00 UTC on the preceding day.
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'How many days to re-check for late-arriving social data'
+        required: false
+        default: '7'
+        type: string
+
+jobs:
+  collect-brand-pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install collector dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect daily Brand Pulse data
+        env:
+          BRAND_PULSE_DATABASE_URL: ${{ secrets.BRAND_PULSE_DATABASE_URL }}
+          BRAND_PULSE_TERMS: ${{ vars.BRAND_PULSE_TERMS }}
+          BRAND_PULSE_GEOGRAPHY: ${{ vars.BRAND_PULSE_GEOGRAPHY }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: CoBasDaughterBrandPulse/1.0
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ vars.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          TIKTOK_APPROVED_PROVIDER_URL: ${{ vars.TIKTOK_APPROVED_PROVIDER_URL }}
+          TIKTOK_APPROVED_PROVIDER_TOKEN: ${{ secrets.TIKTOK_APPROVED_PROVIDER_TOKEN }}
+          RUN_DAYS: ${{ inputs.days || '7' }}
+        run: |
+          if [ -z "$BRAND_PULSE_DATABASE_URL" ]; then
+            echo "Brand Pulse is waiting for BRAND_PULSE_DATABASE_URL. No data was collected."
+            exit 0
+          fi
+          python -m agent.brand_pulse --days "$RUN_DAYS"

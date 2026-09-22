@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoBa's Daughter — Brand Pulse</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/brand_pulse.css') }}" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Back to TrendPulse dashboard"><span class="brand-mark">C</span><span>CoBa's Daughter <small>Brand Pulse</small></span></a>
+      <div class="topbar-right"><span class="live-dot"></span><span id="freshnessLabel">Checking data freshness…</span></div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Daily brand intelligence</p>
+      <h1>See where CoBa’s Daughter is being discovered and discussed.</h1>
+      <p class="hero-copy">This dashboard contains only real data collected from the sources you connect. It shows the latest available data date for each source.</p>
+    </section>
+
+    <section class="controls" aria-label="Brand Pulse filters">
+      <label>From <input id="fromDate" type="date" /></label>
+      <label>To <input id="toDate" type="date" /></label>
+      <div class="quick-ranges" aria-label="Quick date range">
+        <button data-days="7" type="button">7D</button><button class="active" data-days="30" type="button">30D</button><button data-days="90" type="button">90D</button><button data-days="365" type="button">12M</button>
+      </div>
+      <label class="compare">Compare with
+        <select id="comparison"><option value="previous">Last comparable period</option><option value="week">Last completed week</option><option value="month">Last completed month</option><option value="quarter">Last completed quarter</option><option value="year">Same dates last year</option></select>
+      </label>
+    </section>
+
+    <div class="platforms" id="platforms" aria-label="Sources"></div>
+    <p id="coverageNote" class="coverage-note" aria-live="polite"></p>
+
+    <section class="metric-grid" aria-label="Headline metrics">
+      <article class="metric-card"><span>Brand search interest</span><strong id="searchValue">—</strong><small id="searchChange">Connect Google Search Console or approved search data</small></article>
+      <article class="metric-card"><span>Public brand mentions</span><strong id="mentionsValue">—</strong><small id="mentionsChange">—</small></article>
+      <article class="metric-card"><span>Public estimated reach</span><strong id="reachValue">—</strong><small id="reachChange">Only where a provider supplies it</small></article>
+      <article class="metric-card"><span>Positive conversation</span><strong id="sentimentValue">—</strong><small id="sentimentChange">Of classified public mentions</small></article>
+    </section>
+
+    <section class="two-column">
+      <article class="panel chart-panel">
+        <div class="panel-heading"><div><h2>Attention over time</h2><p id="trendDescription">Search interest and public mentions by day</p></div><div class="legend"><span><i class="teal"></i>Search</span><span><i class="coral"></i>Mentions</span></div></div>
+        <div class="chart-container"><svg id="trendChart" role="img" aria-label="Daily brand search interest and public mentions"></svg><p id="chartEmpty" class="empty-chart" hidden>No Brand Pulse data yet. Connect a source, then run the daily collection.</p></div>
+      </article>
+      <aside class="panel">
+        <div class="panel-heading"><div><h2>Source coverage</h2><p>Public mentions in this period</p></div></div>
+        <div id="sourceBreakdown" class="source-breakdown"></div>
+        <hr />
+        <div id="sourceFreshness" class="source-freshness"></div>
+      </aside>
+    </section>
+
+    <section class="mentions-section">
+      <div class="section-heading"><div><h2>Recent public conversations</h2><p id="mentionSubtitle">Links are opened only when you choose to view them.</p></div></div>
+      <div class="panel table-wrap">
+        <table>
+          <thead><tr><th>Conversation</th><th>Source</th><th class="number">Engagement</th><th class="number">Sentiment</th><th class="number">Published</th></tr></thead>
+          <tbody id="mentionsTable"><tr><td colspan="5" class="empty-table">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/brand_pulse.js') }}"></script>
+</body>
+</html>
