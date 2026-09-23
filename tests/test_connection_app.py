@@ -117,6 +117,19 @@ class ConnectionTests(unittest.TestCase):
         self.assertEqual(self.client.post("/connect/google", headers=self.auth).status_code, 400)
         self.assertEqual(self.client.get("/oauth/google/callback?state=bad&code=x").status_code, 400)
 
+    @patch("dashboard.connection_app.psycopg.connect")
+    def test_dashboard_is_private_and_shows_aggregates_only(self, connect):
+        self.assertEqual(self.client.get("/brand-pulse").status_code, 401)
+        cursor = connect.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value
+        cursor.fetchone.side_effect = [("snapshots", "connections"), (5, 20, 6, "2026-09-23"), (0, None, None, None)]
+        cursor.fetchall.return_value = [("tiktok",), ("google_search_console",)]
+        response = self.client.get("/brand-pulse?from=2026-09-01&to=2026-09-30", headers=self.auth)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Daily collection is not enabled", response.data)
+        self.assertIn(b"Unavailable", response.data)
+        self.assertNotIn(b"encrypted_tokens", response.data)
+        self.assertEqual(self.client.get("/brand-pulse?from=bad", headers=self.auth).status_code, 400)
+
 
 if __name__ == "__main__":
     unittest.main()

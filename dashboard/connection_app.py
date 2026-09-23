@@ -66,7 +66,7 @@ def challenge():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "google-readonly-v1"}
+    return {"status": "ok", "version": "dashboard-preview-v1"}
 
 
 @app.get("/")
@@ -75,7 +75,7 @@ def home():
         "<p>The TikTok integration is in setup. It requests profile identity, account statistics and public videos "
         "from accounts whose owners authorize access. It does not publish posts or read private messages.</p>"
         "<p>This connection does not provide platform-wide earned mentions. Daily collection and the reporting dashboard "
-        "are not enabled on this service yet.</p>")
+        "are not enabled on this service yet.</p><p><a href='/brand-pulse'>Open private dashboard</a></p>")
 
 
 @app.get("/setup")
@@ -260,3 +260,87 @@ def google_connected():
     if not session.pop("google_connected", False):
         return redirect("/setup")
     return page("Google authorization saved", "<p>Read-only access to the configured Search Console property's performance API was tested successfully. Authorization is stored encrypted.</p><p>Daily collection still needs to be enabled. No Search Console users or settings were changed.</p>")
+
+
+def preview_comparison(start, end, mode):
+    if mode == "year":
+        def previous(day):
+            try:
+                return day.replace(year=day.year - 1)
+            except ValueError:
+                return day.replace(year=day.year - 1, day=28)
+        return previous(start), previous(end)
+    if mode == "week":
+        last = start - timedelta(days=start.weekday() + 1)
+        return last - timedelta(days=6), last
+    if mode in ("month", "quarter"):
+        month = start.month if mode == "month" else ((start.month - 1) // 3) * 3 + 1
+        last = date(start.year, month, 1) - timedelta(days=1)
+        first_month = last.month if mode == "month" else ((last.month - 1) // 3) * 3 + 1
+        return date(last.year, first_month, 1), last
+    return start - timedelta(days=(end - start).days + 1), start - timedelta(days=1)
+
+
+@app.get("/brand-pulse")
+def live_dashboard():
+    if not authorized():
+        return challenge()
+    try:
+        end = date.fromisoformat(request.args.get("to", date.today().isoformat()))
+        start = date.fromisoformat(request.args.get("from", (end - timedelta(days=29)).isoformat()))
+        mode = request.args.get("compare", "previous")
+        if start > end or (end - start).days > 1826 or mode not in ("previous", "week", "month", "quarter", "year"):
+            raise ValueError()
+    except ValueError:
+        return page("Invalid dates", "<p>Choose a valid date range up to five years.</p>", 400)
+    prior_start, prior_end = preview_comparison(start, end, mode)
+    try:
+        with psycopg.connect(os.environ["BRAND_PULSE_DATABASE_URL"], connect_timeout=15) as db:
+            with db.cursor() as cursor:
+                cursor.execute("SELECT to_regclass('pulse_owned_instagram_snapshots'), to_regclass('pulse_oauth_connections')")
+                snapshots_table, connections_table = cursor.fetchone()
+                connections = []
+                if connections_table:
+                    cursor.execute("SELECT DISTINCT provider FROM pulse_oauth_connections")
+                    connections = [row[0] for row in cursor.fetchall()]
+                periods = []
+                for first, last in ((start, end), (prior_start, prior_end)):
+                    if not snapshots_table:
+                        periods.append((0, None, None, None))
+                        continue
+                    cursor.execute("""SELECT COUNT(*), SUM(likes), SUM(comments), MAX(observed_at)
+                        FROM (SELECT DISTINCT ON (account_id, media_id) media_id, likes, comments, observed_at
+                        FROM pulse_owned_instagram_snapshots
+                        WHERE substring(observed_at,1,10) >= %s AND substring(observed_at,1,10) <= %s
+                        ORDER BY account_id, media_id, observed_at DESC) latest""", (first.isoformat(), last.isoformat()))
+                    periods.append(cursor.fetchone())
+        current, prior = periods
+        # Snapshot samples are not a complete media inventory. Never calculate
+        # growth from differently sampled sets of posts.
+        body = render_template_string("""<p><b>Limited preview · Daily collection is not enabled</b></p>
+        <form method="get"><p><label>From <input name="from" type="date" value="{{ start }}" required></label>
+        <label>To <input name="to" type="date" value="{{ end }}" required></label></p>
+        <p><label>Compare with <select name="compare">{% for value,label in choices %}
+        <option value="{{ value }}" {% if value == mode %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <button>Apply dates</button></p></form>
+        <h2>Instagram — stored test sample</h2>
+        <p>Dates filter when snapshots were collected, not when posts were published. Likes and comments are lifetime counts at collection, not activity within the period.</p>
+        <div style="overflow-x:auto"><table style="width:100%;text-align:left"><thead><tr><th>Metric</th><th>Selected period</th><th>Comparison period</th></tr></thead>
+        <tbody>{% for label,index in [('Sampled posts',0),('Likes on sampled posts',1),('Comments on sampled posts',2)] %}
+        <tr><td>{{ label }}</td><td>{{ current[index] if current[0] and current[index] is not none else 'Unavailable' }}</td>
+        <td>{{ prior[index] if prior[0] and prior[index] is not none else 'Unavailable' }}</td></tr>{% endfor %}</tbody></table></div>
+        <p>Comparison: {{ prior_start }} – {{ prior_end }}. Growth percentages are withheld because the samples may contain different posts.</p>
+        <p>Latest snapshot in selected period: {{ current[3] or 'Unavailable' }}</p>
+        <h2>Source status</h2><ul>
+        <li>Instagram: {{ 'stored sample available' if snapshots_table else 'no stored sample yet' }}; ongoing collection not enabled.</li>
+        <li>TikTok: {{ 'authorization stored; collection not enabled' if 'tiktok' in connections else 'not connected' }}.</li>
+        <li>Google Search Console: {{ 'authorization stored; collection not enabled' if 'google_search_console' in connections else 'not connected' }}.</li>
+        <li>Reddit and public web mentions: not connected.</li></ul>
+        <p>Earned mentions, reach, sentiment and total brand search volume are unavailable. This dashboard does not imply zero mentions or complete coverage.</p>
+        <p><a href="/setup">Manage connections</a></p>""", start=start, end=end, mode=mode,
+            choices=[("previous", "Last comparable period"), ("week", "Previous completed week"), ("month", "Previous completed month"), ("quarter", "Previous completed quarter"), ("year", "Same dates last year")],
+            current=current, prior=prior, prior_start=prior_start, prior_end=prior_end,
+            snapshots_table=snapshots_table, connections=connections)
+        return page("Brand Pulse dashboard", body)
+    except Exception:
+        return page("Data temporarily unavailable", "<p>The private database could not be read. No credentials or sensitive error details are displayed.</p>", 503)
