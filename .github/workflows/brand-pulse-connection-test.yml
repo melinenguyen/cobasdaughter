@@ -1,0 +1,30 @@
+name: Brand Pulse - Instagram database connection test
+
+on:
+  push:
+    branches: [codex/brand-pulse]
+    paths:
+      - agent/brand_pulse_connection_test.py
+      - .github/workflows/brand-pulse-connection-test.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  connection-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: pip install 'requests>=2.31,<3' 'psycopg[binary]>=3.1,<4'
+      - name: Save and verify five owned Instagram post snapshots
+        env:
+          BRAND_PULSE_DATABASE_URL: ${{ secrets.BRAND_PULSE_DATABASE_URL }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ vars.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+        run: python -m agent.brand_pulse_connection_test
