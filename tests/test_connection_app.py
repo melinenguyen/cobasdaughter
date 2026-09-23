@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from urllib.parse import urlparse, parse_qs
 
-from dashboard.connection_app import app
+from dashboard.connection_app import app, GOOGLE_SCOPE
 
 
 class ConnectionTests(unittest.TestCase):
@@ -11,6 +11,7 @@ class ConnectionTests(unittest.TestCase):
         self.env = patch.dict(os.environ, {
             "BRAND_PULSE_PASSWORD": "test-password", "BRAND_PULSE_PUBLIC_URL": "https://test.example",
             "TIKTOK_CLIENT_KEY": "test-client", "TIKTOK_CLIENT_SECRET": "private-client-secret",
+            "GOOGLE_CLIENT_ID": "google-client", "GOOGLE_CLIENT_SECRET": "private-google-secret",
             "BRAND_PULSE_DATABASE_URL": "postgresql://private-db", "BRAND_PULSE_TOKEN_KEY": "private-key"})
         self.env.start()
         self.addCleanup(self.env.stop)
@@ -69,6 +70,52 @@ class ConnectionTests(unittest.TestCase):
         self.assertNotIn("secret-access", saved[2])
         self.assertNotIn("secret-refresh", saved[2])
         self.assertEqual(self.client.get("/oauth/tiktok/callback", query_string={"state": state, "code": "private-code"}, base_url="https://test.example").status_code, 400)
+
+    def google_start(self):
+        self.client.get("/setup", headers=self.auth, base_url="https://test.example")
+        with self.client.session_transaction(base_url="https://test.example") as sess:
+            csrf = sess["form_token"]
+        response = self.client.post("/connect/google", headers=self.auth,
+            data={"csrf": csrf}, base_url="https://test.example")
+        self.assertEqual(response.status_code, 303)
+        params = parse_qs(urlparse(response.location).query)
+        self.assertEqual(params["scope"], [GOOGLE_SCOPE])
+        self.assertEqual(params["code_challenge_method"], ["S256"])
+        return params["state"][0]
+
+    @patch("dashboard.connection_app.psycopg.connect")
+    @patch("dashboard.connection_app.requests.post")
+    def test_google_readonly_validates_property_and_encrypts(self, post, connect):
+        state = self.google_start()
+        token = MagicMock()
+        token.json.return_value = {"access_token": "google-access", "refresh_token": "google-refresh", "scope": GOOGLE_SCOPE}
+        query = MagicMock(status_code=200)
+        post.side_effect = [token, query]
+        response = self.client.get("/oauth/google/callback", query_string={"state": state, "code": "code"}, base_url="https://test.example")
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.location, "/connected/google")
+        self.assertIn("sc-domain%3Acobasdaughter.com/searchAnalytics/query", post.call_args.args[0])
+        cursor = connect.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value
+        stored = cursor.execute.call_args.args[1]
+        self.assertEqual(stored[0], "google_search_console")
+        self.assertNotIn("google-refresh", stored[2])
+        self.assertEqual(self.client.get("/oauth/google/callback", query_string={"state": state, "code": "code"}, base_url="https://test.example").status_code, 400)
+
+    @patch("dashboard.connection_app.psycopg.connect")
+    @patch("dashboard.connection_app.requests.post")
+    def test_google_denied_property_does_not_save(self, post, connect):
+        state = self.google_start()
+        token = MagicMock()
+        token.json.return_value = {"access_token": "google-access", "refresh_token": "google-refresh", "scope": GOOGLE_SCOPE}
+        post.side_effect = [token, MagicMock(status_code=403)]
+        response = self.client.get("/oauth/google/callback", query_string={"state": state, "code": "code"}, base_url="https://test.example")
+        self.assertEqual(response.status_code, 403)
+        connect.assert_not_called()
+        self.assertNotIn(b"google-access", response.data)
+
+    def test_google_requires_browser_state_and_csrf(self):
+        self.assertEqual(self.client.post("/connect/google", headers=self.auth).status_code, 400)
+        self.assertEqual(self.client.get("/oauth/google/callback?state=bad&code=x").status_code, 400)
 
 
 if __name__ == "__main__":

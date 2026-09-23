@@ -6,7 +6,8 @@ import json
 import os
 import secrets
 import time
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode, urlparse, quote
+from datetime import date, timedelta
 
 import psycopg
 import requests
@@ -39,7 +40,7 @@ def page(title, body, status=200):
 def protect(response):
     response.headers.update({"Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
         "X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https://www.tiktok.com; base-uri 'none'; frame-ancestors 'none'"})
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https://www.tiktok.com https://accounts.google.com; base-uri 'none'; frame-ancestors 'none'"})
     return response
 
 
@@ -65,7 +66,7 @@ def challenge():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "connection-session-v2"}
+    return {"status": "ok", "version": "google-readonly-v1"}
 
 
 @app.get("/")
@@ -100,6 +101,17 @@ def setup():
     {% else %}<p>Hosting is ready. Add the TikTok sandbox client key and client secret in the host’s environment settings. Never paste them into chat.</p>{% endif %}
     <p>Only the account owner should approve access, on a company-approved device.</p>""",
         callback=callback, configured=configured, csrf=session["form_token"])
+    google_ready = all(os.getenv(k) for k in ("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "BRAND_PULSE_DATABASE_URL", "BRAND_PULSE_TOKEN_KEY"))
+    body += render_template_string("""<hr><h2>Google Search Console</h2>
+    <p>Connect the Google account that can already view cobasdaughter.com search performance.
+    Read-only access; no ownership changes or service-account invitation.</p>
+    <p>Google redirect URI: <code>{{ callback }}</code></p>
+    {% if ready %}<form method="post" action="/connect/google">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><button>Connect Google — read only</button></form>
+    {% else %}<p>Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in hosting settings to enable this connection.</p>{% endif %}
+    <p>External Google apps in Testing usually require reauthorization after seven days.
+    Connecting does not enable daily collection automatically.</p>""", ready=google_ready,
+        callback=origin() + "/oauth/google/callback", csrf=session["form_token"])
     return page("Connection setup", body)
 
 
@@ -169,3 +181,82 @@ def connected():
         return redirect("/setup")
     return page("TikTok authorization saved", "<p>Your authorization was stored encrypted in the private database. "
         "Video collection still needs to be enabled and tested. You can revoke access in TikTok’s app permissions.</p>")
+
+
+GOOGLE_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
+
+
+@app.post("/connect/google")
+def connect_google():
+    if not authorized():
+        return challenge()
+    expected = session.get("form_token", "")
+    if not expected or not hmac.compare_digest(expected, request.form.get("csrf", "")):
+        return page("Setup session unavailable", '<p>Open <a href="/setup">private setup</a> in the same browser with cookies enabled.</p>', 400)
+    if not all(os.getenv(k) for k in ("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "BRAND_PULSE_DATABASE_URL", "BRAND_PULSE_TOKEN_KEY")):
+        return page("Google setup needed", "<p>Add the Google connection settings in Render.</p>", 503)
+    state = secrets.token_urlsafe(32)
+    verifier = secrets.token_urlsafe(64)
+    session.update(google_state=state, google_started=time.time(), google_verifier=verifier)
+    challenge_value = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).decode().rstrip("=")
+    return redirect("https://accounts.google.com/o/oauth2/v2/auth?" + urlencode({
+        "client_id": os.environ["GOOGLE_CLIENT_ID"], "redirect_uri": origin() + "/oauth/google/callback",
+        "response_type": "code", "scope": GOOGLE_SCOPE, "access_type": "offline",
+        "prompt": "consent select_account", "state": state,
+        "code_challenge": challenge_value, "code_challenge_method": "S256"}), code=303)
+
+
+@app.get("/oauth/google/callback")
+def google_callback():
+    state = session.pop("google_state", "")
+    started = session.pop("google_started", 0)
+    verifier = session.pop("google_verifier", "")
+    if not state or not verifier or not hmac.compare_digest(state, request.args.get("state", "")) or time.time() - started > 600:
+        return page("Google connection not accepted", "<p>The browser session is missing or expired. Start again from private setup.</p>", 400)
+    if request.args.get("error") or not request.args.get("code"):
+        return page("Google not connected", "<p>Authorization was cancelled or not granted. No connection was saved.</p>", 400)
+    stage = "Google token exchange"
+    try:
+        result = requests.post("https://oauth2.googleapis.com/token", data={
+            "client_id": os.environ["GOOGLE_CLIENT_ID"], "client_secret": os.environ["GOOGLE_CLIENT_SECRET"],
+            "redirect_uri": origin() + "/oauth/google/callback", "grant_type": "authorization_code",
+            "code": request.args["code"], "code_verifier": verifier}, timeout=25)
+        result.raise_for_status()
+        tokens = result.json()
+        if not tokens.get("access_token") or not tokens.get("refresh_token") or GOOGLE_SCOPE not in tokens.get("scope", "").split():
+            return page("Google permission incomplete", "<p>Read-only Search Console access and offline authorization are required. Reconnect and approve that permission.</p>", 400)
+        stage = "Search Console performance access"
+        site = os.getenv("GSC_SITE_URL", "sc-domain:cobasdaughter.com")
+        # Actually query the target property before claiming that access works.
+        end = date.today() - timedelta(days=3)
+        check = requests.post("https://www.googleapis.com/webmasters/v3/sites/" + quote(site, safe="") + "/searchAnalytics/query",
+            headers={"Authorization": "Bearer " + tokens["access_token"]},
+            json={"startDate": (end - timedelta(days=6)).isoformat(), "endDate": end.isoformat(), "rowLimit": 1}, timeout=25)
+        if check.status_code in (401, 403):
+            return page("Google access needs attention", "<p>No connection was saved. Confirm the Search Console API is enabled in your Google Cloud project and that the selected Google account can read this exact property.</p>", 403)
+        check.raise_for_status()
+        stage = "encrypted database storage"
+        tokens["site_url"] = site
+        tokens["obtained_at"] = time.time()
+        key = base64.urlsafe_b64encode(hashlib.sha256(os.environ["BRAND_PULSE_TOKEN_KEY"].encode()).digest())
+        encrypted = Fernet(key).encrypt(json.dumps(tokens).encode()).decode()
+        with psycopg.connect(os.environ["BRAND_PULSE_DATABASE_URL"], connect_timeout=15) as db:
+            with db.cursor() as cursor:
+                cursor.execute("""CREATE TABLE IF NOT EXISTS pulse_oauth_connections (
+                    provider TEXT NOT NULL, account_id TEXT NOT NULL, encrypted_tokens TEXT NOT NULL,
+                    updated_at DOUBLE PRECISION NOT NULL, PRIMARY KEY(provider, account_id))""")
+                cursor.execute("""INSERT INTO pulse_oauth_connections VALUES (%s,%s,%s,%s)
+                    ON CONFLICT(provider,account_id) DO UPDATE SET encrypted_tokens=EXCLUDED.encrypted_tokens,
+                    updated_at=EXCLUDED.updated_at""", ("google_search_console", site, encrypted, time.time()))
+        session["google_connected"] = True
+        return redirect("/connected/google", code=303)
+    except Exception:
+        # Only a fixed stage name is exposed, never provider errors or tokens.
+        return page("Google connection not saved", render_template_string("<p>The connection failed at {{ stage }}. No sensitive error details are displayed.</p>", stage=stage), 502)
+
+
+@app.get("/connected/google")
+def google_connected():
+    if not session.pop("google_connected", False):
+        return redirect("/setup")
+    return page("Google authorization saved", "<p>Read-only access to the configured Search Console property's performance API was tested successfully. Authorization is stored encrypted.</p><p>Daily collection still needs to be enabled. No Search Console users or settings were changed.</p>")
