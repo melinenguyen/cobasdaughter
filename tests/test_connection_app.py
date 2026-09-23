@@ -32,6 +32,27 @@ class ConnectionTests(unittest.TestCase):
         self.assertEqual(self.client.get("/oauth/tiktok/callback?code=x&state=bad").status_code, 400)
         self.assertEqual(self.client.post("/connect/tiktok", headers=self.auth).status_code, 400)
 
+    def test_setup_reload_does_not_invalidate_existing_form(self):
+        self.client.get("/setup", headers=self.auth, base_url="https://test.example")
+        with self.client.session_transaction(base_url="https://test.example") as sess:
+            first_token = sess["form_token"]
+        self.client.get("/setup", headers=self.auth, base_url="https://test.example")
+        response = self.client.post("/connect/tiktok", headers=self.auth,
+            data={"csrf": first_token}, base_url="https://test.example")
+        self.assertEqual(response.status_code, 303)
+        self.assertTrue(response.location.startswith("https://www.tiktok.com/v2/auth/authorize/?"))
+        self.assertIn("form-action 'self' https://www.tiktok.com", response.headers["Content-Security-Policy"])
+
+    def test_missing_cookie_is_explained_and_invalid_form_keeps_session(self):
+        response = self.client.post("/connect/tiktok", headers=self.auth)
+        self.assertIn(b"Browser session unavailable", response.data)
+        self.client.get("/setup", headers=self.auth, base_url="https://test.example")
+        response = self.client.post("/connect/tiktok", headers=self.auth,
+            data={"csrf": "wrong"}, base_url="https://test.example")
+        self.assertEqual(response.status_code, 400)
+        with self.client.session_transaction(base_url="https://test.example") as sess:
+            self.assertTrue(sess.get("form_token"))
+
     @patch("dashboard.connection_app.psycopg.connect")
     @patch("dashboard.connection_app.requests.post")
     def test_authorization_encrypts_and_prevents_replay(self, post, connect):

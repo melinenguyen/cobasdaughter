@@ -39,7 +39,7 @@ def page(title, body, status=200):
 def protect(response):
     response.headers.update({"Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
         "X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"})
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https://www.tiktok.com; base-uri 'none'; frame-ancestors 'none'"})
     return response
 
 
@@ -65,7 +65,7 @@ def challenge():
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "version": "connection-session-v2"}
 
 
 @app.get("/")
@@ -83,7 +83,10 @@ def setup():
         return challenge()
     if not app.secret_key:
         return page("Setup needed", "<p>Configure the session key in hosting settings.</p>", 503)
-    session["form_token"] = secrets.token_urlsafe(32)
+    # Keep a browser-bound token stable across reloads/tabs. Rotating on every
+    # GET invalidated forms still open in the user's other setup tab.
+    if "form_token" not in session:
+        session["form_token"] = secrets.token_urlsafe(32)
     try:
         callback = origin() + "/oauth/tiktok/callback"
     except ValueError:
@@ -104,9 +107,16 @@ def setup():
 def connect():
     if not authorized():
         return challenge()
-    expected = session.pop("form_token", "")
-    if not expected or not hmac.compare_digest(expected, request.form.get("csrf", "")):
-        return page("Please retry", '<p>Open <a href="/setup">private setup</a> again.</p>', 400)
+    expected = session.get("form_token", "")
+    if not expected:
+        return page("Browser session unavailable", '<p>The browser did not return a valid session cookie. '
+            'Open this site directly in Safari or Chrome on the approved device and allow cookies for this site. '
+            'Do not change your passwords or API keys.</p><p>If this continues in a normal browser, '
+            'the administrator should check that the hosting session key is stable.</p>'
+            '<p><a href="/setup">Open private setup</a></p>', 400)
+    if not hmac.compare_digest(expected, request.form.get("csrf", "")):
+        return page("Setup page is out of date", '<p>Another session replaced this form. '
+            'Close other setup tabs and <a href="/setup">open private setup</a> once.</p>', 400)
     if not all(os.getenv(k) for k in ("TIKTOK_CLIENT_KEY", "TIKTOK_CLIENT_SECRET", "BRAND_PULSE_DATABASE_URL", "BRAND_PULSE_TOKEN_KEY")):
         return page("Setup needed", "<p>Connection settings are incomplete.</p>", 503)
     state = secrets.token_urlsafe(32)
@@ -115,7 +125,7 @@ def connect():
     params = {"client_key": os.environ["TIKTOK_CLIENT_KEY"], "response_type": "code",
         "scope": "user.info.basic,user.info.stats,video.list", "state": state,
         "redirect_uri": origin() + "/oauth/tiktok/callback"}
-    return redirect("https://www.tiktok.com/v2/auth/authorize/?" + urlencode(params))
+    return redirect("https://www.tiktok.com/v2/auth/authorize/?" + urlencode(params), code=303)
 
 
 @app.get("/oauth/tiktok/callback")
