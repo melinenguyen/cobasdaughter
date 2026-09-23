@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: cobasdaughter-brand-pulse
+    runtime: python
+    plan: free
+    branch: codex/brand-pulse
+    buildCommand: pip install -r requirements-hosting.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --access-logfile /dev/null --workers 1 dashboard.connection_app:app
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: BRAND_PULSE_SESSION_KEY
+        generateValue: true
+      - key: BRAND_PULSE_TOKEN_KEY
+        generateValue: true
+      - key: BRAND_PULSE_PASSWORD
+        generateValue: true
+      - key: BRAND_PULSE_DATABASE_URL
+        sync: false
