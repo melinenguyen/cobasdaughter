@@ -1,0 +1,505 @@
+{
+  "report_date": "2026-09-25",
+  "executive_summary": "Taylor Swift's 'The Life of a Showgirl: The Encore' is dominating every platform RIGHT NOW — 'Cleveland' lyrics about Travis Kelce are viral. Chanel just named a new global makeup head; equestrian season opens in 6 days.",
+  "cobas_daughter_spotlight": {
+    "top_opportunity": "Taylor Swift 'Cleveland' / Showgirl Encore drop is peak virality right now — piggyback with glamour-meets-equestrian editorial content immediately.",
+    "equestrian_angle": "USHJA Hunter Derby Championship ends in 5 days — fall show season content window is closing fast.",
+    "beauty_body_care_angle": "Variety's Power of Women gift bag featured Goop Skincare and Tarte — position CoBa's Daughter as the equestrian woman's luxury body care answer.",
+    "cultural_moment": "Taylor Swift's Travis Kelce love song 'Cleveland' is breaking the internet — aspirational romance narrative aligns with CoBa's brand world.",
+    "brand_to_watch": "Chanel just appointed Lucia Pieroni as global makeup head — signals a new Chanel beauty era; watch for aesthetic pivot and counter-position now."
+  },
+  "top_trends": [
+    {
+      "rank": 1,
+      "trend_name": "Taylor Swift Showgirl Encore",
+      "category": "Pop Culture",
+      "virality_score": 9.8,
+      "brand_relevance_score": 7.5,
+      "brand_relevance_reason": "Swift's romantic glamour aesthetic and aspirational femininity maps perfectly onto CoBa's Daughter's woman.",
+      "signal_sources": [
+        "Variety",
+        "Hypebeast",
+        "Just Jared",
+        "Billboard"
+      ],
+      "what_is_it": "'The Life of a Showgirl: The Encore' dropped with 4 new tracks including viral 'Cleveland' about Travis Kelce.",
+      "why_it_matters": "Taylor dominates 24x in today's media signals — this is the single biggest cultural conversation happening right now.",
+      "heat_level": "Peaking Fast",
+      "urgency": "Post Today",
+      "window": "24 hours",
+      "key_hashtags": [
+        "#TaylorSwift",
+        "#TheLifeOfAShowgirl",
+        "#Cleveland",
+        "#Swifties"
+      ],
+      "content_angle": "Glamour that doesn't quit — from the barn to the spotlight, a showgirl knows her power.",
+      "tactics": {
+        "post_now": [
+          "Reel: 'Our kind of showgirl wears riding boots and red lip — no apologies.'",
+          "Carousel: equestrian glamour flat lay soundtracked to 'Cleveland' audio."
+        ],
+        "ugc_brief": "Equestrian creators: 'Get ready with me for the show ring' using Showgirl Encore audio.",
+        "asset_creation": "Editorial still: riding crop, luxury beauty products, Taylor-era sequin scarf draped over saddle.",
+        "seeding": "Seed to equestrian lifestyle micro-influencers who are also known Swifties.",
+        "caption_hooks": [
+          "She rides. She glows. She's the whole show.",
+          "The encore is always the best part.",
+          "Built for the ring. Dressed for the spotlight."
+        ]
+      }
+    },
+    {
+      "rank": 2,
+      "trend_name": "Fall Horse Show Season",
+      "category": "Equestrian",
+      "virality_score": 7.2,
+      "brand_relevance_score": 9.8,
+      "brand_relevance_reason": "USHJA Hunter Derby closing + fall show season in 6 days is CoBa's Daughter's core cultural moment.",
+      "signal_sources": [
+        "YouTube Equestrian",
+        "Equestrian Calendar"
+      ],
+      "what_is_it": "USHJA Hunter Derby Championship wrapping; fall horse show season beginning in 6 days across the US.",
+      "why_it_matters": "Core audience is actively at shows or prepping — highest purchase intent moment of the equestrian calendar.",
+      "heat_level": "Peaking",
+      "urgency": "Post Today",
+      "window": "6 days",
+      "key_hashtags": [
+        "#HunterDerby",
+        "#USHJA",
+        "#FallHorseShow",
+        "#Equestrian",
+        "#ShowJumping"
+      ],
+      "content_angle": "Your pre-show beauty ritual deserves the same precision as your course walk.",
+      "tactics": {
+        "post_now": [
+          "Reel: 'Show day skin prep for the rider who competes at the highest level.'",
+          "Story poll: 'Are you showing this fall? Drop your division below.'"
+        ],
+        "ugc_brief": "Riders: show us your show-day get-ready routine using CoBa's Daughter products ringside.",
+        "asset_creation": "Flat lay: riding gloves, helmet, bit, alongside luxury skincare and a bold lip product.",
+        "seeding": "Target USHJA competitors and equestrian lifestyle accounts posting from showgrounds this week.",
+        "caption_hooks": [
+          "The horse is ready. Are you?",
+          "Show ring skin starts the night before.",
+          "Ribbon day energy, all week long."
+        ]
+      }
+    },
+    {
+      "rank": 3,
+      "trend_name": "Chanel New Makeup Era",
+      "category": "Beauty",
+      "virality_score": 7.0,
+      "brand_relevance_score": 8.0,
+      "brand_relevance_reason": "Chanel naming Lucia Pieroni reshapes luxury beauty positioning — CoBa's Daughter must know where Chanel is headed.",
+      "signal_sources": [
+        "WWD Beauty"
+      ],
+      "what_is_it": "Chanel appointed Lucia Pieroni to its top global makeup role — signals a creative direction shift.",
+      "why_it_matters": "New leadership at Chanel Beauty means aesthetic pivots are coming; counter-program before the noise begins.",
+      "heat_level": "Emerging",
+      "urgency": "Post This Week",
+      "window": "7 days",
+      "key_hashtags": [
+        "#ChanelBeauty",
+        "#LuxuryBeauty",
+        "#MakeupArtist",
+        "#BeautyNews"
+      ],
+      "content_angle": "While luxury houses reset, the equestrian woman already knows her beauty signature.",
+      "tactics": {
+        "post_now": [
+          "Editorial carousel: 'The beauty look that never needs a rebrand — meet the equestrian aesthetic.'",
+          "Reel: effortless no-makeup makeup look inspired by countryside luxury."
+        ],
+        "ugc_brief": "Creators: show your 'signature equestrian beauty look' — the one that outlasts trends.",
+        "asset_creation": "Clean, Chanel-adjacent visual: neutral palette, leather, heritage equestrian props.",
+        "seeding": "Brief beauty editors who cover luxury brand leadership changes.",
+        "caption_hooks": [
+          "Some aesthetics are timeless.",
+          "Her beauty routine predates every trend cycle.",
+          "Effortless isn't accidental."
+        ]
+      }
+    },
+    {
+      "rank": 4,
+      "trend_name": "Variety Power of Women Beauty",
+      "category": "Body Care",
+      "virality_score": 6.5,
+      "brand_relevance_score": 8.5,
+      "brand_relevance_reason": "Goop Skincare and Tarte in Variety's Power of Women gift bag signals luxury wellness body care is a prestige signal.",
+      "signal_sources": [
+        "Variety"
+      ],
+      "what_is_it": "Variety's Power of Women 2026 gift bag included Goop Skincare, Tarte Beauty, and Voluspa Candles.",
+      "why_it_matters": "Gift bag placement signals what luxury women's wellness looks like right now — CoBa's Daughter belongs in this conversation.",
+      "heat_level": "Peaking",
+      "urgency": "Post Today",
+      "window": "48 hours",
+      "key_hashtags": [
+        "#PowerOfWomen",
+        "#LuxurySkincare",
+        "#GoopSkincare",
+        "#WellnessRitual"
+      ],
+      "content_angle": "The woman who rides at dawn deserves a body care ritual as powerful as she is.",
+      "tactics": {
+        "post_now": [
+          "Reel: 'Luxury body care ritual for the woman who does it all — before 7am.'",
+          "Story: 'What's in our power-woman get-ready kit?' product showcase."
+        ],
+        "ugc_brief": "Creators: film your post-ride skin recovery ritual — real, honest, luxurious.",
+        "asset_creation": "Flat lay: CoBa's Daughter body care alongside riding boots and countryside morning aesthetic.",
+        "seeding": "Pitch to editors covering Variety Power of Women gift bag follow-up coverage.",
+        "caption_hooks": [
+          "Power looks like this.",
+          "Her ritual is non-negotiable.",
+          "For the woman who earns her glow."
+        ]
+      }
+    },
+    {
+      "rank": 5,
+      "trend_name": "Heritage Reconstruction Fashion",
+      "category": "Fashion",
+      "virality_score": 6.8,
+      "brand_relevance_score": 7.5,
+      "brand_relevance_reason": "Fred Perry x Craig Green and Whitaker Group x New Balance signal heritage codes being reframed — aligns with CoBa's equestrian heritage aesthetic.",
+      "signal_sources": [
+        "Hypebeast"
+      ],
+      "what_is_it": "Fred Perry x Craig Green capsule and Whitaker Group x New Balance 'Ostrich' leather drop both reframe classic heritage codes.",
+      "why_it_matters": "Heritage reconstruction is the dominant fashion language right now — CoBa's Daughter lives here naturally.",
+      "heat_level": "Peaking",
+      "urgency": "Post This Week",
+      "window": "7 days",
+      "key_hashtags": [
+        "#HeritageStyle",
+        "#QuietLuxury",
+        "#EquestrianFashion",
+        "#CraftedNotFast"
+      ],
+      "content_angle": "Heritage isn't nostalgia. It's the woman who knows exactly who she is.",
+      "tactics": {
+        "post_now": [
+          "Editorial reel: vintage equestrian silhouettes styled for 2026 — heritage with edge.",
+          "Carousel: 'The pieces that never leave our wardrobe — and why.'"
+        ],
+        "ugc_brief": "Fashion-equestrian creators: style a heritage equestrian look for a modern day out.",
+        "asset_creation": "Campaign-style still: worn leather, aged brass hardware, countryside backdrop, modern woman.",
+        "seeding": "Target quiet luxury and heritage fashion micro-communities on Instagram and Pinterest.",
+        "caption_hooks": [
+          "Built to last. Styled to matter.",
+          "Some codes were always right.",
+          "The original quiet luxury wore riding boots."
+        ]
+      }
+    },
+    {
+      "rank": 6,
+      "trend_name": "Walmart Cashmere Mass Luxury",
+      "category": "Cultural Relevancy",
+      "virality_score": 7.5,
+      "brand_relevance_score": 6.5,
+      "brand_relevance_reason": "Walmart's $45 cashmere signals luxury democratization — CoBa's Daughter must reinforce true luxury positioning now.",
+      "signal_sources": [
+        "WWD Fashion"
+      ],
+      "what_is_it": "Walmart launched a $45 Mongolian cashmere sweater, directly targeting the accessible luxury consumer.",
+      "why_it_matters": "When mass retail encroaches on luxury codes, premium brands must articulate authentic value loudly and quickly.",
+      "heat_level": "Peaking Fast",
+      "urgency": "Post Today",
+      "window": "24-48 hours",
+      "key_hashtags": [
+        "#RealLuxury",
+        "#CashmereSweater",
+        "#QuietLuxury",
+        "#InvestInQuality"
+      ],
+      "content_angle": "Some things can't be democratized — the woman who knows, knows.",
+      "tactics": {
+        "post_now": [
+          "Opinion reel: 'Why the equestrian woman doesn't buy luxury at checkout — and what she buys instead.'",
+          "Story: 'Quality you feel. Value you keep.' — heritage product focus."
+        ],
+        "ugc_brief": "Creators: 'Show us your forever piece' — the thing you bought once and will never replace.",
+        "asset_creation": "Tactile close-up content: rich textures, leather, quality materials — make the audience feel the difference.",
+        "seeding": "Seed into r/femalefashionadvice and r/BuyItForLife threads on cashmere and quality investment.",
+        "caption_hooks": [
+          "You get what you invest in.",
+          "Real luxury has a smell, a weight, a history.",
+          "The $45 version exists. So does the right version."
+        ]
+      }
+    }
+  ],
+  "brand_launches_now": [
+    {
+      "brand": "Chanel Beauty",
+      "what": "Chanel named Lucia Pieroni to its top global makeup creative role.",
+      "why_it_matters": "New creative leadership signals upcoming aesthetic shift — watch for new campaign direction within 90 days.",
+      "our_response": "Publish equestrian-meets-luxury beauty editorial now to own the aesthetic space before Chanel resets.",
+      "urgency": "This Week"
+    },
+    {
+      "brand": "Goop Skincare",
+      "what": "Featured in Variety's Power of Women 2026 gift bag alongside Tarte and Voluspa.",
+      "why_it_matters": "Goop is owning the 'powerful woman's wellness ritual' positioning in real time.",
+      "our_response": "Counter-program: CoBa's Daughter is the equestrian woman's luxury body ritual — Goop is for the yoga mat, we're for the paddock.",
+      "urgency": "Now"
+    },
+    {
+      "brand": "Alo",
+      "what": "Alo is the most-mentioned brand in today's signals with 4x frequency across platforms.",
+      "why_it_matters": "Alo is aggressively owning luxury athleisure and wellness lifestyle — adjacent to CoBa's Daughter territory.",
+      "our_response": "Differentiate immediately: CoBa's Daughter is equestrian performance meets beauty ritual — not studio athleisure.",
+      "urgency": "This Week"
+    }
+  ],
+  "hot_hashtags": [
+    {
+      "hashtag": "#HunterDerby",
+      "category": "Equestrian",
+      "posts_signal": "Rising",
+      "how_to_use": "Post show-season beauty and style content today before championship ends."
+    },
+    {
+      "hashtag": "#TaylorSwift",
+      "category": "Pop Culture",
+      "posts_signal": "Viral",
+      "how_to_use": "Attach equestrian-glamour editorial content to Swift's Showgirl Encore audio now."
+    },
+    {
+      "hashtag": "#QuietLuxury",
+      "category": "Fashion",
+      "posts_signal": "High",
+      "how_to_use": "Use in heritage equestrian fashion and body care ritual content this week."
+    },
+    {
+      "hashtag": "#Equestrian",
+      "category": "Equestrian",
+      "posts_signal": "Rising",
+      "how_to_use": "Anchor all fall show season content with this tag for maximum discovery."
+    },
+    {
+      "hashtag": "#PowerOfWomen",
+      "category": "Beauty",
+      "posts_signal": "Rising",
+      "how_to_use": "Attach luxury body care ritual content to Variety's event conversation today."
+    },
+    {
+      "hashtag": "#FallHorseShow",
+      "category": "Equestrian",
+      "posts_signal": "Rising",
+      "how_to_use": "Own this hashtag before the season officially opens in 6 days."
+    }
+  ],
+  "hollywood_pulse": {
+    "top_celebrity_moments": [
+      "Taylor Swift released 4 new tracks on 'The Life of a Showgirl: The Encore' — 'Cleveland' about Travis Kelce is going viral immediately.",
+      "Hannah Einbinder arrested at UN Netanyahu protest — culturally polarizing, high attention volume across Hollywood trades."
+    ],
+    "top_celebrity_looks": [
+      "Taylor Swift's 'Showgirl' era visual identity is all sequins, glamour, and maximalist femininity — dominating mood boards right now.",
+      "Variety Power of Women 2026 attendees receiving luxury beauty gift bags — watch for celebrity unboxing content today."
+    ],
+    "brand_tie_in_opportunity": "Use Taylor Swift's 'showgirl' glamour narrative to position CoBa's Daughter as the equestrian woman's version — 'the showgirl who competes before curtain call.'"
+  },
+  "equestrian_pulse": {
+    "trending_topics": [
+      "Chio Aachen Opening Ceremony 2025 — European grand prix energy flooding equestrian feeds",
+      "Fall show season prep — riders sharing grooming, beauty, and style content ahead of shows"
+    ],
+    "crossover_opportunity": "Post-show-ring beauty recovery — the luxury skin and body care ritual after a full day competing outdoors is an untapped content goldmine.",
+    "creator_profile": "Elite equestrian competitor who also documents her beauty and lifestyle — think Bethany Didtrek energy with luxury beauty crossover."
+  },
+  "weekly_content_calendar_suggestions": [
+    {
+      "day": "Monday",
+      "theme": "Show Season Prep",
+      "format": "Reel",
+      "angle": "Pre-show skin ritual: the 5-step routine before you enter the ring."
+    },
+    {
+      "day": "Tuesday",
+      "theme": "Heritage Fashion",
+      "format": "Carousel",
+      "angle": "The equestrian wardrobe pieces that outlast every trend cycle."
+    },
+    {
+      "day": "Wednesday",
+      "theme": "Taylor Swift Moment",
+      "format": "Reel",
+      "angle": "The showgirl energy of the woman who rides — glamour is not optional."
+    },
+    {
+      "day": "Thursday",
+      "theme": "Body Care Ritual",
+      "format": "GRWM Reel",
+      "angle": "Post-ride body care ritual for the woman who demands more from her skin."
+    },
+    {
+      "day": "Friday",
+      "theme": "Show Ring Glam",
+      "format": "Editorial Still",
+      "angle": "Competition day beauty — effortless, precise, unforgettable."
+    },
+    {
+      "day": "Saturday",
+      "theme": "Fall Show Season",
+      "format": "UGC Repost",
+      "angle": "Show day content from the community — tag us from the ring."
+    },
+    {
+      "day": "Sunday",
+      "theme": "Quiet Luxury Lifestyle",
+      "format": "Carousel",
+      "angle": "Sunday stable ritual — what rest looks like when you live for the horse."
+    }
+  ],
+  "creator_brief_of_the_week": {
+    "concept": "The Show Ring GRWM: luxury beauty ritual meets fall horse show prep — real, aspirational, unapologetic.",
+    "target_creator_profile": "Equestrian competitor, ages 22-35, who also posts beauty and lifestyle content — must own a horse.",
+    "deliverable": "90-second Reel: pre-show morning routine from barn to bridle path, featuring CoBa's Daughter body and beauty products.",
+    "hook": "'Most people don't know what it takes to walk into that ring looking like this.'",
+    "dos": [
+      "Show real barn environment — mud, horses, early morning light.",
+      "Include genuine skin and body care steps post-outdoor prep."
+    ],
+    "donts": [
+      "Don't make it look like a studio shoot — authenticity is everything.",
+      "Don't skip the horse — the horse must be in the frame."
+    ]
+  },
+  "viral_pulse": {
+    "viral_products": [
+      "Goop Skincare — Variety Power of Women placement is driving aspirational luxury wellness interest today.",
+      "Walmart $45 Cashmere — mass luxury accessibility conversation is dominating fashion discourse right now."
+    ],
+    "viral_moments": [
+      "Taylor Swift 'Cleveland' lyrics revealing Travis Kelce details — internet is dissecting every line in real time.",
+      "Hannah Einbinder UN protest arrest — Hollywood meets political activism, high conversation volume."
+    ],
+    "viral_social_trends": [
+      "Transition makeup + dance videos dominating YouTube How-to — beauty transformation format is highest-performing style content right now.",
+      "Horse fail and horse aesthetic edits both trending on YouTube Shorts — equestrian content has dual viral lanes: humor and beauty."
+    ],
+    "community_conversations": [
+      "Equestrian community is actively sharing fall show season prep content — rider lifestyle and ring-ready beauty is peaking.",
+      "Taylor Swift fan communities are creating aesthetic content around 'Showgirl' era — glamour and aspiration are the dominant emotional notes."
+    ]
+  },
+  "cultural_events_now": [
+    {
+      "event": "USHJA Hunter Derby Championship",
+      "relevance": "CoBa's Daughter's core audience is competing or attending — show-day content is highest relevance this week.",
+      "hashtags": [
+        "#HunterDerby",
+        "#USHJA",
+        "#Equestrian"
+      ],
+      "urgency": "Now"
+    },
+    {
+      "event": "Fall Horse Show Season Opens",
+      "relevance": "Own 'fall show season' content space before competitors saturate with generic equestrian content.",
+      "hashtags": [
+        "#FallHorseShow",
+        "#ShowSeason",
+        "#Equestrian"
+      ],
+      "urgency": "This Week"
+    },
+    {
+      "event": "Hispanic Heritage Month",
+      "relevance": "Feature Latina equestrians and beauty rituals — Sarelly brand ($15M sales) is a Latin beauty crossover signal.",
+      "hashtags": [
+        "#HispanicHeritageMonth",
+        "#LatinaEquestrian",
+        "#Latinx"
+      ],
+      "urgency": "This Month"
+    },
+    {
+      "event": "Breast Cancer Awareness Month",
+      "relevance": "Begin seeding awareness content now — 6 days to align body care ritual with empowerment narrative.",
+      "hashtags": [
+        "#BreastCancerAwareness",
+        "#PinkRibbon",
+        "#WomensWellness"
+      ],
+      "urgency": "This Week"
+    }
+  ],
+  "trend_watch": {
+    "emerging_to_watch": [
+      "Icelandic horse and small horse content is gaining traction — niche equestrian aesthetic with viral humor angle.",
+      "Sarelly beauty brand expanding from Mexico to US at $15M projected sales — Latin luxury beauty is emerging fast."
+    ],
+    "fading_trends": [
+      "Generic 'quiet luxury' beige aesthetics — market is saturated; pivot to equestrian-specific heritage codes instead."
+    ],
+    "predicted_next_week": "Taylor Swift's Showgirl Encore will generate a wave of glamour-meets-lifestyle aesthetic content — equestrian brands that move now will own the crossover."
+  },
+  "reddit_seeding": [
+    {
+      "subreddit": "r/Equestrian",
+      "thread_topic": "Fall show season prep — what do riders do for skin and hair after back-to-back outdoor show days?",
+      "why_we_belong": "CoBa's Daughter understands the specific damage of wind, sun, and helmet-hair that serious competitors face.",
+      "angle": "Share genuine knowledge about skin barrier recovery after extended outdoor showing — practical, experienced advice.",
+      "example_comment_direction": "Talk about how back-to-back show days in the sun and wind strip the skin barrier — share a real recovery routine focused on rehydration and SPF habits most riders overlook.",
+      "seed_type": "Share Experience",
+      "urgency": "Post Today"
+    },
+    {
+      "subreddit": "r/Horses",
+      "thread_topic": "What do you actually wear and use on show day — real rider routines vs. what's glamourized online?",
+      "why_we_belong": "Authentic equestrian lifestyle expertise bridges the gap between aspirational content and real barn life.",
+      "angle": "Engage honestly about the reality of looking put-together at a show when you've been up since 4am mucking stalls.",
+      "example_comment_direction": "Share the honest reality of show-day beauty: what actually stays on, what products survive a full day outdoors, and why most 'equestrian beauty' content misses the mark.",
+      "seed_type": "Validate",
+      "urgency": "Post Today"
+    },
+    {
+      "subreddit": "r/SkincareAddiction",
+      "thread_topic": "SPF and skin protection for people who spend extended time outdoors — equestrians, hikers, outdoor workers.",
+      "why_we_belong": "Equestrian skin care needs are genuinely unique — UV exposure plus physical activity plus hat and helmet compression.",
+      "angle": "Provide specific, expert-level advice on skin protection for outdoor athletes who are also beauty-conscious.",
+      "example_comment_direction": "Explain why standard SPF routines fail equestrians — wind acceleration, helmet band pressure points, and sweat patterns require a fundamentally different approach to barrier protection.",
+      "seed_type": "Answer",
+      "urgency": "Post Today"
+    },
+    {
+      "subreddit": "r/femalefashionadvice",
+      "thread_topic": "Heritage fashion and quiet luxury — what brands are getting it right and why does equestrian aesthetic keep coming back?",
+      "why_we_belong": "The equestrian aesthetic is the original quiet luxury — CoBa's Daughter audience lives this authentically.",
+      "angle": "Discuss why equestrian fashion codes feel relevant again without it reading as trend-chasing — it's about authenticity of lifestyle.",
+      "example_comment_direction": "Make the case that equestrian style resonates because it's genuinely functional first — the heritage codes come from actual use, not aesthetic appropriation, which is why it outlasts every trend cycle.",
+      "seed_type": "Share Experience",
+      "urgency": "This Week"
+    },
+    {
+      "subreddit": "r/selfcare",
+      "thread_topic": "Post-workout body care routines — what do women who do intense physical activity do to recover their skin and body?",
+      "why_we_belong": "Equestrian riding is intense, full-body physical activity with specific skin and muscle recovery needs.",
+      "angle": "Share a genuine post-ride body care recovery perspective — not spa wellness, but real athlete recovery that also feels luxurious.",
+      "example_comment_direction": "Describe what skin and body recovery actually looks like after three hours on horseback — the muscle fatigue, the sun and wind exposure, and why the recovery ritual becomes as important as the ride itself.",
+      "seed_type": "Share Experience",
+      "urgency": "This Week"
+    },
+    {
+      "subreddit": "r/Dressage",
+      "thread_topic": "Preparing for fall show season — what's your pre-competition routine beyond horse prep?",
+      "why_we_belong": "Dressage competitors are the most presentation-conscious equestrians — beauty and turnout matter at elite level.",
+      "angle": "Validate that caring about your own appearance and skin at competitions is part of the sport's tradition and discipline.",
+      "example_comment_direction": "Point out that the best competitors at international level treat their own presentation with the same rigor as their horse's turnout — it's not vanity, it's part of the discipline's culture.",
+      "seed_type": "Validate",
+      "urgency": "Post Today"
+    }
+  ],
+  "ai_model": "claude-sonnet-4-6"
+}
