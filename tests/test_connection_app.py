@@ -123,12 +123,34 @@ class ConnectionTests(unittest.TestCase):
         cursor = connect.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value
         cursor.fetchone.side_effect = [("snapshots", "connections"), (5, 20, 6, "2026-09-23"), (0, None, None, None)]
         cursor.fetchall.return_value = [("tiktok",), ("google_search_console",)]
-        response = self.client.get("/brand-pulse?from=2026-09-01&to=2026-09-30", headers=self.auth)
+        response = self.client.get("/brand-pulse/preview?from=2026-09-01&to=2026-09-30", headers=self.auth)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Daily collection is not enabled", response.data)
         self.assertIn(b"Unavailable", response.data)
         self.assertNotIn(b"encrypted_tokens", response.data)
-        self.assertEqual(self.client.get("/brand-pulse?from=bad", headers=self.auth).status_code, 400)
+        self.assertEqual(self.client.get("/api/pulse/data?from=bad", headers=self.auth).status_code, 400)
+
+    @patch('dashboard.connection_app.pulse_data.read_dashboard')
+    def test_visual_data_auth_errors_and_no_secret_output(self, read):
+        self.assertEqual(self.client.get('/api/pulse/data').status_code, 401)
+        read.return_value = {'search': [], 'tiktok': [], 'instagram': [], 'runs': []}
+        response = self.client.get('/api/pulse/data?from=2026-09-01&to=2026-09-30', headers=self.auth)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['prior_to'], '2026-08-31')
+        self.assertEqual(response.json['current']['search'], [])
+        read.side_effect = RuntimeError('secret-password')
+        response = self.client.get('/api/pulse/data', headers=self.auth)
+        self.assertEqual(response.status_code, 503)
+        self.assertNotIn(b'secret-password', response.data)
+
+    @patch('dashboard.connection_app.threading.Thread')
+    def test_refresh_requires_auth_and_csrf(self, thread):
+        self.assertEqual(self.client.post('/api/pulse/refresh').status_code, 401)
+        self.assertEqual(self.client.post('/api/pulse/refresh', headers=self.auth).status_code, 400)
+        thread.assert_not_called()
+        response = self.client.get('/brand-pulse', headers=self.auth)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Brand-search visibility', response.data)
 
 
 if __name__ == "__main__":

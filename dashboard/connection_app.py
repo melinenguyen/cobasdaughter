@@ -6,13 +6,15 @@ import json
 import os
 import secrets
 import time
+import threading
 from urllib.parse import urlencode, urlparse, quote
 from datetime import date, timedelta
 
 import psycopg
 import requests
 from cryptography.fernet import Fernet
-from flask import Flask, Response, redirect, render_template_string, request, session
+from flask import Flask, Response, redirect, render_template, render_template_string, request, session
+from dashboard import pulse_data
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("BRAND_PULSE_SESSION_KEY")
@@ -40,7 +42,7 @@ def page(title, body, status=200):
 def protect(response):
     response.headers.update({"Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
         "X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https://www.tiktok.com https://accounts.google.com; base-uri 'none'; frame-ancestors 'none'"})
+        "Content-Security-Policy": "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self'; form-action 'self' https://www.tiktok.com https://accounts.google.com; base-uri 'none'; frame-ancestors 'none'"})
     return response
 
 
@@ -66,7 +68,7 @@ def challenge():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "dashboard-preview-v1"}
+    return {"status": "ok", "version": "visual-dashboard-v2"}
 
 
 @app.get("/")
@@ -74,8 +76,8 @@ def home():
     return page("Brand Pulse", "<p>A private measurement tool for CoBa’s Daughter’s authorized social accounts.</p>"
         "<p>The TikTok integration is in setup. It requests profile identity, account statistics and public videos "
         "from accounts whose owners authorize access. It does not publish posts or read private messages.</p>"
-        "<p>This connection does not provide platform-wide earned mentions. Daily collection and the reporting dashboard "
-        "are not enabled on this service yet.</p><p><a href='/brand-pulse'>Open private dashboard</a></p>")
+        "<p>This connection does not provide platform-wide earned mentions. The private dashboard supports "
+        "on-demand collection; automatic daily collection is not enabled.</p><p><a href='/brand-pulse'>Open private dashboard</a></p>")
 
 
 @app.get("/setup")
@@ -281,7 +283,7 @@ def preview_comparison(start, end, mode):
     return start - timedelta(days=(end - start).days + 1), start - timedelta(days=1)
 
 
-@app.get("/brand-pulse")
+@app.get("/brand-pulse/preview")
 def live_dashboard():
     if not authorized():
         return challenge()
@@ -344,3 +346,63 @@ def live_dashboard():
         return page("Brand Pulse dashboard", body)
     except Exception:
         return page("Data temporarily unavailable", "<p>The private database could not be read. No credentials or sensitive error details are displayed.</p>", 503)
+
+
+@app.get('/brand-pulse')
+def visual_dashboard():
+    if not authorized():
+        return challenge()
+    if not app.secret_key:
+        return page('Setup needed', '<p>Configure the session key in hosting settings.</p>', 503)
+    session.setdefault('form_token', secrets.token_urlsafe(32))
+    return render_template('pulse_live.html', csrf=session['form_token'])
+
+
+@app.get('/api/pulse/data')
+def visual_data():
+    if not authorized():
+        return challenge()
+    try:
+        end = date.fromisoformat(request.args.get('to', str(date.today())))
+        start = date.fromisoformat(request.args.get('from', str(end - timedelta(days=29))))
+        mode = request.args.get('compare', 'previous')
+        if start > end or (end - start).days > 450 or mode not in ('previous', 'week', 'month', 'quarter', 'year'):
+            raise ValueError()
+    except ValueError:
+        return {'error': 'Choose a valid range of up to 450 days.'}, 400
+    prior_start, prior_end = preview_comparison(start, end, mode)
+    try:
+        return {'current': pulse_data.read_dashboard(start, end),
+                'prior': pulse_data.read_dashboard(prior_start, prior_end),
+                'from': str(start), 'to': str(end),
+                'prior_from': str(prior_start), 'prior_to': str(prior_end)}
+    except Exception:
+        return {'error': 'Database unavailable. No values have been substituted with zero.'}, 503
+
+
+_sync_guard = threading.Lock()
+
+
+def _collect_guarded():
+    try:
+        pulse_data.collect()
+    finally:
+        _sync_guard.release()
+
+
+@app.post('/api/pulse/refresh')
+def refresh_data():
+    if not authorized():
+        return challenge()
+    expected = session.get('form_token', '')
+    if not expected or not hmac.compare_digest(expected, request.headers.get('X-CSRF-Token', '')):
+        return {'error': 'Reload the dashboard before refreshing.'}, 400
+    if not _sync_guard.acquire(blocking=False):
+        return {'message': 'Collection is already running. Reload shortly.'}, 202
+    try:
+        worker = threading.Thread(target=_collect_guarded, daemon=True)
+        worker.start()
+    except Exception:
+        _sync_guard.release()
+        return {'error': 'Could not start collection. Try again.'}, 503
+    return {'message': 'Collection started. Reload data in about a minute. A saved authorization is required for each source.'}, 202

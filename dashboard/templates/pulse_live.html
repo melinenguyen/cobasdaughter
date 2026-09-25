@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="{{ csrf }}"><title>Brand Pulse · CoBa's Daughter</title>
+<link rel="stylesheet" href="/static/css/pulse_live.css">
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script defer src="/static/js/pulse_live.js"></script></head>
+<body><main><header><div><p class="eyebrow">COBA’S DAUGHTER · INTELLIGENCE</p><h1>Brand Pulse<span> / Overview</span></h1>
+<p>Your owned content and brand-search signals, with coverage made clear.</p></div><a href="/setup">Manage connections ↗</a></header>
+<div class="notice">On-demand collection · Automatic daily collection is not enabled. Earned-media monitoring is not connected.</div>
+<form id="filters"><label>From<input type="date" id="from" required></label><label>To<input type="date" id="to" required></label>
+<label>Compare with<select id="compare"><option value="previous">Previous equal period</option><option value="week">Previous completed week</option><option value="month">Previous completed month</option><option value="quarter">Previous completed quarter</option><option value="year">Same dates last year</option></select></label>
+<button>Apply / reload data</button><button type="button" id="sync">Collect latest data</button></form>
+<p id="message" role="status" aria-live="polite">Loading private data…</p>
+<div class="cards"><article><p>Reported brand-search impressions</p><strong id="impressions">—</strong><small>For your website, not total search volume</small></article>
+<article><p>Reported brand-search clicks</p><strong id="clicks">—</strong><small id="comparison">Comparison pending</small></article>
+<article><p>TikTok videos in latest snapshot</p><strong id="videos">—</strong><small>Authorized account · owned media</small></article>
+<article><p>Earned mentions</p><strong>Unavailable</strong><small>Not zero · no complete source connected</small></article></div>
+<div class="charts"><section><h2>Brand-search visibility</h2><p>Daily impressions reported by Search Console. Dates use Pacific time; missing days remain gaps.</p><div class="plot"><canvas id="search" aria-label="Daily reported branded search impressions" role="img"></canvas></div></section>
+<section><h2>Owned-media snapshots</h2><p>Number of posts observed per collection day (UTC). Instagram is currently a test sample, not a full inventory.</p><div class="plot"><canvas id="social" aria-label="Instagram sampled posts and TikTok videos by collection date" role="img"></canvas></div></section></div>
+<section><h2>Source health & coverage</h2><div id="sources"></div><p>Search filtering matches CoBa’s Daughter spelling variants. Search Console omits some queries and cannot measure all Google searches. TikTok authorization covers the connected account, not other creators’ mentions.</p></section>
+<section><h2>Daily figures</h2><p>Search rows are reported activity. Social engagement is lifetime at collection, not engagement gained that day. Samples may differ; growth is withheld.</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>Source</th><th>Posts observed</th><th>Impressions</th><th>Clicks</th><th>Lifetime likes</th><th>Lifetime comments</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<footer>No invented data. Missing coverage is shown explicitly. <a href="/brand-pulse/preview">Legacy sample view</a></footer>
+</main></body></html>
